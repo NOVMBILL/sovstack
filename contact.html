@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sovereign Stack · Contact</title>
+  <style>
+    :root {
+      --bg: #050814;
+      --bg-elevated: #070b18;
+      --bg-soft: #0b1220;
+
+      --border-subtle: #1f2933;
+      --border-strong: #374151;
+
+      --text: #f9fafb;
+      --muted: #9ca3af;
+
+      --accent-btc: #f7931a;
+      --accent-cypher: #22c55e;
+      --accent-nostr: #a855f7;
+
+      --radius-lg: 14px;
+      --container-width: 960px;
+
+      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", sans-serif;
+      --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background:
+        radial-gradient(circle at top, rgba(168, 85, 247, 0.12), transparent 55%),
+        radial-gradient(circle at bottom, rgba(34, 197, 94, 0.08), transparent 55%),
+        var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    .shell {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* TOP BAR */
+    .topbar {
+      border-bottom: 1px solid var(--border-subtle);
+      background: rgba(5, 8, 20, 0.96);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .topbar-inner {
+      max-width: var(--container-width);
+      margin: 0 auto;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 24px;
+      height: 24px;
+      border-radius: 9px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-family: var(--mono);
+      background: #020617;
+      color: var(--accent-btc);
+      border: 1px solid var(--border-strong);
+      flex-shrink: 0;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .brand-main {
+      font-family: var(--mono);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      white-space: nowrap;
+    }
+
+    .brand-sub {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .top-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .top-nav a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      font-size: 10px;
+      font-family: var(--mono);
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+      background: #020617;
+      transition:
+        background 0.16s ease-out,
+        border-color 0.16s ease-out,
+        color 0.16s ease-out,
+        transform 0.1s ease-out;
+    }
+
+    .top-nav a:hover,
+    .top-nav a:focus-visible {
+      color: var(--text);
+      border-color: var(--accent-btc);
+      background: #030712;
+      transform: translateY(-1px);
+      outline: none;
+    }
+
+    .top-nav a.primary {
+      border-color: var(--accent-btc);
+      color: var(--accent-btc);
+    }
+
+    .top-nav a.primary:hover,
+    .top-nav a.primary:focus-visible {
+      color: #111827;
+      background: var(--accent-btc);
+    }
+
+    /* PAGE LAYOUT */
+    .page {
+      flex: 1;
+    }
+
+    .container {
+      max-width: var(--container-width);
+      margin: 0 auto;
+      padding: 20px 16px 32px;
+    }
+
+    .page-header {
+      margin-bottom: 20px;
+      padding: 16px 16px 14px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-elevated);
+    }
+
+    .page-kicker {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .page-title {
+      font-size: 1.6rem;
+      margin: 0 0 6px;
+    }
+
+    .page-title span {
+      color: var(--accent-btc);
+    }
+
+    .page-lead {
+      margin: 0 0 6px;
+      font-size: 0.96rem;
+      line-height: 1.7;
+      color: var(--muted);
+      max-width: 720px;
+    }
+
+    .page-lead:last-of-type {
+      margin-bottom: 0;
+    }
+
+    /* Sections */
+    .section {
+      margin-top: 20px;
+      padding: 16px 16px 14px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-soft);
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .section-heading {
+      margin: 0 0 4px;
+      font-size: 1.02rem;
+    }
+
+    .section-subtitle {
+      margin: 0 0 10px;
+      font-size: 0.86rem;
+      color: var(--muted);
+      max-width: 640px;
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 6px;
+    }
+
+    .contact-block {
+      border-radius: 10px;
+      border: 1px solid var(--border-subtle);
+      background: #050819;
+      padding: 10px 10px 9px;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .contact-label {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .contact-title {
+      margin: 0 0 6px;
+      font-size: 0.95rem;
+      color: var(--text);
+    }
+
+    .contact-body {
+      margin: 0 0 8px;
+      line-height: 1.6;
+    }
+
+    .mono-block {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      background: #020617;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      padding: 4px 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 6px;
+      color: var(--text);
+      max-width: 100%;
+      word-break: break-all;
+    }
+
+    .mono-block span.label {
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    .mono-multiline {
+      font-family: var(--mono);
+      font-size: 0.76rem;
+      background: #020617;
+      border-radius: 10px;
+      border: 1px solid var(--border-subtle);
+      padding: 8px 10px;
+      margin: 0;
+      line-height: 1.5;
+      word-break: break-all;
+      color: var(--muted);
+    }
+
+    .mono-link {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--accent-btc);
+      text-decoration: none;
+      border-bottom: 1px dashed transparent;
+    }
+
+    .mono-link:hover,
+    .mono-link:focus-visible {
+      border-bottom-color: var(--accent-btc);
+      outline: none;
+    }
+
+    .tag-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px 9px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+      background: #020617;
+      margin-top: 4px;
+    }
+
+    /* FOOTER */
+    .footer {
+      border-top: 1px solid var(--border-subtle);
+      background: #020617;
+      margin-top: 24px;
+    }
+
+    .footer-inner {
+      max-width: var(--container-width);
+      margin: 0 auto;
+      padding: 12px 16px 14px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .footer-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .footer-pill {
+      padding: 3px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--accent-nostr);
+      background: #030712;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 800px) {
+      .contact-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .section {
+        padding: 14px 12px 12px;
+      }
+
+      .brand-main,
+      .brand-sub {
+        white-space: normal;
+      }
+
+      .top-nav {
+        justify-content: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand-wrap">
+          <span class="brand-mark">₿</span>
+          <div class="brand-text">
+            <span class="brand-main">Sov Stack · Contact</span>
+            <span class="brand-sub">Email · Nostr · PGP</span>
+          </div>
+        </div>
+        <nav class="top-nav" aria-label="Page navigation">
+          <a href="index.html" class="primary">Home</a>
+          <a href="#email">Email</a>
+          <a href="#nostr">Nostr</a>
+          <a href="#pgp">PGP</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page">
+      <div class="container">
+        <!-- INTRO -->
+        <header class="page-header">
+          <div class="page-kicker">/ contact & keys /</div>
+          <h1 class="page-title"><span>Sov Stack</span> Contact</h1>
+          <p class="page-lead">
+            Minimal, verifiable contact surface. Prefer encrypted channels where possible. Treat all details below as
+            canonical unless superseded by a newer signed key or explicit notice.
+          </p>
+          <p class="page-lead">
+            Example identifiers are shown; replace them with live email, Nostr npub, and PGP key details when deployed.
+          </p>
+        </header>
+
+        <!-- CONTACT GRID -->
+        <section class="section" id="email" aria-label="Contact methods">
+          <div class="section-label">Channels</div>
+          <h2 class="section-heading">Primary Contact Channels</h2>
+          <p class="section-subtitle">
+            Three core rails: encrypted email, Nostr presence, and a PGP key for verification, signing, and message privacy.
+          </p>
+
+          <div class="contact-grid">
+            <!-- EMAIL -->
+            <div class="contact-block">
+              <div class="contact-label">/ email</div>
+              <h3 class="contact-title">Encrypted Email (Primary)</h3>
+              <p class="contact-body">
+                Use standard email for initial contact. For sensitive details, encrypt with the PGP key listed below.
+              </p>
+              <div class="mono-block">
+                <span class="label">addr</span>
+                <span>contact@sovereign-stack.example</span>
+              </div>
+              <p class="mono-multiline">
+                Note: replace with your live address. Use PGP encryption for any operational, financial, or identity-related content.
+              </p>
+            </div>
+
+            <!-- NOSTR -->
+            <div class="contact-block" id="nostr">
+              <div class="contact-label">/ nostr</div>
+              <h3 class="contact-title">Nostr Presence</h3>
+              <p class="contact-body">
+                For public signal, announcements, and lightweight coordination. Long-form or sensitive discussions should
+                move to encrypted channels.
+              </p>
+              <div class="mono-block">
+                <span class="label">npub</span>
+                <span>npub1example0sovstack0signal0replace0with0real</span>
+              </div>
+              <p class="mono-multiline">
+                Use NIP-04 or NIP-44 DMs for encrypted messaging where supported. Always verify key continuity against PGP-signed statements.
+              </p>
+              <span class="tag-pill">nostr · public signal</span>
+            </div>
+
+            <!-- PGP -->
+            <div class="contact-block" id="pgp">
+              <div class="contact-label">/ pgp</div>
+              <h3 class="contact-title">PGP Public Key</h3>
+              <p class="contact-body">
+                Use this key to encrypt messages and verify signed statements, documents, and releases.
+              </p>
+
+              <p class="mono-multiline">
+                Fingerprint (example)<br />
+                7F11 0F3A C5D2 9B71 2E40  9D8A 4A3C B7E2 9F11 42AA
+              </p>
+
+              <p class="contact-body" style="margin-top:8px;">
+                Key download:
+              </p>
+              <p class="contact-body">
+                <a href="/keys/sovereign-stack-example.asc" class="mono-link">
+                  /keys/sovereign-stack-example.asc
+                </a>
+              </p>
+              <span class="tag-pill">pgp · verification</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- META NOTES -->
+        <section class="section" aria-label="Operational notes">
+          <div class="section-label">Operational Notes</div>
+          <h2 class="section-heading">Key Rotation & Authenticity</h2>
+          <p class="section-subtitle">
+            Keep a simple, predictable pattern for key changes and authenticity checks.
+          </p>
+          <p class="mono-multiline">
+            · Treat this page as the canonical source for current keys and addresses.<br />
+            · Any rotation will be announced here and signed with the previous valid PGP key.<br />
+            · Ignore unsolicited “new key” messages that are not backed by this page and a valid signature.<br />
+            · When in doubt, verify fingerprints out-of-band with trusted counterparts.
+          </p>
+        </section>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        <div>
+          <span class="footer-label">/ sov stack contact</span>
+          <span>&copy; Sov Stack Node. Replace with your own imprint and jurisdictional details.</span>
+        </div>
+        <div class="footer-pill">Bitcoin orange · terminal green · nostr violet</div>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

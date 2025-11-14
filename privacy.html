@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Privacy = Sovereignty</title>
+  <style>
+    :root {
+      --bg: #050814;
+      --bg-elevated: #070b18;
+      --bg-soft: #0b1220;
+
+      --border-subtle: #1f2933;
+      --border-strong: #374151;
+
+      --text: #f9fafb;
+      --muted: #9ca3af;
+
+      --accent-btc: #f7931a;
+      --accent-cypher: #22c55e;
+      --accent-nostr: #a855f7;
+
+      --radius-lg: 14px;
+      --container-width: 960px;
+
+      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", sans-serif;
+      --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background:
+        radial-gradient(circle at top, rgba(168, 85, 247, 0.12), transparent 55%),
+        radial-gradient(circle at bottom, rgba(34, 197, 94, 0.08), transparent 55%),
+        var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    .shell {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* TOP BAR WITH NAV */
+    .topbar {
+      border-bottom: 1px solid var(--border-subtle);
+      background: rgba(5, 8, 20, 0.96);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .topbar-inner {
+      max-width: var(--container-width);
+      margin: 0 auto;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 24px;
+      height: 24px;
+      border-radius: 9px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-family: var(--mono);
+      background: #020617;
+      color: var(--accent-btc);
+      border: 1px solid var(--border-strong);
+      flex-shrink: 0;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .brand-main {
+      font-family: var(--mono);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      white-space: nowrap;
+    }
+
+    .brand-sub {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .top-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .top-nav a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      font-size: 10px;
+      font-family: var(--mono);
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+      background: #020617;
+      transition:
+        background 0.16s ease-out,
+        border-color 0.16s ease-out,
+        color 0.16s ease-out,
+        transform 0.1s ease-out;
+    }
+
+    .top-nav a:hover,
+    .top-nav a:focus-visible {
+      color: var(--text);
+      border-color: var(--accent-btc);
+      background: #030712;
+      transform: translateY(-1px);
+      outline: none;
+    }
+
+    .top-nav a.primary {
+      border-color: var(--accent-btc);
+      color: var(--accent-btc);
+    }
+
+    .top-nav a.primary:hover,
+    .top-nav a.primary:focus-visible {
+      color: #111827;
+      background: var(--accent-btc);
+    }
+
+    /* PAGE LAYOUT */
+    .page {
+      flex: 1;
+    }
+
+    .container {
+      max-width: var(--container-width);
+      margin: 0 auto;
+      padding: 20px 16px 32px;
+    }
+
+    .page-header {
+      margin-bottom: 20px;
+      padding: 16px 16px 14px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-elevated);
+    }
+
+    .page-kicker {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .page-title {
+      font-size: 1.6rem;
+      margin: 0 0 6px;
+    }
+
+    .page-title span {
+      color: var(--accent-btc);
+    }
+
+    .page-lead {
+      margin: 0 0 8px;
+      font-size: 0.96rem;
+      line-height: 1.7;
+      color: var(--muted);
+      max-width: 720px;
+    }
+
+    .page-lead:last-of-type {
+      margin-bottom: 0;
+    }
+
+    /* Sections */
+    .section {
+      margin-top: 24px;
+      padding: 16px 16px 14px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-soft);
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .section-heading {
+      margin: 0 0 4px;
+      font-size: 1.02rem;
+    }
+
+    .section-subtitle {
+      margin: 0 0 12px;
+      font-size: 0.86rem;
+      color: var(--muted);
+    }
+
+    .section-tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px 9px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      font-family: var(--mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+      margin-bottom: 6px;
+      background: #020617;
+    }
+
+    .prose {
+      font-size: 0.9rem;
+      line-height: 1.7;
+      color: var(--muted);
+      max-width: 100%;
+    }
+
+    .prose h3 {
+      margin: 14px 0 6px;
+      font-size: 0.96rem;
+      color: var(--text);
+    }
+
+    .prose p {
+      margin: 0 0 8px;
+    }
+
+    .prose ul {
+      margin: 0 0 10px 1.1rem;
+      padding: 0;
+    }
+
+    .prose li {
+      margin-bottom: 4px;
+    }
+
+    .prose strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .prose em {
+      font-style: italic;
+    }
+
+    .prose blockquote {
+      margin: 8px 0 10px;
+      padding: 8px 10px;
+      border-left: 2px solid var(--accent-nostr);
+      background: #050819;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+
+    .prose blockquote p {
+      margin: 0 0 4px;
+    }
+
+    .prose blockquote p:last-child {
+      margin-bottom: 0;
+    }
+
+    .equation {
+      margin: 8px 0 10px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px dashed var(--border-subtle);
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      background: #050819;
+      color: var(--muted);
+      overflow-x: auto;
+    }
+
+    /* FOOTER */
+    .footer {
+      border-top: 1px solid var(--border-subtle);
+      background: #020617;
+      margin-top: 24px;
+    }
+
+    .footer-inner {
+      max-width: var(--container-width);
+      margin: 0 auto;
+      padding: 12px 16px 14px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .footer-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .footer-pill {
+      padding: 3px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--accent-nostr);
+      background: #030712;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 640px) {
+      .section {
+        padding: 14px 12px 12px;
+      }
+
+      .brand-main,
+      .brand-sub {
+        white-space: normal;
+      }
+
+      .top-nav {
+        justify-content: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand-wrap">
+          <span class="brand-mark">₿</span>
+          <div class="brand-text">
+            <span class="brand-main">Sov Stack · Privacy Core</span>
+            <span class="brand-sub">Privacy = Sovereignty</span>
+          </div>
+        </div>
+        <nav class="top-nav" aria-label="Page navigation">
+          <a href="index.html" class="primary">Home</a>
+          <a href="mission.html" class="primary">Mission</a>
+          <a href="stacks.html" class="primary">The Stacks</a>
+          <a href="offerings.html" class="primary">Mission</a>
+          <a href="#intro">Intro</a>
+          <a href="#meaning">Meaning</a>
+          <a href="#why-now">Why Now</a>
+          <a href="#ontological-shift">Ontology</a>
+          <a href="#cypherpunk-canon">Canon</a>
+          <a href="#field-law">Field Law</a>
+          <a href="#property">Property</a>
+          <a href="#dignity">Dignity</a>
+          <a href="#btc-telemetry">Bitcoin</a>
+          <a href="#final-hammer">Final Hammer</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page">
+      <div class="container">
+        <!-- INTRO -->
+        <header id="intro" class="page-header">
+          <div class="page-kicker">/ privacy = sovereignty /</div>
+          <h1 class="page-title"><span>Privacy</span> = Sovereignty</h1>
+          <p class="page-lead">
+            Privacy is not concealment. It is the invisible wall that separates a living person from a system that would
+            turn them into code. It is the membrane that allows life to breathe, to own, to choose, to change. Like skin
+            holding the body together, privacy holds together the boundaries of the self.
+          </p>
+          <p class="page-lead">
+            Without it, the mind and soul leak into the open, and the person dissolves into data.
+          </p>
+        </header>
+
+        <!-- 0. THE MEANING OF PRIVACY -->
+        <section id="meaning" class="section">
+          <div class="section-label">00 · Foundation</div>
+          <h2 class="section-heading">The Meaning of Privacy</h2>
+          <p class="section-subtitle">
+            Privacy as agency, authorship, and the inner border where sovereignty begins.
+          </p>
+          <div class="prose">
+            <p>
+              Privacy is the power to decide when and how you are seen. It is not secrecy or shame; it is agency.
+              A closed door, a sealed letter, a whispered thought—each is authorship:
+              <em>this is mine to reveal or to keep</em>.
+            </p>
+            <p>
+              In a free world, that choice defines dignity. In a captured one, that choice disappears.
+            </p>
+            <p>
+              When privacy dies, sovereignty dies with it. You stop being a person and become a profile.
+              Every click, word, and heartbeat turns into a data point. Algorithms read your habits like cards,
+              predicting what you’ll buy, believe, and fear. Over time, prediction replaces permission.
+              You no longer choose; choices arrive pre-selected.
+            </p>
+            <p>
+              Without privacy, property turns into permission. Freedom becomes exposure. Identity becomes inventory.
+              You are priced, tagged, and resold across invisible markets—a simulation of yourself built by others
+              for their use.
+            </p>
+            <p>
+              Privacy is authorship—the right to edit your own life. It is the quiet space where thoughts form
+              before they are shared, where you can err, recalibrate, begin again. Sovereignty starts there:
+              every contract, every property claim, every free decision depends on that inner border remaining intact.
+            </p>
+            <p>
+              Lose privacy, lose the self. You become a product, not a person.
+              A product can be copied, tracked, and sold. A person cannot.
+            </p>
+            <p>
+              Guard that line, and you remain human. Cross it, and you become simulation.
+            </p>
+          </div>
+        </section>
+
+        <!-- 1. WHY PRIVACY NOW? -->
+        <section id="why-now" class="section">
+          <span class="section-tag">01 · Post-collapse terrain</span>
+          <h2 class="section-heading">Why Privacy Now? — Post-collapse Terrain</h2>
+          <p class="section-subtitle">
+            The fall already happened; we live inside its software. Visibility now means capture, not participation.
+          </p>
+          <div class="prose">
+            <p>
+              The collapse did not arrive with explosions. It arrived as convenience. Institutions still stand,
+              but they preserve only the <em>appearance</em> of order—a continuity simulation. Power has migrated
+              from human judgment into algorithms that see, sort, and predict. Society has become an interface
+              managed by data flows, not consent. The fall already happened; we now live inside its software.
+            </p>
+            <p>
+              In this terrain, visibility no longer means participation; it means capture. To be visible is to be mapped.
+              Every movement becomes coordinates, every preference a forecast. You walk through a city of mirrors that
+              don’t reflect your face but your predicted future.
+            </p>
+            <p>
+              Every search, purchase, and pause becomes a trace. Combined, they form a digital double—an invisible twin
+              that walks ahead of you, making choices in your name. Once AI models that twin, it no longer needs to coerce.
+              It nudges, filters, and prices reality until you match the pattern. Power rules through preemption instead of threat.
+            </p>
+            <p>
+              The Cypherpunks saw this coming. Long before “big data” became a cliché, David Chaum warned that
+              computerization would steal control over personal information. Tim May argued that strong cryptography
+              would alter the nature of government itself. Eric Hughes wrote the line that became law:
+            </p>
+            <blockquote>
+              <p>“Privacy is necessary for an open society in the electronic age.”</p>
+            </blockquote>
+            <p>
+              The electronic age dissolved the old walls of privacy—distance, friction, forgetting. Information no longer
+              fades or stays local. Without new forms of privacy, openness turns into exposure and freedom into simulation.
+            </p>
+            <p>
+              Cypherpunks replaced promises with proof. Encryption became the new castle wall. Bitcoin extended the logic:
+              sovereignty through code, not permission. Privacy ceased to be nostalgia for secrecy and became infrastructure
+              for freedom.
+            </p>
+            <p>
+              Now the fork is live. One path leads deeper into prediction, where every gesture feeds the model.
+              The other leads toward sovereignty—cryptographic proof, selective visibility, voluntary exchange.
+              Privacy is the hinge between those futures.
+            </p>
+            <p>
+              In the post-collapse world, where institutions simulate continuity and AI anticipates every move,
+              privacy is the last remaining act that restores human choice.
+            </p>
+          </div>
+        </section>
+
+        <!-- 2. ONTOLOGICAL SHIFT -->
+        <section id="ontological-shift" class="section">
+          <span class="section-tag">02 · Ontological shift</span>
+          <h2 class="section-heading">Ontological Shift — Infinite Memory, Simulation, AI</h2>
+          <p class="section-subtitle">
+            From presence to prediction: existence redefined as being modeled by machines.
+          </p>
+          <div class="prose">
+            <p>
+              The change was ontological, not just technical: it altered what it <em>means</em> to exist.
+            </p>
+            <p>
+              In the old world, existence meant occupying space and time. Walls blocked sight, distance limited access,
+              memory decayed. Forgetting was the default. That decay was the foundation of freedom: you could move on,
+              outgrow your past, and be more than your worst moment.
+            </p>
+            <p>
+              Then the substrate changed. The physical dissolved into the digital—a realm where nothing fades.
+              Every act leaves a mark; every mark becomes data; every piece of data can be copied and stored forever.
+              Time no longer erases; it archives. The past sits beside you—searchable, replayable, permanent.
+            </p>
+            <p>
+              Infinite memory quietly replaced the right to be human with the obligation to be consistent.
+              Jokes, failures, confessions—everything lives forever in databases. The past stops being a story
+              and becomes a weapon. The gap between moments—the privacy that once let people grow—closes.
+            </p>
+            <p>
+              Into that gap steps the machine’s gaze. AI doesn’t observe; it models. It cares less <em>who</em> you are
+              than <em>what</em> you are likely to do. It learns your rhythm, pauses, and habits, then moves ahead of you.
+              Before you decide, your choice is priced.
+            </p>
+            <p>
+              Identity is no longer narrated; it is inferred. Purchase patterns, search trails, GPS pings, eye movements—
+              correlations replace meaning. The self becomes a fast, predictable shadow assembled from fragments.
+            </p>
+            <p>
+              The new struggle is not against being seen, but against being <em>modeled</em>. Observation you can evade;
+              modeling you cannot—unless you alter how you live. That means introducing noise where systems expect pattern,
+              breaking habits, rotating identities, reclaiming opacity.
+            </p>
+            <p>In this world:</p>
+            <blockquote>
+              <p>The old world measured existence by presence.</p>
+              <p>The new world measures it by prediction.</p>
+              <p>To be is to be modeled.</p>
+              <p>To be sovereign is to remain unmodelable.</p>
+            </blockquote>
+            <p>
+              Privacy becomes the last veil between human life and its machine-made reflection.
+            </p>
+          </div>
+        </section>
+
+        <!-- 3. CYPHERPUNK CANON -->
+        <section id="cypherpunk-canon" class="section">
+          <span class="section-tag">03 · Cypherpunk canon</span>
+          <h2 class="section-heading">Cypherpunk Canon — The Founding Proofs</h2>
+          <p class="section-subtitle">
+            From Chaum to Satoshi: freedom written into code instead of policy.
+          </p>
+          <div class="prose">
+            <p>
+              Cypherpunk culture emerged from foresight, not nostalgia. In the 1980s, long before social media,
+              David Chaum realized that digital systems could obliterate personal control over information.
+              He proposed cryptographic tools that would enable interaction <em>without identification</em>—privacy by design,
+              not permission.
+            </p>
+            <p>
+              By the early 1990s, a loose network of cryptographers, hackers, and mathematicians coalesced.
+              The Cypherpunks believed that if freedom were to survive, it had to be written into protocols, not policy.
+              Politics can be corrupted; strong math cannot be intimidated.
+            </p>
+            <p>
+              Timothy C. May’s <em>Crypto Anarchist Manifesto</em> framed cryptography as a lever of history.
+              If individuals could communicate and transact anonymously, centralized regulation would be permanently weakened.
+            </p>
+            <p>
+              Eric Hughes then wrote <em>A Cypherpunk’s Manifesto</em> and sharpened the ethics:
+            </p>
+            <ul>
+              <li>“Privacy is necessary for an open society in the electronic age.”</li>
+              <li>
+                “Privacy is not secrecy.” A private matter is not wanting the <em>world</em> to know; a secret is not
+                wanting <em>anyone</em> to know.
+              </li>
+            </ul>
+            <p>
+              Privacy became a personal responsibility, not a political favor:
+              “We must defend our own privacy if we expect to have any.”
+            </p>
+            <p>
+              In 2008, Satoshi Nakamoto completed the canon with Bitcoin. Satoshi solved digital trust without identity:
+              <strong>proof without personhood</strong>. Names disappeared; keys and signatures remained. Consensus replaced
+              hierarchy; transparency applied to the system, not to individuals.
+            </p>
+            <p>The canon’s chain of proofs is simple:</p>
+            <ul>
+              <li>Information technology dissolves privacy.</li>
+              <li>Cryptography can restore control.</li>
+              <li>Privacy = self-governance, not secrecy.</li>
+              <li>Trust can exist without identity.</li>
+            </ul>
+            <p>
+              These are not laws on paper; they are laws in code. Every node, every key, every block repeats them:
+            </p>
+            <p><strong>Freedom in the electronic age depends on privacy, and privacy depends on cryptography.</strong></p>
+          </div>
+        </section>
+
+        <!-- 4. YOU ALREADY VALUE PRIVACY -->
+        <section id="you-value" class="section">
+          <span class="section-tag">04 · Everyday privacy</span>
+          <h2 class="section-heading">You Already Value Privacy</h2>
+          <p class="section-subtitle">
+            Locks, curtains, envelopes: you live by privacy offline, then abandon it online.
+          </p>
+          <div class="prose">
+            <p>
+              Privacy is not abstract; it defines ordinary life. Doors have locks. Windows have curtains.
+              Phones have PINs. Mail has envelopes. Conversations move to corners or closed rooms when they become intimate.
+              None of this implies guilt. It expresses a simple rule: <em>not everything is for everyone</em>.
+            </p>
+            <p>
+              Physical privacy feels obvious: a locked bathroom door protects dignity; a private call preserves context.
+              You decide what belongs to the world and what belongs to you. That decision is authorship.
+            </p>
+            <p>
+              Yet online, this instinct is abandoned. People pour their lives into systems that record everything,
+              run by entities they do not know. The internet feels intangible, but it is the most public space ever built.
+              What seems private is often just uninspected.
+            </p>
+            <p>
+              The real question is not whether privacy matters—you already act as if it does.
+              The question is why the same person who would never leave their front door wide open will leave their inbox,
+              location, and history exposed to unknown parties.
+            </p>
+            <p>
+              Privacy is not paranoia; it is basic wisdom. The front door has moved from wood and steel to data and code.
+              The responsibility to keep it closed has not changed.
+            </p>
+          </div>
+        </section>
+
+        <!-- 5. WHAT IS PRIVACY? FIELD LAW -->
+        <section id="field-law" class="section">
+          <span class="section-tag">05 · Ontic field law</span>
+          <h2 class="section-heading">What Is Privacy? — Ontic Field Law</h2>
+          <p class="section-subtitle">
+            Privacy as structural law: governing exposure across space, time, and prediction.
+          </p>
+          <div class="prose">
+            <p>
+              Privacy is not a preference or mood. It is a structural law governing the boundary between self and system.
+            </p>
+            <p>At its core:</p>
+            <div class="equation">
+              <p><strong>Privacy is sovereign control of contextual exposure across space, time, and prediction.</strong></p>
+            </div>
+            <p>Three dimensions define it:</p>
+            <ol>
+              <li>
+                <strong>Space — Who can touch your signal.</strong><br />
+                Physical walls protect bodies; digital walls protect data, devices, and flows. If anyone can reach into
+                your messages or map your behavior, they effectively occupy you. Spatial privacy means deciding who may
+                access your digital “body” and when.
+              </li>
+              <li>
+                <strong>Time — When your past can return.</strong><br />
+                Natural forgetting once limited how far back life could be weaponized. In a world without decay, every
+                past version of you can be dragged into the present. Temporal privacy is the right to let some moments die—
+                so that growth and redemption remain possible.
+              </li>
+              <li>
+                <strong>Prediction — How your future is inferred.</strong><br />
+                AI no longer waits for decisions; it anticipates them. If every gesture feeds the model, choice becomes
+                performance. Predictive privacy is the right to remain partially unpredictable—to introduce enough
+                uncertainty that your future is not fully priced in advance.
+              </li>
+            </ol>
+            <p>These combine into an equation:</p>
+            <div class="equation">
+              <p><strong>Sovereignty = (Opacity × Unlinkability × Selective Revelation × Proof) / Prediction</strong></p>
+            </div>
+            <p>
+              <strong>Opacity</strong>: remaining partly unseen.<br />
+              <strong>Unlinkability</strong>: preventing all your actions from collapsing into one dossier.<br />
+              <strong>Selective Revelation</strong>: sharing only what is necessary in a given context.<br />
+              <strong>Proof</strong>: enabling verification without exposure.<br />
+              <strong>Prediction</strong> (in the denominator): the more predictable you are, the less sovereign you become.
+            </p>
+            <p>
+              When opacity, unlinkability, selective revelation, and proof are high—and prediction is low—you are free.
+              Reverse the ratios, and you live inside a control system.
+            </p>
+            <p>
+              This is not metaphor; it is field law. Systems that violate it drift toward exploitation or rebellion.
+            </p>
+          </div>
+        </section>
+
+        <!-- 6. TRANSPARENCY INVERSION -->
+        <section id="transparency" class="section">
+          <span class="section-tag">06 · Transparency inversion</span>
+          <h2 class="section-heading">Transparency Inversion — Who Owes What?</h2>
+          <p class="section-subtitle">
+            Transparency must point upward at power, not downward at people.
+          </p>
+          <div class="prose">
+            <p>
+              Transparency originally meant <em>power must be seen</em>. Ledgers, courts, councils—these were to be visible
+              so corruption could not hide. The greater the authority, the greater the duty to be inspected.
+            </p>
+            <p>
+              Digital life inverted this. Institutions that demand trust became opaque, while they demanded radical visibility
+              from everyone else. “Know Your Customer,” real-name policies, mandatory IDs: to participate, you must expose yourself.
+              Meanwhile, the algorithms judging you remain secret.
+            </p>
+            <p>
+              Transparency has turned downward, weaponized against individuals. People live in glass houses while governments
+              and corporations hide in black boxes.
+            </p>
+            <p>The proper order is the opposite:</p>
+            <ul>
+              <li><strong>People</strong> owe transparency to no one, except by explicit consent.</li>
+              <li><strong>Systems</strong> owe transparency through design—open code, auditable rules.</li>
+              <li><strong>Power</strong> owes transparency by law—visible budgets, methods, and decisions.</li>
+            </ul>
+            <p>
+              Opacity for individuals is dignity, not deceit. Humans require shadows to think, doubt, experiment, and change.
+              Forced transparency makes life performative and brittle; people stop becoming and start curating.
+            </p>
+            <p>
+              Power, by contrast, must be transparent to remain legitimate. Hidden algorithms and secret policies are instruments
+              of abuse.
+            </p>
+            <p>One test captures the divide:</p>
+            <blockquote>
+              <p>If a system only works with faces, it is priesthood.</p>
+              <p>If it still works after all faces vanish, it is sovereignty.</p>
+            </blockquote>
+            <p>
+              Transparency and privacy are not enemies. Transparency keeps power honest. Privacy keeps people human.
+              A free order requires both: walls around individuals, windows into power.
+            </p>
+          </div>
+        </section>
+
+        <!-- 7. PRIVACY IS PROPERTY -->
+        <section id="property" class="section">
+          <span class="section-tag">07 · Privacy as property</span>
+          <h2 class="section-heading">Privacy Is Property — First Principle</h2>
+          <p class="section-subtitle">
+            Property as crystallized privacy: dominion over what can cross your boundary.
+          </p>
+          <div class="prose">
+            <p>
+              Property starts with a boundary. A fence, a lock, a password: each declares <em>inside is mine; outside requires permission</em>.
+              Privacy is the invisible version of that line—the right to define what can cross into your life: what gaze,
+              what data, what control.
+            </p>
+            <p>
+              In the digital realm, property includes what cannot be seen: data, identity, history, keys, balances.
+              The locks are cryptographic; the walls are informational. When those are breached, ownership collapses.
+              What was yours becomes copyable, traceable, freeze-able.
+            </p>
+            <p>
+              In a surveillance economy, ownership turns into tenancy. You “own” your account until it is suspended,
+              your data until it is sold, your funds until terms of service say otherwise. Visibility outweighs control,
+              and possession becomes permission.
+            </p>
+            <p>
+              Bitcoin showed what true dominion looks like: the private key as pure property. Whoever holds it controls the asset;
+              no authority can override. But if your addresses are mapped and your identity bound to them, sovereignty shrinks.
+              Your coins become just another field in a compliance database.
+            </p>
+            <p>
+              Without privacy, Bitcoin is telemetry—a perfect record of your economic life. Your wallet becomes your leash.
+            </p>
+            <p>
+              Owning is not merely using; it is excluding. Privacy is dominion—the right to exclude not just people but profiling
+              and preemption.
+            </p>
+            <p>Every form of property is privacy solidified:</p>
+            <ul>
+              <li>A door: privacy in wood.</li>
+              <li>A password: privacy in code.</li>
+              <li>A private key: privacy in math.</li>
+            </ul>
+            <p>
+              When privacy fails, these forms hollow out. A house under permanent surveillance is no longer a home; a wallet
+              that can be frozen is no longer wealth.
+            </p>
+            <p>
+              Property is crystallized privacy. When privacy holds, ownership is proof. When privacy fails, ownership is permission.
+            </p>
+          </div>
+        </section>
+
+        <!-- 8. PRIVACY IS DIGNITY -->
+        <section id="dignity" class="section">
+          <span class="section-tag">08 · Privacy & dignity</span>
+          <h2 class="section-heading">Privacy Is Dignity — The Womb of Becoming</h2>
+          <p class="section-subtitle">
+            Observation turns life into performance; privacy keeps the inner room alive.
+          </p>
+          <div class="prose">
+            <p>
+              Constant observation changes behavior. Under a permanent gaze, you stop acting for yourself and start performing
+              for an unseen audience. The inner room where thought and conscience form shrinks.
+            </p>
+            <p>
+              This is the beginning of dehumanization. You become a dataset—a pattern to predict and a resource to exploit.
+              Systems stop treating you as someone who can grow or contradict themselves; they treat you as a stable risk profile.
+            </p>
+            <p>
+              Privacy protects the most human thing: the ability to change. In public, identity must be consistent.
+              In private, it can be alive. Private space allows confusion, error, remorse, renewal. Without that, people
+              freeze into the safest version of themselves.
+            </p>
+            <p>
+              Infinite memory kills mercy. When every mistake is permanently stored and instantly retrievable, forgiveness becomes
+              obsolete. The person fuses with their record; context dies.
+            </p>
+            <p>
+              Dignity rests in the part of you that cannot be priced or modeled. Data can be copied, traded, scored.
+              Dignity cannot. It is the right to define yourself without your worth being reduced to metrics.
+            </p>
+            <p>
+              Privacy ensures there is always a remainder—something unseen and unowned. That remainder is sacred.
+            </p>
+            <p>
+              Without privacy, there is no mercy, only exposure.<br />
+              Without privacy, there is no becoming, only repetition.
+            </p>
+            <p>
+              Privacy is not retreat; it is resurrection. It is the dark soil in which a new self can take root.
+            </p>
+          </div>
+        </section>
+
+        <!-- 9. PROOF OVER PERSON -->
+        <section id="proof-over-person" class="section">
+          <span class="section-tag">09 · Proof over person</span>
+          <h2 class="section-heading">Proof Over Person — Keys, Not Kings</h2>
+          <p class="section-subtitle">
+            From faces and priesthoods to keys and protocols: trust behavior, not biography.
+          </p>
+          <div class="prose">
+            <p>
+              Dignity alone cannot organize trust. In a digital world of masks and deepfakes, we need something stronger
+              than faces. Identity-based trust does not scale; it is easy to counterfeit and easy to weaponize.
+            </p>
+            <p>
+              For most of history, trust flowed through recognition: faces, names, reputation. But at scale, this collapses
+              into priesthood and cults of personality. Authority attaches to symbols and charisma, not to actual behavior.
+            </p>
+            <p>
+              The sovereign alternative is <strong>Proof over Person</strong>. Trust action, not identity. Replace belief with
+              verification. Use signatures instead of smiles.
+            </p>
+            <p>
+              Cryptographic keys have no biography. Yet they can prove authorship, ownership, and completion with mathematical
+              certainty. They displace kings with protocols. Bitcoin is the clearest demonstration: it works not because anyone
+              believes in a leader but because proofs enforce honesty. Satoshi’s disappearance did not weaken Bitcoin; it made its point.
+            </p>
+            <p>
+              Reputation in a proof-based world is a receipt, not a performance. Each signed contribution, payment, or fix accumulates
+              into a verifiable history of behavior. This cannot be faked with charisma or bought with followers.
+            </p>
+            <p>
+              If a system fails when a single identity is removed, it was built on personhood, not proof.
+            </p>
+            <blockquote>
+              <p>Do you want a world of kings, or a world of keys?</p>
+            </blockquote>
+            <p>
+              A world of kings runs on visibility and hierarchy.<br />
+              A world of keys runs on integrity and verifiable action.
+            </p>
+            <p>
+              Proof over Person is the civilizational pivot that lets freedom exist without requiring fame or obedience.
+            </p>
+          </div>
+        </section>
+
+        <!-- 10. PRIVACY ≠ HIDING -->
+        <section id="control" class="section">
+          <span class="section-tag">10 · Control & survival</span>
+          <h2 class="section-heading">Privacy ≠ Hiding — Control Is Survival</h2>
+          <p class="section-subtitle">
+            The target is correlation, not confession. Unjoinability is the core defense.
+          </p>
+          <div class="prose">
+            <p>
+              “I have nothing to hide” misunderstands privacy. Hiding implies shame; privacy is about <em>control</em>.
+              You already tailor speech by context, dress differently for different spaces, close doors without guilt.
+              Privacy is that contextual control, extended to data.
+            </p>
+            <p>
+              Modern control does not need full surveillance; it only needs <strong>correlation</strong>—the ability to join fragments.
+              Purchases, movements, contacts, and posts, when fused, become a behavioral map. Once mapped, you become predictable;
+              once predictable, you become steerable.
+            </p>
+            <blockquote>
+              <p>Correlation = control.</p>
+              <p>Privacy kills correlation.</p>
+            </blockquote>
+            <p>
+              Each link denied is a thread of control cut. The less your contexts can be fused into one profile, the less you can
+              be modeled and nudged. Freedom today depends less on what you say and more on what <em>cannot</em> be joined about you.
+            </p>
+            <p>
+              Privacy is <strong>selective revelation</strong>: proving what’s relevant without exposing everything. Prove age without
+              showing a birthdate, payment without exposing your balance, authorship without exposing your name.
+            </p>
+            <p>
+              You don’t need invisibility; you need <strong>incompleteness</strong>. Unjoinability is survival. Compartmentation—multiple
+              roles, keys, and contexts—is not paranoia; it is hygiene.
+            </p>
+            <p>
+              Control thrives on prediction; freedom thrives on surprise. Privacy is the discipline of remaining partially unpredictable.
+            </p>
+          </div>
+        </section>
+
+        <!-- 11. NYMS & NETWORK DEFENSE -->
+        <section id="nyms" class="section">
+          <span class="section-tag">11 · Nyms & network defense</span>
+          <h2 class="section-heading">Nyms & Network Defense — Opacity as Armor</h2>
+          <p class="section-subtitle">
+            Your privacy choices either expose or shield your entire graph.
+          </p>
+          <div class="prose">
+            <p>
+              Privacy scales from self to network. In a connected world, one person’s exposure endangers others.
+              Every synced contact, every tagged photo, every leaked record extends the map.
+            </p>
+            <p>
+              Your visibility can dox your graph; your discipline can defend it.
+            </p>
+            <p>
+              Civilization in the digital age rests on <strong>nyms</strong>—anonymous and pseudonymous identities:
+            </p>
+            <ul>
+              <li>
+                <strong>Anonymous acts</strong> birth myth, not mugshots. They let truth and courage appear without painting
+                a target on the person behind them.
+              </li>
+              <li>
+                <strong>Pseudonyms</strong> create continuity without doxxing. A nym can accrue reputation and trust through proof
+                of work while keeping the underlying human unreachable.
+              </li>
+            </ul>
+            <p>
+              Many nyms across many contexts create antifragility. One compromise doesn’t sink the whole ship.
+            </p>
+            <p>
+              Opacity is not selfish; it is mutual defense. Encrypted comms, privacy-preserving payments, and compartmented identities
+              do not just protect individuals; they protect movements, communities, and future structures.
+            </p>
+            <p>
+              Real-name systems reward performance and enable surveillance. Nym-based systems reward contribution and enable resilience.
+            </p>
+            <p>
+              The mask is not deceit—it is armor. When worn by many, it becomes the skin of freedom.
+            </p>
+          </div>
+        </section>
+
+        <!-- 12. TEMPORAL SOVEREIGNTY -->
+        <section id="temporal" class="section">
+          <span class="section-tag">12 · Temporal sovereignty</span>
+          <h2 class="section-heading">Temporal Sovereignty — Data Outlives Law</h2>
+          <p class="section-subtitle">
+            Law decays, data persists. Privacy is the firewall across time.
+          </p>
+          <div class="prose">
+            <p>
+              Even perfect anonymity cannot escape time. Data is immortal; law is not.
+            </p>
+            <p>
+              In the past, memory lived in bodies. It faded, softened, and eventually died. That forgetfulness was not a bug;
+              it was mercy. It allowed healing and reinvention.
+            </p>
+            <p>
+              Digital memory does not fade. Copies, backups, archives—once something is recorded, it tends to persist beyond regimes,
+              policies, and promises. Today’s harmless record can be tomorrow’s evidence under a different law.
+            </p>
+            <p>
+              This asymmetry—laws decaying while data persists—turns history into a minefield. What is legal now may be criminalized later,
+              yet the record remains. No policy of “reform” can undo what has already been stored.
+            </p>
+            <p>
+              Privacy becomes <strong>temporal insurance</strong>: a firewall in time, limiting what can be recorded and how far forward
+              it can follow you. It preserves the right to change without retroactive prosecution by future powers.
+            </p>
+            <p>
+              Perfect memory sounds like progress but destroys the conditions for trust and forgiveness. When every word is permanent,
+              honest speech becomes dangerous.
+            </p>
+            <p>
+              To live is to become, and to become requires forgetting. Temporal sovereignty is the right to be unfinished—to let old selves die.
+            </p>
+            <p>
+              No privacy, no second chances.<br />
+              No forgetting, no becoming.
+            </p>
+          </div>
+        </section>
+
+        <!-- 13. WHAT DIES WITHOUT PRIVACY -->
+        <section id="audit-list" class="section">
+          <span class="section-tag">13 · Audit list</span>
+          <h2 class="section-heading">What Dies Without Privacy? (Audit List)</h2>
+          <p class="section-subtitle">
+            Strip privacy, and the pillars of civilization rot in sequence.
+          </p>
+          <div class="prose">
+            <p>Remove privacy, and the pillars of civilization rot.</p>
+            <ul>
+              <li>
+                <strong>Autonomy</strong>: Prediction preempts choice. Algorithms anticipate and shape behavior until desire
+                and suggestion blur. Convenience becomes conditioning.
+              </li>
+              <li>
+                <strong>Property</strong>: When exclusion fails, ownership becomes theater. Accounts are “yours” until frozen;
+                data is “yours” until sold. Surveillance turns property into leased access.
+              </li>
+              <li>
+                <strong>Dissent</strong>: When every network is mapped and every signal scored, dissent dies in the throat.
+                People internalize the watcher; precrime replaces evidence.
+              </li>
+              <li>
+                <strong>Fairness</strong>: Profiles govern price, access, and suspicion. Risk scores replace equality.
+                Justice becomes a function of data, not context.
+              </li>
+              <li>
+                <strong>Second Chances</strong>: Infinite archives turn every mistake into a life sentence. Mercy requires
+                forgetting; databases refuse.
+              </li>
+              <li>
+                <strong>Money</strong>: Transparent, identity-bound money becomes a control interface. Programmable restrictions
+                and behavioral scoring turn economic life into obedience drills.
+              </li>
+              <li>
+                <strong>Myth, Trust, Creativity</strong>: Under total visibility, nothing remains sacred. Art degrades into content;
+                politics into spectacle. Creativity suffocates under constant metric.
+              </li>
+            </ul>
+            <p>
+              Without privacy, a society produces profiles, not persons. No self—only system. No future—only feedback.
+              No becoming—only simulation.
+            </p>
+          </div>
+        </section>
+
+        <!-- 14. BITCOIN WITHOUT PRIVACY IS TELEMETRY -->
+        <section id="btc-telemetry" class="section">
+          <span class="section-tag">14 · Bitcoin & telemetry</span>
+          <h2 class="section-heading">Bitcoin Without Privacy Is Telemetry</h2>
+          <p class="section-subtitle">
+            Bitcoin’s promise collapses the moment identity fuses with the chain.
+          </p>
+          <div class="prose">
+            <p>
+              Bitcoin is the first large-scale system where <strong>proof over person</strong> governs value.
+              The ledger records cryptographic facts, not identities. Work and signatures matter; biography does not.
+            </p>
+            <p>
+              This design can enable sovereign money—but only if privacy holds.
+            </p>
+            <p>
+              The chain is public by necessity. That transparency ensures global consistency. Yet when combined with surveillance firms,
+              KYC exchanges, and identity frameworks, the same transparency becomes a telemetry grid: a precise, permanent map
+              of economic behavior.
+            </p>
+            <p>
+              Clustered addresses, tagged inputs, exchange leakages—these transform Bitcoin from neutral infrastructure into a
+              behavioral microscope. You may hold your keys, but if every transaction is linked to a dossier, sovereignty vanishes.
+            </p>
+            <p>
+              A privacyless Bitcoin becomes:
+            </p>
+            <ul>
+              <li>Programmable money controlled by external scoring.</li>
+              <li>A perfect audit trail for governments and corporations.</li>
+              <li>A telemetry system measuring resistance, not freeing it.</li>
+            </ul>
+            <p>
+              Privacy is not an optional “feature”; it is the substrate of Bitcoin’s promise. Only when the network can verify
+              transactions without learning identities does Bitcoin remain outside the state, outside the bank, outside the model.
+            </p>
+            <p>Three principles must hold:</p>
+            <ul>
+              <li>Proof over identity.</li>
+              <li>Privacy over voyeuristic transparency.</li>
+              <li>Sovereignty over surveillance.</li>
+            </ul>
+            <p>
+              Without these, Bitcoin converges with the very systems it was designed to replace.
+            </p>
+            <p>
+              <strong>Bitcoin without privacy is telemetry.</strong><br />
+              When Bitcoin remembers too much, it forgets why it exists.
+            </p>
+          </div>
+        </section>
+
+        <!-- 15. FINAL HAMMER -->
+        <section id="final-hammer" class="section">
+          <span class="section-tag">15 · Ontological firewall</span>
+          <h2 class="section-heading">Final Hammer — Privacy = Ontological Firewall</h2>
+          <p class="section-subtitle">
+            The last boundary between being and simulation; the field where the human outruns the model.
+          </p>
+          <div class="prose">
+            <p>
+              Privacy is not policy. It is metabolic law.
+            </p>
+            <p>
+              Every living system requires a boundary—a semi-permeable membrane that regulates what enters and leaves. Cells, bodies,
+              forests, minds: all live by this rule. Total openness is death.
+            </p>
+            <p>
+              A mind without privacy is an open wound. When every thought, desire, and action is captured, the person ceases to be
+              an origin and becomes a function—an API endpoint in someone else’s architecture. Memories become metadata; choices
+              become parameters; identity becomes a profile that can be queried and modified.
+            </p>
+            <p>
+              Privacy is the <strong>ontological firewall</strong> between being and simulation. It blocks the system’s attempt
+              to fully render you. It preserves the unmeasured, unmodeled core from which real choice emerges.
+            </p>
+            <p>
+              With the firewall intact, you remain partially unrendered—an undefined variable in the model, capable of surprise.
+              Without it, the map replaces the territory. You no longer live; you update.
+            </p>
+            <p>Defending this firewall demands discipline:</p>
+            <ul>
+              <li>Guard thresholds.</li>
+              <li>Compartmentalize signal.</li>
+              <li>Prefer systems that forget.</li>
+              <li>Build structures that still work when every face disappears.</li>
+            </ul>
+            <p>
+              Systems that cannot survive without visibility are priesthoods. Systems that survive without faces are sovereign.
+            </p>
+            <p>
+              Collapse, in this framework, is not failure but proof. Only what is real can die; only what is alive can be reborn.
+              Privacy encodes the possibility of rebirth by preserving an unseen reserve from which new forms can emerge after old ones burn.
+            </p>
+            <p>
+              Privacy is the terminal field of sovereignty—the last territory where the human outruns the model.
+              To be human is to be partially unknowable. You are alive to the extent that you cannot be simulated.
+            </p>
+            <p>
+              If it works after the names are gone, it is real sovereignty.
+            </p>
+            <p>
+              Privacy is not preference, not luxury, not theory.<br />
+              It is ontic law—the law that keeps being alive.
+            </p>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        <div>
+          <span class="footer-label">/ privacy = sovereignty</span>
+          <span>&copy; Sov Stack Node. Replace imprint and covenants as needed.</span>
+        </div>
+        <div class="footer-pill">Bitcoin orange · terminal green · nostr violet</div>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>
