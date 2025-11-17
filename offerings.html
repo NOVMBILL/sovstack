@@ -4,1130 +4,649 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Sovereign Stack · Offerings</title>
-  <style>
-    :root {
-      --bg: #050814;
-      --bg-elevated: #070b18;
-      --bg-soft: #0b1220;
-
-      --border-subtle: #1f2933;
-      --border-strong: #374151;
-
-      --text: #f9fafb;
-      --muted: #9ca3af;
-
-      --accent-btc: #f7931a;
-      --accent-cypher: #22c55e;
-      --accent-nostr: #a855f7;
-
-      --radius-lg: 14px;
-      --container-width: 960px;
-
-      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", sans-serif;
-      --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-    }
-
-    *, *::before, *::after {
-      box-sizing: border-box;
-    }
-
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      scroll-behavior: smooth;
-    }
-
-    body {
-      font-family: var(--font-sans);
-      background:
-        radial-gradient(circle at top, rgba(168, 85, 247, 0.12), transparent 55%),
-        radial-gradient(circle at bottom, rgba(34, 197, 94, 0.08), transparent 55%),
-        var(--bg);
-      color: var(--text);
-      -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
-    }
-
-    .shell {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* TOP BAR */
-    .topbar {
-      border-bottom: 1px solid var(--border-subtle);
-      background: rgba(5, 8, 20, 0.96);
-      backdrop-filter: blur(10px);
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-
-    .topbar-inner {
-      max-width: var(--container-width);
-      margin: 0 auto;
-      padding: 10px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .brand-wrap {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-width: 0;
-    }
-
-    .brand-mark {
-      width: 24px;
-      height: 24px;
-      border-radius: 9px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 15px;
-      font-family: var(--mono);
-      background: #020617;
-      color: var(--accent-btc);
-      border: 1px solid var(--border-strong);
-      flex-shrink: 0;
-    }
-
-    .brand-text {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .brand-main {
-      font-family: var(--mono);
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      white-space: nowrap;
-    }
-
-    .brand-sub {
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.18em;
-      color: var(--muted);
-      white-space: nowrap;
-    }
-
-    .top-nav {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      justify-content: flex-end;
-      align-items: center;
-    }
-
-    .top-nav a {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 6px 12px;
-      border-radius: 999px;
-      border: 1px solid var(--border-subtle);
-      font-size: 10px;
-      font-family: var(--mono);
-      text-decoration: none;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      color: var(--muted);
-      background: #020617;
-      transition:
-        background 0.16s ease-out,
-        border-color 0.16s ease-out,
-        color 0.16s ease-out,
-        transform 0.1s ease-out;
-    }
-
-    .top-nav a:hover,
-    .top-nav a:focus-visible {
-      color: var(--text);
-      border-color: var(--accent-btc);
-      background: #030712;
-      transform: translateY(-1px);
-      outline: none;
-    }
-
-    .top-nav a.primary {
-      border-color: var(--accent-btc);
-      color: var(--accent-btc);
-    }
-
-    .top-nav a.primary:hover,
-    .top-nav a.primary:focus-visible {
-      color: #111827;
-      background: var(--accent-btc);
-    }
-
-    /* PAGE LAYOUT */
-    .page {
-      flex: 1;
-    }
-
-    .container {
-      max-width: var(--container-width);
-      margin: 0 auto;
-      padding: 20px 16px 32px;
-    }
-
-    .page-header {
-      margin-bottom: 20px;
-      padding: 16px 16px 14px;
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--border-subtle);
-      background: var(--bg-elevated);
-    }
-
-    .page-kicker {
-      font-family: var(--mono);
-      font-size: 11px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 6px;
-    }
-
-    .page-title {
-      font-size: 1.6rem;
-      margin: 0 0 6px;
-    }
-
-    .page-title span {
-      color: var(--accent-btc);
-    }
-
-    .page-lead {
-      margin: 0 0 8px;
-      font-size: 0.96rem;
-      line-height: 1.7;
-      color: var(--muted);
-      max-width: 720px;
-    }
-
-    .page-lead:last-of-type {
-      margin-bottom: 0;
-    }
-
-    /* Sections */
-    .section {
-      margin-top: 24px;
-      padding: 16px 16px 14px;
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--border-subtle);
-      background: var(--bg-soft);
-    }
-
-    .section-label {
-      font-family: var(--mono);
-      font-size: 11px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 4px;
-    }
-
-    .section-heading {
-      margin: 0 0 4px;
-      font-size: 1.02rem;
-    }
-
-    .section-subtitle {
-      margin: 0 0 12px;
-      font-size: 0.86rem;
-      color: var(--muted);
-    }
-
-    .section-tag {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 2px 9px;
-      border-radius: 999px;
-      border: 1px solid var(--border-subtle);
-      font-family: var(--mono);
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      color: var(--muted);
-      margin-bottom: 6px;
-      background: #020617;
-    }
-
-    .prose {
-      font-size: 0.9rem;
-      line-height: 1.7;
-      color: var(--muted);
-      max-width: 100%;
-    }
-
-    .prose p {
-      margin: 0 0 8px;
-    }
-
-    /* Offering blocks */
-    .offering-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin: 0;
-      padding: 0;
-      list-style: none;
-      font-size: 0.9rem;
-      color: var(--muted);
-    }
-
-    .offering {
-      padding: 10px 10px 9px;
-      border-radius: 10px;
-      border: 1px solid var(--border-subtle);
-      background: #050819;
-    }
-
-    .offering-meta {
-      font-family: var(--mono);
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      color: var(--muted);
-      margin-bottom: 4px;
-    }
-
-    .offering-title {
-      margin: 0 0 4px;
-      font-size: 0.92rem;
-      color: var(--text);
-    }
-
-    .offering-body {
-      margin: 0;
-      line-height: 1.6;
-    }
-
-    /* FOOTER */
-    .footer {
-      border-top: 1px solid var(--border-subtle);
-      background: #020617;
-      margin-top: 24px;
-    }
-
-    .footer-inner {
-      max-width: var(--container-width);
-      margin: 0 auto;
-      padding: 12px 16px 14px;
-      font-size: 0.78rem;
-      color: var(--muted);
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .footer-label {
-      font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      display: block;
-      margin-bottom: 2px;
-    }
-
-    .footer-pill {
-      padding: 3px 10px;
-      border-radius: 999px;
-      border: 1px solid var(--border-subtle);
-      font-family: var(--mono);
-      font-size: 10px;
-      color: var(--accent-nostr);
-      background: #030712;
-      white-space: nowrap;
-    }
-
-    @media (max-width: 640px) {
-      .section {
-        padding: 14px 12px 12px;
-      }
-
-      .brand-main,
-      .brand-sub {
-        white-space: normal;
-      }
-
-      .top-nav {
-        justify-content: flex-start;
-      }
-    }
-  </style>
+  <meta name="description" content="Flagship offerings and full capability map for the Sovereign Stack: sovereign cells, Bitcoin-native markets, law/ritual OS, and education/advisory." />
+  <link rel="icon" href="favicon-32.png" type="image/png" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="shell">
-    <header class="topbar">
-      <div class="topbar-inner">
-        <div class="brand-wrap">
+    <!-- TOP NAV -->
+    <header class="nav">
+      <div class="nav-inner">
+        <div class="brand">
           <span class="brand-mark">₿</span>
-          <div class="brand-text">
-            <span class="brand-main">Sov Stack · Offerings</span>
-            <span class="brand-sub">Infra · Markets · Security · Law · Field</span>
+          <div>
+            <div class="brand-text-main">Sov Stack Labs</div>
+            <div class="brand-text-sub">Bitcoin · Sovereign Stack · Parallel Infra</div>
           </div>
         </div>
-        <nav class="top-nav" aria-label="Page navigation">
-          <a href="index.html" class="primary">Home</a>
+        <nav class="nav-links" aria-label="Main navigation">
+          <a href="index.html#overview">Home</a>
           <a href="stacks.html">The Stacks</a>
           <a href="mission.html">Mission</a>
           <a href="privacy.html">Privacy</a>
+          <a href="offerings.html" class="primary" aria-current="page">Offerings</a>
           <a href="essay.html">Treatise</a>
           <a href="contact.html">Contact</a>
-          <a href="#infra">I · Cells & Infra</a>
-          <a href="#markets">II · Markets</a>
-          <a href="#security">III · Security</a>
-          <a href="#law">IV · Law & Ritual</a>
-          <a href="#field">V · Field Services</a>
         </nav>
       </div>
     </header>
 
     <main class="page">
       <div class="container">
-        <!-- INTRO -->
-        <header class="page-header">
-          <div class="page-kicker">/ sovereign offerings /</div>
-          <h1 class="page-title"><span>Sov Stack</span> Offerings</h1>
-          <p class="page-lead">
-            Concrete deployments of the Sovereign Stack: physical cells, BTC-native markets, counter-simulation
-            security, symbolic operating systems, and field-level education and advisory.
+        <!-- HERO / INTRO -->
+        <section id="offerings-intro" class="hero" aria-label="Offerings overview">
+          <div class="hero-kicker">/ sovereign offerings /</div>
+          <h1 class="hero-title">
+            <span class="accent">Sovereign Stack</span> Offerings
+          </h1>
+          <p class="hero-body">
+            Three flagship product families sit on top of a larger capability map. Start with the offer that matches your state
+            (personal node, business escaping fiat, or law/curriculum/governance), then expand into deeper infrastructure as needed.
           </p>
-          <p class="page-lead">
-            Each line item is modular—nodes can deploy a single offering or assemble full-stack civilization kernels.
-          </p>
-        </header>
-
-        <!-- I. SOVEREIGN CELLS, PROPERTY & PHYSICAL INFRASTRUCTURE -->
-        <section id="infra" class="section">
-          <div class="section-label">I · Sovereign Cells & Infrastructure</div>
-          <h2 class="section-heading">Sovereign Cells, Property & Physical Infrastructure</h2>
-          <p class="section-subtitle">
-            Replicable nodes and physical primitives: land, energy, water, shelter, defense, and ghost logistics.
-          </p>
-
-          <ul class="offering-list">
-            <li class="offering">
-              <div class="offering-meta">I.1 · Replicable Sovereign Nodes</div>
-              <h3 class="offering-title">5–15 Adult Cells with Full-Stack Survival</h3>
-              <p class="offering-body">
-                5–15 adult cells integrating food (permaculture, aquaponics, preserved grains, fermentation, heirloom seeds),
-                energy (solar + battery rotation, micro-hydro, cached fuels, BTC-mining heat reuse), medicine (herbal apothecary,
-                underground pharma smuggling, cached antibiotics, first-responder training), shelter (modular cabins, earthbag domes,
-                legally camouflaged portable dwellings), and defense (arms, caches, drills, militia protocols, dissolution/self-destruct),
-                with mandatory division of labor and deniable/dissolvable structure.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">I.2 · Ghost Resilience Blueprints</div>
-              <h3 class="offering-title">Portable, Deniable Antifragile Frameworks</h3>
-              <p class="offering-body">
-                Portable, deniable antifragile survival frameworks hidden in plain sight, with portable caches, encrypted/oral
-                transmission, lineage memory, succession continuity, and NGO-immunity via built-in self-destruct.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">I.3 · Hidden Protocols</div>
-              <h3 class="offering-title">Operational Priority & Lifecycle Law</h3>
-              <p class="offering-body">
-                Operational priority and lifecycle law (energy → defense → food → medicine/shelter), division of labor,
-                dissolution/succession protocols, and symbolic encoding of ritual + law into logistics to prevent entropy
-                and simulation capture.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">I.4 · Genesis Node Kits</div>
-              <h3 class="offering-title">Starter Kits for Energy, Water & Comms</h3>
-              <p class="offering-body">
-                Physical starter kits for energy, water, and communications to bootstrap new nodes and homesteads into
-                sovereign operation.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">I.5 · Mining Cells</div>
-              <h3 class="offering-title">Off-Grid Modular Miners with Heat Reuse</h3>
-              <p class="offering-body">
-                Off-grid modular miners reusing waste heat for concealment and utility, integrating with local heating,
-                drying, or greenhouse systems.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">I.6 · Open-Hardware Sales</div>
-              <h3 class="offering-title">Sovereign Energy & Water Hardware Builds</h3>
-              <p class="offering-body">
-                Physical builds (solar, thermal, water systems) assembled and documented as open hardware for replication
-                across nodes and jurisdictions.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">I.7 · Locker Lattice</div>
-              <h3 class="offering-title">Fee-Based Physical Logistics Hubs</h3>
-              <p class="offering-body">
-                Fee-based physical logistics hubs for secure exchange and caching—dead drops, lockers, and hand-off points
-                optimized for Bitcoin and barter flows.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">I.8 · Land Syndicate</div>
-              <h3 class="offering-title">Pooled Sats for Sovereign Land</h3>
-              <p class="offering-body">
-                Pooled sats via camouflaged trusts to acquire and hold sovereign land, with layered legal wrappers shielding
-                individuals and preserving exit options.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">I.9 · Use-Rights / Village Passes</div>
-              <h3 class="offering-title">Memberships to Shared Resources & Sites</h3>
-              <p class="offering-body">
-                Use-right memberships and village passes granting access to shared resources and sites—gardens, workshops,
-                clinics, and bunkers—without full title transfer.
-              </p>
-            </li>
-          </ul>
+          <div class="hero-actions">
+            <a href="#flagships" class="btn btn-primary">See flagship offers</a>
+            <a href="#full-map" class="btn btn-ghost">View full capability map</a>
+          </div>
         </section>
 
-        <!-- II. BITCOIN-NATIVE MARKETS, FINANCE & LOGISTICS -->
-        <section id="markets" class="section">
-          <div class="section-label">II · Bitcoin-Native Markets & Finance</div>
-          <h2 class="section-heading">Bitcoin-Native Markets, Finance & Logistics</h2>
-          <p class="section-subtitle">
-            BTC-first trade rails, ghost markets, arbitration, and recursive myth economies.
-          </p>
+        <!-- FLAGSHIP PROGRAMS -->
+        <section id="flagships" class="section" aria-label="Flagship offerings">
+          <header class="section-header">
+            <div class="section-label">Flagship programs</div>
+            <h2 class="section-heading">Where you actually start.</h2>
+            <p class="section-body">
+              Each flagship combines several of the under-the-hood components into a coherent path with clear inputs, process,
+              and outputs. Everything else in the capability map either feeds into these or unlocks later.
+            </p>
+          </header>
 
-          <ul class="offering-list">
-            <li class="offering">
-              <div class="offering-meta">II.1 · BTC-Fuelled Logistics Loops</div>
-              <h3 class="offering-title">Parallel Trade Ecosystems for Essentials</h3>
-              <p class="offering-body">
-                Privacy-first parallel trade ecosystems for essentials using Lightning/eCash/atomic swaps, barter–BTC hybrids,
-                ordinary-trade disguise, and escrow/reputation/multisig scaffolds, treating BTC as circulating survival currency.
+          <div class="grid">
+            <!-- F1: SOVEREIGN CELL STARTER -->
+            <article class="card" aria-label="Sovereign Cell Starter">
+              <div class="card-label">/ F1 · Cells & Infra</div>
+              <h3 class="card-title">Sovereign Cell Starter</h3>
+              <p class="card-body">
+                Combines the <strong>Sovereign Node Activation Sprint</strong> with a simple
+                <strong>Homestead/Citadel Upgrade v0</strong>. One package to take a person or small group from “plugged into
+                synthetic systems” to “running their own stack with a physical resilience plan.”
               </p>
-            </li>
+              <div class="prose">
+                <p><strong>Who this is for</strong></p>
+                <p>
+                  Individuals, couples, or 3–15 person cells who want a working sovereign stack (Bitcoin, comms, backups, privacy)
+                  plus a realistic path to food/water/energy resilience, even if they are renting or only planning a future site.
+                </p>
+                <p><strong>Inputs</strong></p>
+                <ul>
+                  <li>Current device list (laptop/phone/server), accounts, and wallets (if any).</li>
+                  <li>Basic threat model: jurisdictions, income sources, dependence points, risk tolerance.</li>
+                  <li>Current living situation (apartment vs land, city vs rural, travel vs fixed base) and rough budget.</li>
+                </ul>
+                <p><strong>Process</strong></p>
+                <ul>
+                  <li>
+                    <strong>Session 1 — Mapping & threat model:</strong> inventory devices, accounts, exposure; define priorities
+                    (capital preservation, censorship resistance, privacy, logistics, care).
+                  </li>
+                  <li>
+                    <strong>Session 2 — Sovereign Node Activation Sprint:</strong> design and deploy your Bitcoin + Lightning +
+                    privacy stack (wallet architecture, node/client choices, backups, basic comms and storage hygiene).
+                  </li>
+                  <li>
+                    <strong>Session 3 — Homestead/Citadel Upgrade v0:</strong> translate your context into a three-phase plan for
+                    water, food, energy, and basic defense (for current home and/or target site).
+                  </li>
+                </ul>
+                <p><strong>Outputs & artifacts</strong></p>
+                <ul>
+                  <li>
+                    A live, <strong>self-custodied Bitcoin + Lightning stack</strong> under your control (no custodial chokepoints),
+                    with documented backup/restore and simple runbooks.
+                  </li>
+                  <li>
+                    A <strong>SovStack baseline</strong> for comms, storage, and privacy (tools selected to match your threat model,
+                    not random app lists).
+                  </li>
+                  <li>
+                    A <strong>Homestead/Citadel v0 plan</strong>: three-phase upgrades for food, water, energy, and basic site security
+                    (with ballpark costs and hardware suggestions).
+                  </li>
+                  <li>
+                    A concise <strong>PDF runbook</strong> and a 30-day checklist so you can extend and maintain the stack without hand-holding.
+                  </li>
+                </ul>
+                <p>
+                  When you contact, mention <strong>“F1 · Sovereign Cell Starter”</strong> and include your jurisdiction, living context,
+                  and whether you are personal, family, or small business.
+                </p>
+              </div>
+            </article>
 
-            <li class="offering">
-              <div class="offering-meta">II.2 · Ghost Wallet + Sov Stack Infrastructure</div>
-              <h3 class="offering-title">Bitcoin-Native, Non-KYC Financial Stack</h3>
-              <p class="offering-body">
-                Bitcoin-native, non-KYC, anonymized financial tools and Sovereign Stack components—wallets, key rituals,
-                privacy layers, and node blueprints.
+            <!-- F2: BITCOIN COMMERCE ESCAPE STACK -->
+            <article class="card" aria-label="Bitcoin Commerce Escape Stack">
+              <div class="card-label">/ F2 · BTC & Markets</div>
+              <h3 class="card-title">Bitcoin Commerce Escape Stack</h3>
+              <p class="card-body">
+                Combines <strong>Fiat Chokepoint Escape (FCE)</strong> with
+                <strong>Lightning Liquidity & Routing as a Service</strong>. This is for businesses and independent operators
+                who want to transact in Bitcoin without becoming a compliance honeypot or a toy “crypto payment” side quest.
               </p>
-            </li>
+              <div class="prose">
+                <p><strong>Who this is for</strong></p>
+                <p>
+                  Merchants, small enterprises, and service providers who earn in fiat, want to shift to Bitcoin flows, and need
+                  real operations (not just a tip jar) without blowing up staff, accounting, or risk.
+                </p>
+                <p><strong>Inputs</strong></p>
+                <ul>
+                  <li>Simple revenue snapshot: what you sell, to whom, where, and in which currencies.</li>
+                  <li>Existing payment stack (gateways, banks, processors, invoicing tools).</li>
+                  <li>Jurisdictions, compliance constraints, and tolerance for visibility vs privacy.</li>
+                </ul>
+                <p><strong>Process</strong></p>
+                <ul>
+                  <li>
+                    <strong>Stage 1 — Chokepoint audit:</strong> map banks, processors, platform dependencies, and “single kill switches”
+                    across the business.
+                  </li>
+                  <li>
+                    <strong>Stage 2 — Bitcoin commerce design:</strong> specify where Bitcoin enters (POS, invoice, web checkout),
+                    how you price, handle refunds, and integrate accounting.
+                  </li>
+                  <li>
+                    <strong>Stage 3 — Implementation:</strong> deploy BTCPay/Lightning/eCash stack, route flows, set staff permissions,
+                    define fallback paths.
+                  </li>
+                  <li>
+                    <strong>Stage 4 — Lightning operations:</strong> manage inbound/outbound liquidity, fees, routing policy,
+                    and uptime for a defined ramp-up period.
+                  </li>
+                </ul>
+                <p><strong>Outputs & artifacts</strong></p>
+                <ul>
+                  <li>
+                    A working <strong>Bitcoin checkout and invoicing flow</strong> (online/offline) that you control end-to-end
+                    with minimal custodial dependence.
+                  </li>
+                  <li>
+                    A short <strong>“Fiat Chokepoint Exposure” report</strong>: before/after view of how much of your business still
+                    depends on banks and platforms, and how to keep reducing it.
+                  </li>
+                  <li>
+                    A <strong>Lightning operations runbook</strong> (how to monitor channels, when to rebalance, what to watch for).
+                  </li>
+                  <li>
+                    Simple staff-level <strong>SOPs</strong> for handling BTC payments, refunds, and edge cases without panicking.
+                  </li>
+                </ul>
+                <p>
+                  When you contact, mention <strong>“F2 · Bitcoin Commerce Escape Stack”</strong> and include your business type,
+                  countries of operation, and current annual volume range.
+                </p>
+              </div>
+            </article>
 
-            <li class="offering">
-              <div class="offering-meta">II.3 · BTC-Native Sovereign Funds</div>
-              <h3 class="offering-title">Myth-Backed, Self-Governing Pools</h3>
-              <p class="offering-body">
-                Self-governing, myth-backed Bitcoin pools designed to outlive individuals, with codified covenants, succession,
-                and collapse rites.
+            <!-- F3: SOVEREIGN LAW & CURRICULUM -->
+            <article class="card" aria-label="Sovereign Law & Curriculum Program">
+              <div class="card-label">/ F3 · Law, Ritual & Advisory</div>
+              <h3 class="card-title">Sovereign Law & Curriculum Program</h3>
+              <p class="card-body">
+                Anchors your stack in a <strong>Sovereign Codex / Covenant</strong> and trains people through a
+                <strong>Sovereign Curriculum Bootcamp</strong>, with optional <strong>Sovereign Advisory</strong> for
+                high-net-worth and serious node-builders.
               </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">II.4 · Node-to-Node Trade Economies</div>
-              <h3 class="offering-title">Direct Barter & Offline Trade Rails</h3>
-              <p class="offering-body">
-                Direct barter/e-cash/offline trade rails among nodes, emphasizing resilient, KYC-free flows for goods and labor.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">II.5 · SovMarket MVP</div>
-              <h3 class="offering-title">Marketplace for Books, Gear & Artifacts</h3>
-              <p class="offering-body">
-                A marketplace for books, gear, and artifacts aligned with Sovereign Stack values—signal-dense tools, not merch spam.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">II.6 · Direct Zaps / Sacrifices</div>
-              <h3 class="offering-title">Ritualized Payments in Sats</h3>
-              <p class="offering-body">
-                Ritualized payments in sats (never “donations”) encoding commitment, reciprocity, and proof-of-respect in Lightning
-                flows and on-chain signals.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">II.7 · BTC-Only, Privacy-First Service Blueprints</div>
-              <h3 class="offering-title">Ghost Businesses & P2P Protocols</h3>
-              <p class="offering-body">
-                Outlines for advisory, dashboards, and barter protocols enabling ghost businesses and peer-to-peer alternatives,
-                Bitcoin-only and privacy-first from inception.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">II.8 · Arbitration Service</div>
-              <h3 class="offering-title">Voluntary Dispute Resolution & Templates</h3>
-              <p class="offering-body">
-                Voluntary dispute resolution with trust-minimized contract templates and a clear fee model, building portable
-                precedent outside state courts.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">II.9 · Lightning Liquidity & Routing as a Service</div>
-              <h3 class="offering-title">Managed Inbound/Outbound Liquidity</h3>
-              <p class="offering-body">
-                Managed inbound/outbound liquidity, channel policy/optimization, and high-availability operations for Lightning nodes,
-                tuned for sovereign uptime rather than speculation.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">II.10 · Fiat Chokepoint Escape (FCE)</div>
-              <h3 class="offering-title">BTC Merchant Enablement End-to-End</h3>
-              <p class="offering-body">
-                End-to-end BTC merchant enablement (acceptance, pricing policy, refunds, bookkeeping templates) to reduce fiat exposure
-                and walk businesses off banking rails.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">II.11 · Ephemeral, Deniable Trade Shells</div>
-              <h3 class="offering-title">Transaction-Window-Only Markets</h3>
-              <p class="offering-body">
-                Transaction-window-only markets (Nostr relays, BOLT-12 offers, BTC multisig escrows) with rotating bazaars/couriers/drop points
-                and portable pseudonymous proofs for repeat trust.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">II.12 · Self-Dissolving with Succession</div>
-              <h3 class="offering-title">Auto-Expiring Markets & Contracts</h3>
-              <p class="offering-body">
-                Auto-expiring markets/contracts/relays (timelocks, burn clauses, relay rotation) with portable proof-of-trade and ritualized
-                visible endings to prevent ossification and capture.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">II.13 · Proof-Based Trade + Micro-Law</div>
-              <h3 class="offering-title">Trustless Primitives & Portable Precedent</h3>
-              <p class="offering-body">
-                Trustless primitives (multisig/DLC/Lightning escrow, bonded guarantors) with bounded voluntary arbitration and portable
-                precedent instead of standing courts or priesthoods.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">II.14 · Anti-Priesthood Architecture</div>
-              <h3 class="offering-title">Forkable, Rotating, Kill-Switched Protocols</h3>
-              <p class="offering-body">
-                Ephemeral, forkable, rotating relays; voluntary, bonded, dissolving escrow/arbitration; open simple protocols with
-                kill-switches to prevent maintainership ossification and new priest classes.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">II.15 · Physical Layer Integration</div>
-              <h3 class="offering-title">Ghost Logistics & Ritual Dissolution</h3>
-              <p class="offering-body">
-                Ghost logistics (couriers/drop points/masked chains), deterrence/rotation/trustless hand-offs, and ritualized dissolution
-                of physical nodes after limited use to minimize mapping and risk.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">II.16 · Recursive Myth Economies</div>
-              <h3 class="offering-title">Circulation of Symbolic Contracts & Artifacts</h3>
-              <p class="offering-body">
-                Circulation markets for symbolic contracts, Codex editions, and ritual artifacts—economic flows that encode mythic
-                commitments and proof-of-signal.
-              </p>
-            </li>
-          </ul>
+              <div class="prose">
+                <p><strong>Who this is for</strong></p>
+                <p>
+                  Individuals, families, funds, or cells who want their own operating law (not ideology or religion),
+                  with clear covenants, collapse/succession plans, and a curriculum to train others into it.
+                </p>
+                <p><strong>Inputs</strong></p>
+                <ul>
+                  <li>Existing documents: wills, operating agreements, NDAs, community rules, or nothing but notes.</li>
+                  <li>Core non-negotiables around property, family, capital, risk, and conflict.</li>
+                  <li>Size and composition of the group (personal, family, fund, company, or mixed cell).</li>
+                </ul>
+                <p><strong>Process</strong></p>
+                <ul>
+                  <li>
+                    <strong>Phase 1 — Extraction:</strong> structured interviews to surface real values, red lines, and
+                    current vulnerabilities (legal, relational, economic).
+                  </li>
+                  <li>
+                    <strong>Phase 2 — Codex / Covenant design:</strong> draft a Sovereign Codex and simple covenants that define
+                    ownership, decision-making, conflict handling, and collapse/succession rules.
+                  </li>
+                  <li>
+                    <strong>Phase 3 — Curriculum build:</strong> turn the codex into a minimal curriculum: short explanations,
+                    practices, checklists, and rites that can be taught and repeated.
+                  </li>
+                  <li>
+                    <strong>Phase 4 — Bootcamp:</strong> run a 4-week cohort (remote or hybrid) for the core group
+                    covering law-core, Bitcoin basics, privacy, and physical resilience as one system.
+                  </li>
+                  <li>
+                    <strong>Phase 5 — Advisory (optional):</strong> periodic check-ins for high-net-worth or complex nodes to
+                    adjust the codex and structure as assets and risk change.
+                  </li>
+                </ul>
+                <p><strong>Outputs & artifacts</strong></p>
+                <ul>
+                  <li>
+                    A concise <strong>1-page law-core</strong> and a longer <strong>Sovereign Codex</strong> that can be read,
+                    enacted, and updated without priesthood.
+                  </li>
+                  <li>
+                    <strong>Covenant templates</strong> for property, roles, participation, and exit, including collapse
+                    and succession clauses.
+                  </li>
+                  <li>
+                    A <strong>curriculum kit</strong> (session outlines, readings, exercises, rites) so you can re-run
+                    Bootcamp-style training without external help.
+                  </li>
+                  <li>
+                    For advisory clients: a <strong>governance and risk runbook</strong> that ties codex, capital, and real-world
+                    operations together.
+                  </li>
+                </ul>
+                <p>
+                  When you contact, mention <strong>“F3 · Sovereign Law & Curriculum Program”</strong> and include whether
+                  you are an individual, family, fund, business, or mixed node.
+                </p>
+              </div>
+            </article>
+          </div>
         </section>
 
-        <!-- III. COUNTER-SIMULATION SECURITY, AUDITS & CLEAN INFRA -->
-        <section id="security" class="section">
-          <div class="section-label">III · Counter-Simulation Security</div>
-          <h2 class="section-heading">Counter-Simulation Security, Audits & Clean Infrastructure</h2>
-          <p class="section-subtitle">
-            Adversarial audits, clean stacks, and surveillance-immune logistics to stay outside the model.
-          </p>
-
-          <ul class="offering-list">
-            <li class="offering">
-              <div class="offering-meta">III.1 · Adversarial Audits</div>
-              <h3 class="offering-title">Live-Fire Capture Vector Exposure</h3>
-              <p class="offering-body">
-                Live-fire exposure of capture vectors across code/toolchains (reproducible builds, “trusting trust”), licenses
-                (NGO clauses, Trojan morality, copyleft traps), funding (grants/VC/whales), dependencies (OS/libs/DNS/fabs/grids),
-                topology (trust networks/insider circuits), temporal narratives (meaning drift), and AI infiltration
-                (synthetic “freedom tools”).
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">III.2 · Self-Sovereign Signal Filters</div>
-              <h3 class="offering-title">Local, Offline Fact-Only Filters</h3>
-              <p class="offering-body">
-                Local offline fact-only filters with lineage maps, dependency audits to root-of-trust, reproducible proof scripts,
-                air-gapped operation, no verdicts or scores, immutable collapse clause, continuous recursive auditing with explicit
-                unknowns, and optional heuristics.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">III.3 · Clean Stacks</div>
-              <h3 class="offering-title">Antifragile Modular Replacement Infrastructure</h3>
-              <p class="offering-body">
-                Antifragile modular replacement infrastructure: BTC-native comms (Nostr, BOLT-12, Chaumian eCash), privacy shells,
-                metadata immunity (cover traffic/onion/ephemeral routing), hardware + energy sovereignty, jurisdictional shields
-                (ghost entities, cross-border multisig), ritual UX, and collapse encoding to burn on infiltration.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">III.4 · Activate Continuous Audit Engines</div>
-              <h3 class="offering-title">Self-Auditing Logic & Chaos Injection</h3>
-              <p class="offering-body">
-                Self-auditing logic and scripts (digital + ritual), chaos-injected/randomized with watcher-of-watchers, enacted/forked/burned
-                by nodes and auto-nullified on capture or corruption.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">III.5 · Operational Intelligence & Enemy Cartography</div>
-              <h3 class="offering-title">Adversarial Topology Mapping (Restricted)</h3>
-              <p class="offering-body">
-                Adversarial simulations, infiltration pattern mapping, and live enemy topology—restricted intelligence not
-                publicly published but used to harden nodes and routes.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">III.6 · Surveillance & Infiltration Immunity</div>
-              <h3 class="offering-title">Camouflage, Mixnets & Rotating Venues</h3>
-              <p class="offering-body">
-                Cover traffic and dummy trades, random relay rotation, mixnets/onion over Nostr/BTC, rotating venues/drop points/disguises,
-                with camouflage designed as a core property, not an afterthought.
-              </p>
-            </li>
-          </ul>
+        <!-- MINIMAL PATHWAY EXPLAINER -->
+        <section id="pathway" class="section" aria-label="Client pathway">
+          <header class="section-header">
+            <div class="section-label">Pathway</div>
+            <h2 class="section-heading">Minimal path from interest to action.</h2>
+            <p class="section-body">
+              The site only needs one clear flow: <strong>Home → Offerings → Flagship → Contact.</strong> Everything else is detail.
+            </p>
+          </header>
+          <div class="prose">
+            <p><strong>1. Choose the closest flagship.</strong></p>
+            <ul>
+              <li><strong>F1 · Sovereign Cell Starter</strong> — personal, family, or small group needing a working stack and physical plan.</li>
+              <li><strong>F2 · Bitcoin Commerce Escape Stack</strong> — business or operator escaping fiat chokepoints.</li>
+              <li><strong>F3 · Sovereign Law & Curriculum Program</strong> — law-core, covenants, curriculum, and high-leverage advisory.</li>
+            </ul>
+            <p><strong>2. Make contact with context.</strong></p>
+            <p>
+              Use the <a href="contact.html" class="footer-link">contact page</a>, include the flagship code (F1/F2/F3), your jurisdiction,
+              basic scale (solo, family, cell, business), and one paragraph on your current state.
+            </p>
+            <p><strong>3. Short alignment → then build.</strong></p>
+            <p>
+              If the fit is good, we define scope, boundary, and artifacts; if not, we say so and stop. No funnels, no “community
+              onboarding,” no donation drives—only clear voluntary engagements.
+            </p>
+          </div>
         </section>
 
-        <!-- IV. LAW, RITUAL, OS & SYMBOLIC ARCHITECTURE -->
-        <section id="law" class="section">
-          <div class="section-label">IV · Law, Ritual & Symbolic Architecture</div>
-          <h2 class="section-heading">Law, Ritual, OS & Symbolic Architecture</h2>
-          <p class="section-subtitle">
-            Codex, constitutions, rituals, and symbolic glue that bind economics, law, and myth into a living OS.
-          </p>
+        <!-- FULL CAPABILITY MAP -->
+        <section id="full-map" class="section" aria-label="Full capability map">
+          <header class="section-header">
+            <div class="section-label">Capability</div>
+            <h2 class="section-heading">Full capability map (v0).</h2>
+            <p class="section-body">
+              Everything below is the deeper menu the flagships draw from. Most of this stays “under the hood” until
+              a node is ready for it.
+            </p>
+          </header>
 
-          <ul class="offering-list">
-            <li class="offering">
-              <div class="offering-meta">IV.1 · Living Codex (Sovereign OS)</div>
-              <h3 class="offering-title">Sovereign Codex v∞ as Artifacted Law</h3>
-              <p class="offering-body">
-                Sovereign Codex v∞ binding economics, law, myth, and collapse science into artifacted law (contracts/rituals/precedents)
-                and embodied practice (defense/ritual/sacrifice), lived not read.
-              </p>
-            </li>
+          <div class="prose">
+            <!-- I. CELLS & INFRA -->
+            <details open>
+              <summary><strong>I. Sovereign Cells, Property & Physical Infrastructure</strong></summary>
+              <ul>
+                <li>
+                  <strong>I.1 Replicable Sovereign Nodes</strong> — 5–15 adult cells integrating food (permaculture, aquaponics,
+                  preserved grains, fermentation, heirloom seeds), energy (solar + battery rotation, micro-hydro, cached fuels,
+                  BTC-mining heat reuse), medicine (herbal apothecary, underground pharma smuggling, cached antibiotics,
+                  first-responder training), shelter (modular cabins, earthbag domes, legally camouflaged portable dwellings),
+                  and defense (arms, caches, drills, militia protocols, dissolution/self-destruct), with mandatory division of
+                  labor and deniable/dissolvable structure.
+                </li>
+                <li>
+                  <strong>I.2 Ghost Resilience Blueprints</strong> — portable, deniable antifragile survival frameworks hidden in
+                  plain sight, with portable caches, encrypted/oral transmission, lineage memory, succession continuity,
+                  and NGO-immunity via built-in self-destruct.
+                </li>
+                <li>
+                  <strong>I.3 Hidden Protocols</strong> — operational priority and lifecycle law (energy → defense → food →
+                  medicine/shelter), division of labor, dissolution/succession protocols, and symbolic encoding of ritual + law
+                  into logistics to prevent entropy/simulation capture.
+                </li>
+                <li>
+                  <strong>I.4 Genesis Node Kits</strong> — physical starter kits for energy, water, and communications.
+                </li>
+                <li>
+                  <strong>I.5 Mining Cells</strong> — off-grid modular miners reusing waste heat for concealment and utility.
+                </li>
+                <li>
+                  <strong>I.6 Open-Hardware Sales</strong> — physical builds (solar, thermal, water systems).
+                </li>
+                <li>
+                  <strong>I.7 Locker Lattice</strong> — fee-based physical logistics hubs for secure exchange and caching.
+                </li>
+                <li>
+                  <strong>I.8 Land Syndicate</strong> — pooled sats via camouflaged trusts to acquire/hold sovereign land.
+                </li>
+                <li>
+                  <strong>I.9 Use-Rights / Village Passes</strong> — memberships to shared resources and sites.
+                </li>
+              </ul>
+            </details>
 
-            <li class="offering">
-              <div class="offering-meta">IV.2 · Seed Collapse-Embedded Protocols</div>
-              <h3 class="offering-title">Kill-Switch-Embedded Constitutions</h3>
-              <p class="offering-body">
-                Archetypal kill-switch-embedded constitutions, property forms, succession rituals, contract templates, and audit scripts
-                that any node can instantiate/fork/mutate/nullify and that self-destruct under capture or corruption.
-              </p>
-            </li>
+            <!-- II. BITCOIN & MARKETS -->
+            <details>
+              <summary><strong>II. Bitcoin-Native Markets, Finance & Logistics</strong></summary>
+              <ul>
+                <li>
+                  <strong>II.1 BTC-Fuelled Logistics Loops</strong> — privacy-first parallel trade ecosystems for essentials using
+                  Lightning/eCash/atomic swaps, barter–BTC hybrids, ordinary-trade disguise, and escrow/reputation/multisig scaffolds,
+                  treating BTC as circulating survival currency.
+                </li>
+                <li>
+                  <strong>II.2 Ghost Wallet + Sovereign Stack Infrastructure</strong> — Bitcoin-native, non-KYC, anonymized financial
+                  tools and stack components.
+                </li>
+                <li>
+                  <strong>II.3 BTC-Native Sovereign Funds</strong> — self-governing, myth-backed Bitcoin pools designed to outlive individuals.
+                </li>
+                <li>
+                  <strong>II.4 Node-to-Node Trade Economies</strong> — direct barter/e-cash/offline trade rails among nodes.
+                </li>
+                <li>
+                  <strong>II.5 SovMarket MVP</strong> — marketplace for books, gear, and artifacts.
+                </li>
+                <li>
+                  <strong>II.6 Direct Zaps / Sacrifices</strong> — ritualized payments in sats (never donations).
+                </li>
+                <li>
+                  <strong>II.7 Bitcoin-Only, Privacy-First Service Blueprints</strong> — outlines for advisory/dashboards/barter protocols
+                  enabling ghost businesses and peer-to-peer alternatives.
+                </li>
+                <li>
+                  <strong>II.8 Arbitration Service</strong> — voluntary dispute resolution with trust-minimized templates and fee model.
+                </li>
+                <li>
+                  <strong>II.9 Lightning Liquidity/Routing/Uptime as a Service</strong> — managed inbound/outbound liquidity, channel policy/
+                  optimization, and HA operations for Lightning nodes.
+                </li>
+                <li>
+                  <strong>II.10 Fiat Chokepoint Escape (FCE)</strong> — end-to-end BTC merchant enablement (acceptance, pricing policy,
+                  refunds, bookkeeping templates) to reduce fiat exposure.
+                </li>
+                <li>
+                  <strong>II.11 Ephemeral, Deniable Trade Shells</strong> — transaction-window-only markets (Nostr relays, BOLT-12 offers,
+                  BTC multisig escrows) with rotating bazaars/couriers/drop points and portable pseudonymous proofs for repeat trust.
+                </li>
+                <li>
+                  <strong>II.12 Self-Dissolving With Succession</strong> — auto-expiring markets/contracts/relays (timelocks, burn clauses,
+                  relay rotation) with portable proof-of-trade and ritualized visible endings.
+                </li>
+                <li>
+                  <strong>II.13 Proof-Based Trade + Micro-Law</strong> — trustless primitives (multisig/DLC/Lightning escrow, bonded guarantors)
+                  with bounded voluntary arbitration and portable precedent (no standing courts).
+                </li>
+                <li>
+                  <strong>II.14 Anti-Priesthood Architecture</strong> — ephemeral, forkable, rotating relays; voluntary, bonded, dissolving
+                  escrow/arbitration; open simple protocols with kill-switches to prevent maintainership ossification.
+                </li>
+                <li>
+                  <strong>II.15 Physical Layer Integration</strong> — ghost logistics (couriers/drop points/masked chains), deterrence/rotation/
+                  trustless hand-offs, and ritualized dissolution of physical nodes after limited use.
+                </li>
+                <li>
+                  <strong>II.16 Recursive Myth Economies</strong> — circulation markets for symbolic contracts, Codex editions,
+                  and ritual artifacts.
+                </li>
+              </ul>
+            </details>
 
-            <li class="offering">
-              <div class="offering-meta">IV.3 · Enact Mythic Signal Boundaries</div>
-              <h3 class="offering-title">Cryptographic & Ritual Boundary Scripts</h3>
-              <p class="offering-body">
-                Voluntary cryptographic/ritual boundary scripts for property, memory, and identity (multi-sig scripts, GPG-signed
-                archives, kill-switch-anchored rites).
-              </p>
-            </li>
+            <!-- III. SECURITY -->
+            <details>
+              <summary><strong>III. Counter-Simulation Security, Audits & Clean Infrastructure</strong></summary>
+              <ul>
+                <li>
+                  <strong>III.1 Adversarial Audits</strong> — live-fire exposure of capture vectors across code/toolchains
+                  (reproducible builds, “trusting trust”), licenses (NGO clauses, Trojan morality, copyleft traps), funding
+                  (grants/VC/whales), dependencies (OS/libs/DNS/fabs/grids), topology (trust networks/insider circuits),
+                  temporal narratives (meaning drift), and AI infiltration (synthetic “freedom tools”).
+                </li>
+                <li>
+                  <strong>III.2 Self-Sovereign Signal Filters</strong> — local offline fact-only filters with lineage maps,
+                  dependency audits to root-of-trust, reproducible proof scripts, air-gapped operation, no verdicts or scores,
+                  immutable collapse clause, continuous recursive auditing with explicit unknowns, and optional heuristics.
+                </li>
+                <li>
+                  <strong>III.3 Clean Stacks</strong> — antifragile modular replacement infrastructure: BTC-native comms
+                  (Nostr, BOLT-12, Chaumian eCash), privacy shells, metadata immunity (cover traffic/onion/ephemeral routing),
+                  hardware + energy sovereignty, jurisdictional shields (ghost entities, cross-border multisig), ritual UX,
+                  and collapse encoding to burn on infiltration.
+                </li>
+                <li>
+                  <strong>III.4 Activate Continuous Audit Engines</strong> — self-auditing logic and scripts (digital + ritual),
+                  chaos-injected/randomized with watcher-of-watchers, enacted/forked/burned by nodes and auto-nullified on capture.
+                </li>
+                <li>
+                  <strong>III.5 Operational Intelligence & Enemy Cartography (restricted)</strong> — adversarial simulations,
+                  infiltration pattern mapping, and live enemy topology not publicly published.
+                </li>
+                <li>
+                  <strong>III.6 Surveillance & Infiltration Immunity</strong> — cover traffic and dummy trades, random relay rotation,
+                  mixnets/onion over Nostr/BTC, rotating venues/drop points/disguises, with camouflage as a core property.
+                </li>
+              </ul>
+            </details>
 
-            <li class="offering">
-              <div class="offering-meta">IV.4 · Instantiate Parallel Stacks</div>
-              <h3 class="offering-title">Deployable Parallel Legal & Ritual Stacks</h3>
-              <p class="offering-body">
-                Deployable blueprints for parallel legal/economic/ritual stacks (Bitcoin anchor, decentralized comms, sovereign memory,
-                analog fallback, ritual law) that are forkable and collapse-enabled by design.
-              </p>
-            </li>
+            <!-- IV. LAW / RITUAL / OS -->
+            <details>
+              <summary><strong>IV. Law, Ritual, OS & Symbolic Architecture</strong></summary>
+              <ul>
+                <li>
+                  <strong>IV.1 Living Codex (Sovereign OS)</strong> — Sovereign Codex v∞ binding economics, law, myth,
+                  and collapse science into artifacted law (contracts/rituals/precedents) and embodied practice
+                  (defense/ritual/sacrifice), lived not read.
+                </li>
+                <li>
+                  <strong>IV.2 Seed Collapse-Embedded Protocols</strong> — archetypal kill-switch-embedded constitutions,
+                  property forms, succession rituals, contract templates, and audit scripts that any node can
+                  instantiate/fork/mutate/nullify and that self-destruct under capture.
+                </li>
+                <li>
+                  <strong>IV.3 Enact Mythic Signal Boundaries</strong> — voluntary cryptographic/ritual boundary scripts
+                  for property, memory, and identity (multi-sig scripts, GPG-signed archives, kill-switch-anchored rites).
+                </li>
+                <li>
+                  <strong>IV.4 Instantiate Parallel Stacks</strong> — deployable blueprints for parallel legal/economic/ritual
+                  stacks (Bitcoin anchor, decentralized comms, sovereign memory, analog fallback, ritual law) that are
+                  forkable and collapse-enabled.
+                </li>
+                <li>
+                  <strong>IV.5 Disseminate Origin-Presence Rituals</strong> — adversarial mythic/practical rituals for voluntary
+                  succession, forking, exit, and rebirth of roles/property/memory/tradition, executed as living law
+                  (initiated, witnessed, cryptographically signed, voluntary).
+                </li>
+                <li>
+                  <strong>IV.6 Collapse Rituals + Funeral Architectures</strong> — executable rites for decommissioning institutions,
+                  ego identities, and cities to enable clean rebirth.
+                </li>
+                <li>
+                  <strong>IV.7 CIV-OS Kernel v0.1</strong> — minimal self-mutating operating system for decentralized civilization
+                  (timekeeping schema, symbolic grammar, collapse detection, role binding).
+                </li>
+                <li>
+                  <strong>IV.8 NOVM Master Stack</strong> — open-source decentralized service network for advisory, coordination,
+                  and intelligence.
+                </li>
+                <li>
+                  <strong>IV.9 Minimal Symbolic Glue</strong> — deniable portable myth-law (honor codes, ritualized proof tokens,
+                  portable receipts) that stabilize without ossification or priesthood.
+                </li>
+                <li>
+                  <strong>IV.10 Counter-Simulation Protocols</strong> — symbolic/ritual weapons for inversion, nullification,
+                  and collapse (naming inversions, anti-mimicry density, ritual sabotage, self-destruct clauses, silence/noise
+                  telemetry, sovereign pacing).
+                </li>
+                <li>
+                  <strong>IV.11 SOVSTACK Rituals</strong> — standardized public/peer rites (coinjoin ceremonies, food swaps,
+                  trade days, public proofing) to operationalize sovereign coordination without priesthood.
+                </li>
+                <li>
+                  <strong>IV.12 Symbolic Memes + Narrative Payloads</strong> — viral symbolic recursion nodes (memes/slogans/sigils)
+                  such as “Bitcoin is not money; it’s a mirror,” “Collapse already happened,” “Sovereignty is the substrate.”
+                </li>
+                <li>
+                  <strong>IV.13 Sovereign Identity Construct Protocols (restricted)</strong> — node-verified procedures for constructing
+                  sovereign identities and persona fields.
+                </li>
+              </ul>
+            </details>
 
-            <li class="offering">
-              <div class="offering-meta">IV.5 · Disseminate Origin-Presence Rituals</div>
-              <h3 class="offering-title">Succession, Forking & Rebirth Rites</h3>
-              <p class="offering-body">
-                Adversarial mythic/practical rituals for voluntary succession, forking, exit, and rebirth of roles/property/memory/tradition,
-                executed as living law (initiated, witnessed, cryptographically signed, voluntary).
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">IV.6 · Collapse Rituals + Funeral Architectures</div>
-              <h3 class="offering-title">Executable Rites for Clean Decommissioning</h3>
-              <p class="offering-body">
-                Executable rites for decommissioning institutions, ego identities, and cities to enable clean rebirth, asset hand-off,
-                and myth refresh without residue or capture.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">IV.7 · CIV-OS Kernel v0.1</div>
-              <h3 class="offering-title">Minimal Self-Mutating Civilization OS</h3>
-              <p class="offering-body">
-                Minimal self-mutating operating system for decentralized civilization (timekeeping schema, symbolic grammar,
-                collapse detection, role binding) that can be forked and iterated by nodes.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">IV.8 · NOVM Master Stack</div>
-              <h3 class="offering-title">Decentralized Service Network</h3>
-              <p class="offering-body">
-                Open-source decentralized service network for advisory, coordination, and intelligence—SovStack-native instead
-                of platform-native coordination rails.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">IV.9 · Minimal Symbolic Glue</div>
-              <h3 class="offering-title">Deniable, Portable Myth-Law</h3>
-              <p class="offering-body">
-                Deniable portable myth-law (honor codes, ritualized proof tokens, portable receipts) that stabilize without ossification
-                or priesthood, keeping commitment light but binding.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">IV.10 · Counter-Simulation Protocols</div>
-              <h3 class="offering-title">Symbolic Weapons for Inversion & Nullification</h3>
-              <p class="offering-body">
-                Symbolic/ritual weapons for inversion, nullification, and collapse (naming inversions, anti-mimicry density,
-                ritual sabotage, self-destruct clauses, silence/noise telemetry, sovereign pacing).
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">IV.11 · SOVSTACK Rituals</div>
-              <h3 class="offering-title">Standardized Public Sovereign Rites</h3>
-              <p class="offering-body">
-                Standardized public/peer rites (coinjoin ceremonies, food swaps, trade days, public proofing) to operationalize
-                sovereign coordination without priesthood or personality cults.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">IV.12 · Symbolic Memes + Narrative Payloads</div>
-              <h3 class="offering-title">Viral Symbolic Recursion Nodes</h3>
-              <p class="offering-body">
-                Viral symbolic recursion nodes (memes/slogans/sigils) such as “Bitcoin is not money; it’s a mirror,”
-                “Collapse already happened,” “Sovereignty is the substrate.”
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">IV.13 · Sovereign Identity Construct Protocols</div>
-              <h3 class="offering-title">Node-Verified Identity Construction (Restricted)</h3>
-              <p class="offering-body">
-                Node-verified procedures for constructing sovereign identities and persona fields—ritualized identity assembly
-                aligned with property, responsibility, and collapse-readiness.
-              </p>
-            </li>
-          </ul>
-        </section>
-
-        <!-- V. EDUCATION, ADVISORY, ACTIVATION & FIELD SERVICES -->
-        <section id="field" class="section">
-          <div class="section-label">V · Education, Advisory & Field Services</div>
-          <h2 class="section-heading">Education, Advisory, Activation & Field Services</h2>
-          <p class="section-subtitle">
-            Consulting, build-outs, curriculum, clinics, and hands-on work that turn theory into live nodes.
-          </p>
-
-          <ul class="offering-list">
-            <li class="offering">
-              <div class="offering-meta">V.1 · Sovereign Business/Enterprise Consulting/Intelligence</div>
-              <h3 class="offering-title">End-to-End Sovereign Enterprise Design</h3>
-              <p class="offering-body">
-                End-to-end advisory for sovereign-aligned business architecture, risk, operations, and competitive intelligence—
-                building firms that can stand outside fiat and capture systems.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">V.2 · Homestead/Citadel Development/Upgrading</div>
-              <h3 class="offering-title">Site Planning & Sovereign Systems Integration</h3>
-              <p class="offering-body">
-                Site planning, phased upgrades, and sovereign systems integration for residential compounds and micro-settlements,
-                from water rights to mining heat reuse.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">V.3 · Sovereign Node Activation Sprint</div>
-              <h3 class="offering-title">48-Hour Full Stack Node Activation</h3>
-              <p class="offering-body">
-                Fully operational personal/business Sovereign Stack in 48 hours (Bitcoin + Lightning LND/CLN, Tor, Nostr relays,
-                Fedimint/Cashu optional, cold storage ritual, backups, runbook, threat model, update cadence).
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">V.4 · Sovereign Property Viability Dossier</div>
-              <h3 class="offering-title">Buy/Pass Decision with Sov Score</h3>
-              <p class="offering-body">
-                Buy/pass decision with quantified Sovereign Viability Score and build plan (water rights/flood/wildfire/soils/zoning/utilities;
-                off-grid energy design; mining heat-reuse fit; legal flags; phased capex).
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">V.5 · Collapse Logistics Architecture (CLA) Design</div>
-              <h3 class="offering-title">Local/Parallel Logistics Blueprints</h3>
-              <p class="offering-body">
-                Blueprinting local/parallel logistics for essentials with BTC-native flows, redundancy, and dissolution/succession paths
-                encoded from day zero.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">V.6 · Onboarding/Integration/Troubleshooting of Bitcoin & FOSS Tools</div>
-              <h3 class="offering-title">Deep Setup & Rescue for BTC/FOSS</h3>
-              <p class="offering-body">
-                Setup, migration, and recovery for BTC, Lightning, Tor, Nostr, eCash, and related stacks—hardening nodes and users
-                against both incompetence and attack.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">V.7 · Privacy Upgrading</div>
-              <h3 class="offering-title">Threat Modeling & Privacy Hardening</h3>
-              <p class="offering-body">
-                Practical threat modeling and privacy hardening across comms, payments, devices, and on-chain footprint—turning “nothing to hide”
-                into structured opacity and unlinkability.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">V.8 · Community/Local Terrain/Economic Mapping/Intelligence</div>
-              <h3 class="offering-title">Ground-Truth Mapping for Sovereign Ops</h3>
-              <p class="offering-body">
-                Ground-truth mapping of actors, assets, routes, chokepoints, and opportunity networks for sovereign operations in a given city
-                or region.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">V.9 · Data Analysis</div>
-              <h3 class="offering-title">Signal, Operations & Risk Pipelines</h3>
-              <p class="offering-body">
-                Quantitative/qualitative analysis pipelines for signals, operations, markets, and risk—turning raw data into sovereign decision support,
-                not surveillance dashboards.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">V.10 · Failure Logging</div>
-              <h3 class="offering-title">Incident & Drift Logging Systems</h3>
-              <p class="offering-body">
-                Incident and drift logging systems surfacing weak points and enabling recursive improvement, feeding directly into collapse rites
-                and redesign cycles.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">V.11 · Networking/Community Bridging</div>
-              <h3 class="offering-title">Targeted Introductions Without Platforms</h3>
-              <p class="offering-body">
-                Targeted introductions, bridge-building, and cross-node coordination without platformizing community or centralizing social graphs.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">V.12 · Community Organizing</div>
-              <h3 class="offering-title">Decentralized Event & Role Scaffolding</h3>
-              <p class="offering-body">
-                Decentralized event scaffolding and role-binding for local activation without institutional capture—pop-up cells, recurring rites,
-                and trade days.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">V.13 · Digital Handyman</div>
-              <h3 class="offering-title">Hands-On Software & Ops Execution</h3>
-              <p class="offering-body">
-                Task-level execution across software, ops, backups, automations, and secure workflows—fixing the glue work most people ignore until
-                it fails under stress.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">V.14 · Mutual Aid</div>
-              <h3 class="offering-title">Direct Peer-to-Peer Problem Solving</h3>
-              <p class="offering-body">
-                Direct peer-to-peer problem-solving (emergency fixes, dispute mediation, skills exchange) without intermediaries, grants, or
-                bureaucratic capture.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">V.15 · Fractal Learning Pods + Parallel Curriculum</div>
-              <h3 class="offering-title">Sovereign Skill Formation Blueprints</h3>
-              <p class="offering-body">
-                Education blueprints and symbolic rebase of pedagogy for sovereign skill formation—small pods, high density, recursive practice
-                instead of broadcast lectures.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">V.16 · Sovereign Curriculum Bootcamps</div>
-              <h3 class="offering-title">4-Week BTC/Privacy/Energy Cohorts</h3>
-              <p class="offering-body">
-                4-week live cohorts covering BTC operations, privacy, and energy fundamentals with hands-on practice and runbooks, optimized for
-                nodes not hobbyists.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">V.17 · Sov Node Accelerator</div>
-              <h3 class="offering-title">Paid Training for Node Operators</h3>
-              <p class="offering-body">
-                Paid training and consulting for new sovereign node operators—fast-tracking them from zero to independently resilient in
-                both infra and law.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">V.18 · Guild Subscriptions</div>
-              <h3 class="offering-title">Ongoing Training Cohorts</h3>
-              <p class="offering-body">
-                Recurring education cohorts for ongoing training—guild-like structures where skills, tools, and rituals iterate with each cycle
-                of collapse and rebuild.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">V.19 · Exams / Certifications</div>
-              <h3 class="offering-title">Sovereign Skill Verification</h3>
-              <p class="offering-body">
-                Sovereign skill verification services—exams, drills, and proof-of-signal challenges that certify capability without attaching
-                to state or corporate bodies.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">V.20 · Workshops / Residencies</div>
-              <h3 class="offering-title">Immersive Training Environments</h3>
-              <p class="offering-body">
-                Paid training events and immersive residencies where nodes live the stack end-to-end—infra, law, myth, and daily practice
-                in one place and time window.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">V.21 · Archive Editions</div>
-              <h3 class="offering-title">High-End Physical Texts & Codex Artifacts</h3>
-              <p class="offering-body">
-                High-end physical texts and codex artifacts preserving the Sovereign Codex and related law in matter, not just bits—signal
-                built to survive time and regime change.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">V.22 · Bitcoin-Only Intelligence Reports</div>
-              <h3 class="offering-title">Codex/Executive BTC Intelligence</h3>
-              <p class="offering-body">
-                Premium and monthly sats-sold Bitcoin intelligence analyses and reports—Codex-grade synthesis for operators and executive
-                nodes, not trading tips.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">V.23 · Sovereign Advisory</div>
-              <h3 class="offering-title">Counsel for Wealthy & Aligned Builders</h3>
-              <p class="offering-body">
-                Counsel and strategy for wealthy or aligned node-builders who want to deploy capital, land, and time into Sovereign Stack
-                infrastructure instead of synthetic traps.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">V.24 · Fabrication & Repairs</div>
-              <h3 class="offering-title">Infrastructure Fabrication & Maintenance</h3>
-              <p class="offering-body">
-                On-site/off-site fabrication, maintenance, and repair services for sovereign infrastructure—machines, structures, and rigs that
-                keep nodes physically alive and autonomous.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">V.25 · Care Plans / Clinics</div>
-              <h3 class="offering-title">Subscription Health Services & Clinics</h3>
-              <p class="offering-body">
-                Subscription health services and clinics aligned to sovereign readiness—care that preserves operational capacity without
-                feeding surveillance medicine.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">V.26 · Health and Fitness Training/Coaching</div>
-              <h3 class="offering-title">Operational Sovereignty Conditioning</h3>
-              <p class="offering-body">
-                Personalized conditioning and wellness protocols for operational sovereignty—strength, mobility, endurance, and recovery
-                aligned with node-level duties.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">V.27 · Life Coaching/Personal Development/Career Guidance</div>
-              <h3 class="offering-title">Identity, Work & Mission Alignment</h3>
-              <p class="offering-body">
-                Individualized strategy and accountability for identity, work, and mission alignment—life design aligned with Sovereign
-                Stack law instead of corporate ladders.
-              </p>
-            </li>
-
-            <li class="offering">
-              <div class="offering-meta">V.28 · Interviewing/Storytelling (Non-Paid)</div>
-              <h3 class="offering-title">Narrative Capture for Signal Preservation</h3>
-              <p class="offering-body">
-                Non-monetized narrative capture/oral history for signal preservation—interviews and stories that archive lived proof
-                without turning it into content or spectacle.
-              </p>
-            </li>
-          </ul>
+            <!-- V. EDUCATION / FIELD -->
+            <details>
+              <summary><strong>V. Education, Advisory, Activation & Field Services</strong></summary>
+              <ul>
+                <li>
+                  <strong>V.1 Sovereign Business/Enterprise Consulting/Intelligence</strong> — end-to-end advisory for sovereign-aligned
+                  business architecture, risk, operations, and competitive intelligence.
+                </li>
+                <li>
+                  <strong>V.2 Homestead/Citadel Development/Upgrading</strong> — site planning, phased upgrades, and sovereign systems
+                  integration for residential compounds and micro-settlements.
+                </li>
+                <li>
+                  <strong>V.3 Sovereign Node Activation Sprint</strong> — fully operational personal/business Sovereign Stack in 48 hours
+                  (Bitcoin+Lightning LND/CLN, Tor, Nostr relays, Fedimint/Cashu optional, cold storage ritual, backups, runbook,
+                  threat model, update cadence).
+                </li>
+                <li>
+                  <strong>V.4 Sovereign Property Viability Dossier</strong> — buy/pass decision with quantified Sovereign Viability Score
+                  and build plan (water rights/flood/wildfire/soils/zoning/utilities; off-grid energy design; mining heat-reuse fit;
+                  legal flags; phased capex).
+                </li>
+                <li>
+                  <strong>V.5 Collapse Logistics Architecture (CLA) Design</strong> — blueprinting local/parallel logistics for essentials
+                  with BTC-native flows, redundancy, and dissolution/succession paths.
+                </li>
+                <li>
+                  <strong>V.6 Onboarding/Integration/Troubleshooting of Bitcoin & FOSS Tools</strong> — setup, migration, and recovery
+                  for BTC, Lightning, Tor, Nostr, eCash, and related stacks.
+                </li>
+                <li>
+                  <strong>V.7 Privacy Upgrading</strong> — practical threat modeling and privacy hardening across comms, payments,
+                  devices, and on-chain footprint.
+                </li>
+                <li>
+                  <strong>V.8 Community/Local Terrain/Economic Mapping/Intelligence</strong> — ground-truth mapping of actors, assets,
+                  routes, chokepoints, and opportunity networks for sovereign operations.
+                </li>
+                <li>
+                  <strong>V.9 Data Analysis</strong> — quantitative/qualitative analysis pipelines for signals, operations, markets,
+                  and risk.
+                </li>
+                <li>
+                  <strong>V.10 Failure Logging</strong> — incident and drift logging systems surfacing weak points and enabling
+                  recursive improvement.
+                </li>
+                <li>
+                  <strong>V.11 Networking/Community Bridging</strong> — targeted introductions, bridge-building, and cross-node
+                  coordination without platformizing community.
+                </li>
+                <li>
+                  <strong>V.12 Community Organizing</strong> — decentralized event scaffolding and role-binding for local activation
+                  without institutional capture.
+                </li>
+                <li>
+                  <strong>V.13 Digital Handyman</strong> — task-level execution across software, ops, backups, automations,
+                  and secure workflows.
+                </li>
+                <li>
+                  <strong>V.14 Mutual Aid</strong> — direct peer-to-peer problem-solving (emergency fixes, dispute mediation,
+                  skills exchange) without intermediaries.
+                </li>
+                <li>
+                  <strong>V.15 Fractal Learning Pods + Parallel Curriculum</strong> — education blueprints and symbolic rebase of
+                  pedagogy for sovereign skill formation.
+                </li>
+                <li>
+                  <strong>V.16 Sovereign Curriculum Bootcamps</strong> — 4-week live cohorts covering BTC operations, privacy,
+                  and energy fundamentals with hands-on practice and runbooks.
+                </li>
+                <li>
+                  <strong>V.17 Sov Node Accelerator</strong> — paid training and consulting for new sovereign node operators.
+                </li>
+                <li>
+                  <strong>V.18 Guild Subscriptions</strong> — recurring education cohorts for ongoing training.
+                </li>
+                <li>
+                  <strong>V.19 Exams / Certifications</strong> — sovereign skill verification services.
+                </li>
+                <li>
+                  <strong>V.20 Workshops / Residencies</strong> — paid training events and immersive residencies.
+                </li>
+                <li>
+                  <strong>V.21 Archive Editions</strong> — high-end physical texts and Codex artifacts.
+                </li>
+                <li>
+                  <strong>V.22 Bitcoin-Only Intelligence Reports (Codex/Executive)</strong> — premium and monthly sats-sold Bitcoin
+                  intelligence analyses and reports.
+                </li>
+                <li>
+                  <strong>V.23 Sovereign Advisory</strong> — counsel and strategy for wealthy or aligned node-builders.
+                </li>
+                <li>
+                  <strong>V.24 Fabrication & Repairs</strong> — on-site/off-site fabrication, maintenance, and repair services for
+                  sovereign infrastructure.
+                </li>
+                <li>
+                  <strong>V.25 Care Plans / Clinics</strong> — subscription health services and clinics aligned to sovereign readiness.
+                </li>
+                <li>
+                  <strong>V.26 Health and Fitness Training/Coaching</strong> — personalized conditioning and wellness protocols for
+                  operational sovereignty.
+                </li>
+                <li>
+                  <strong>V.27 Life Coaching/Personal Development/Career Guidance Counselling</strong> — individualized strategy and
+                  accountability for identity, work, and mission alignment.
+                </li>
+                <li>
+                  <strong>V.28 Interviewing/Storytelling (non-paid)</strong> — non-monetized narrative capture/oral history for
+                  signal preservation.
+                </li>
+              </ul>
+            </details>
+          </div>
         </section>
       </div>
     </main>
 
-    <footer class="footer">
+    <!-- FOOTER -->
+    <footer id="footer" class="footer" aria-label="Footer">
       <div class="footer-inner">
-        <div>
-          <span class="footer-label">/ sov stack offerings</span>
-          <span>&copy; Sov Stack Node. Replace imprint, covenants, and jurisdictions as needed.</span>
+        <div class="footer-left">
+          <span class="label">/ sov stack labs</span>
+          <span>Bitcoin-native sovereign stack experiments for parallel civilization and collapse-ready care.</span>
+          <span class="footer-meta">
+            Verify contact details and PGP keys on this domain only. No donations; only voluntary trade and signal.
+          </span>
         </div>
-        <div class="footer-pill">Bitcoin orange · terminal green · nostr violet</div>
+        <div class="footer-right">
+          <nav class="footer-nav" aria-label="Footer navigation">
+            <a href="#offerings-intro" class="footer-link">Top</a>
+            <a href="offerings.html" class="footer-link">Offerings</a>
+            <a href="essay.html" class="footer-link">Treatise</a>
+            <a href="contact.html" class="footer-link">Contact</a>
+          </nav>
+          <span class="footer-pill">Bitcoin-native · Privacy-first · Collapse-ready</span>
+        </div>
       </div>
     </footer>
   </div>
