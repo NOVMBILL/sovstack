@@ -3,405 +3,64 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>The Species Unreal · Treatise</title>
-  <style>
-    :root {
-      --bg: #050814;
-      --bg-elevated: #070b18;
-      --bg-soft: #0b1220;
-
-      --border-subtle: #1f2933;
-      --border-strong: #374151;
-
-      --text: #f9fafb;
-      --muted: #9ca3af;
-
-      --accent-btc: #f7931a;
-      --accent-cypher: #22c55e;
-      --accent-nostr: #a855f7;
-
-      --radius-lg: 14px;
-      --container-width: 960px;
-
-      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", sans-serif;
-      --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-    }
-
-    *, *::before, *::after {
-      box-sizing: border-box;
-    }
-
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      scroll-behavior: smooth;
-    }
-
-    body {
-      font-family: var(--font-sans);
-      background:
-        radial-gradient(circle at top, rgba(168, 85, 247, 0.12), transparent 55%),
-        radial-gradient(circle at bottom, rgba(34, 197, 94, 0.08), transparent 55%),
-        var(--bg);
-      color: var(--text);
-      -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
-    }
-
-    .shell {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* TOP BAR */
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      border-bottom: 1px solid var(--border-subtle);
-      background: rgba(5, 8, 20, 0.96);
-      backdrop-filter: blur(10px);
-    }
-
-    .topbar-inner {
-      max-width: var(--container-width);
-      margin: 0 auto;
-      padding: 10px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .brand-wrap {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-width: 0;
-    }
-
-    .brand-mark {
-      width: 24px;
-      height: 24px;
-      border-radius: 9px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 15px;
-      font-family: var(--mono);
-      background: #020617;
-      color: var(--accent-btc);
-      border: 1px solid var(--border-strong);
-      flex-shrink: 0;
-    }
-
-    .brand-text {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .brand-main {
-      font-family: var(--mono);
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      white-space: nowrap;
-    }
-
-    .brand-sub {
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.18em;
-      color: var(--muted);
-      white-space: nowrap;
-    }
-
-    .top-nav {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      justify-content: flex-end;
-      align-items: center;
-    }
-
-    .top-nav a {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 6px 12px;
-      border-radius: 999px;
-      border: 1px solid var(--border-subtle);
-      font-size: 10px;
-      font-family: var(--mono);
-      text-decoration: none;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      color: var(--muted);
-      background: #020617;
-      transition:
-        background 0.16s ease-out,
-        border-color 0.16s ease-out,
-        color 0.16s ease-out,
-        transform 0.1s ease-out;
-    }
-
-    .top-nav a:hover,
-    .top-nav a:focus-visible {
-      color: var(--text);
-      border-color: var(--accent-btc);
-      background: #030712;
-      transform: translateY(-1px);
-      outline: none;
-    }
-
-    .top-nav a.primary {
-      border-color: var(--accent-btc);
-      color: var(--accent-btc);
-    }
-
-    .top-nav a.primary:hover,
-    .top-nav a.primary:focus-visible {
-      color: #111827;
-      background: var(--accent-btc);
-    }
-
-    /* PAGE LAYOUT */
-    .page {
-      flex: 1;
-    }
-
-    .container {
-      max-width: var(--container-width);
-      margin: 0 auto;
-      padding: 20px 16px 32px;
-    }
-
-    /* HEADER */
-    .page-header {
-      margin-bottom: 20px;
-      padding: 18px 18px 16px;
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--border-subtle);
-      background: var(--bg-elevated);
-    }
-
-    .page-kicker {
-      font-family: var(--mono);
-      font-size: 11px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 6px;
-    }
-
-    .page-title {
-      margin: 0 0 6px;
-      font-size: clamp(1.7rem, 3vw, 2rem);
-      line-height: 1.2;
-    }
-
-    .page-title span {
-      color: var(--accent-btc);
-    }
-
-    .page-subtitle {
-      margin: 0 0 10px;
-      font-size: 0.96rem;
-      color: var(--muted);
-      max-width: 720px;
-      line-height: 1.6;
-    }
-
-    .page-tagline {
-      margin: 0;
-      font-size: 0.86rem;
-      color: var(--muted);
-      font-style: italic;
-    }
-
-    /* SECTIONS */
-    .section {
-      margin-top: 20px;
-      padding: 16px 16px 14px;
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--border-subtle);
-      background: var(--bg-soft);
-    }
-
-    .section-label {
-      font-family: var(--mono);
-      font-size: 11px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 4px;
-    }
-
-    .section-heading {
-      margin: 0 0 6px;
-      font-size: 1.06rem;
-    }
-
-    .section-subtitle {
-      margin: 0 0 10px;
-      font-size: 0.86rem;
-      color: var(--muted);
-      max-width: 660px;
-    }
-
-    .prose {
-      font-size: 0.92rem;
-      line-height: 1.75;
-      color: var(--muted);
-      max-width: 720px;
-    }
-
-    .prose p {
-      margin: 0 0 10px;
-    }
-
-    .prose p:last-child {
-      margin-bottom: 0;
-    }
-
-    .prose strong {
-      color: var(--text);
-      font-weight: 500;
-    }
-
-    .prose em {
-      font-style: italic;
-    }
-
-    .prose ul {
-      margin: 0 0 10px;
-      padding-left: 1.1rem;
-    }
-
-    .prose li {
-      margin: 2px 0;
-    }
-
-    .prose blockquote {
-      margin: 8px 0 10px;
-      padding-left: 10px;
-      border-left: 2px solid var(--accent-nostr);
-      color: var(--muted);
-      font-style: italic;
-    }
-
-    .prose blockquote p {
-      margin: 0;
-    }
-
-    /* FOOTER */
-    .footer {
-      border-top: 1px solid var(--border-subtle);
-      background: #020617;
-      margin-top: 26px;
-    }
-
-    .footer-inner {
-      max-width: var(--container-width);
-      margin: 0 auto;
-      padding: 12px 16px 14px;
-      font-size: 0.78rem;
-      color: var(--muted);
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .footer-label {
-      font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      display: block;
-      margin-bottom: 2px;
-    }
-
-    .footer-pill {
-      padding: 3px 10px;
-      border-radius: 999px;
-      border: 1px solid var(--border-subtle);
-      font-family: var(--mono);
-      font-size: 10px;
-      color: var(--accent-nostr);
-      background: #030712;
-      white-space: nowrap;
-    }
-
-    @media (max-width: 640px) {
-      .section {
-        padding: 14px 12px 12px;
-      }
-
-      .brand-main,
-      .brand-sub {
-        white-space: normal;
-      }
-
-      .top-nav {
-        justify-content: flex-start;
-      }
-    }
-  </style>
+  <title>The Species Unreal · Sov Stack Labs</title>
+  <meta name="description" content="A long-form treatise on disconnection, dependence, collapse, and sovereign origination, written for an audience with zero prior context." />
+  <link rel="icon" href="favicon-32.png" type="image/png" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="shell">
-    <header class="topbar">
-      <div class="topbar-inner">
-        <div class="brand-wrap">
+    <!-- TOP NAV -->
+    <header class="nav">
+      <div class="nav-inner">
+        <div class="brand">
           <span class="brand-mark">₿</span>
-          <div class="brand-text">
-            <span class="brand-main">The Species Unreal</span>
-            <span class="brand-sub">Disconnection · Collapse · Sovereign Origination</span>
+          <div>
+            <div class="brand-text-main">Sov Stack Labs</div>
+            <div class="brand-text-sub">Bitcoin · Sovereign Stack · Parallel Infra</div>
           </div>
         </div>
-        <nav class="top-nav" aria-label="Page navigation">
-          <a href="index.html" class="primary">Home</a>
+        <nav class="nav-links" aria-label="Main navigation">
+          <a href="index.html#overview">Home</a>
           <a href="stacks.html">The Stacks</a>
           <a href="mission.html">Mission</a>
           <a href="privacy.html">Privacy</a>
           <a href="offerings.html">Offerings</a>
+          <a href="essay.html" class="primary" aria-current="page">Treatise</a>
           <a href="contact.html">Contact</a>
-          <a href="#origin">Origin</a>
-          <a href="#response">Response</a>
-          <a href="#map">Final Map</a>
         </nav>
       </div>
     </header>
 
-    <main class="page">
+    <main class="page" id="main">
       <div class="container">
         <!-- INTRO HEADER -->
-        <header class="page-header" id="top">
-          <div class="page-kicker">/ treatise /</div>
-          <h1 class="page-title">
-            <span>The Species Unreal</span><br />
+        <header id="overview" class="hero" aria-label="Treatise introduction">
+          <div class="hero-kicker">/ treatise /</div>
+          <h1 class="hero-title">
+            <span class="accent">The Species Unreal</span><br />
             A Treatise on Disconnection, Dependence, Collapse &amp; Sovereign Origination
           </h1>
-          <p class="page-subtitle">
+          <p class="hero-body">
             This essay describes how a civilization can remain comfortable while becoming non-viable, why dependence
             and disconnection—not visible suffering—are the true points of failure, and what it means to build
             sovereign worlds beneath a collapsing one.
           </p>
-          <p class="page-tagline">
-            Long-form, polished, complete, for an audience with zero context.
+          <p class="hero-body">
+            Long-form, polished, complete, written for an audience with zero context.
           </p>
         </header>
 
         <!-- I. ORIGIN COORDINATE -->
         <section class="section" id="origin" aria-label="Origin coordinate">
-          <div class="section-label">I. Origin Coordinate</div>
-          <h2 class="section-heading">The problem is not suffering. The problem is non-contact with reality.</h2>
+          <header class="section-header">
+            <div class="section-label">I · Origin Coordinate</div>
+            <h2 class="section-heading">The problem is not suffering. The problem is non-contact with reality.</h2>
+            <p class="section-body">
+              Modern civilization looks stable because most people live inside an insulated interface, not in contact
+              with actual consequence.
+            </p>
+          </header>
           <div class="prose">
             <p>
               Civilization appears stable.<br />
@@ -428,9 +87,11 @@
             <p>This is the central error of modern perception:</p>
             <blockquote>
               <p>
-                <strong>Comfort is mistaken for capability.<br />
-                Stability is mistaken for resilience.<br />
-                Normalcy is mistaken for reality.</strong>
+                <strong>
+                  Comfort is mistaken for capability.<br />
+                  Stability is mistaken for resilience.<br />
+                  Normalcy is mistaken for reality.
+                </strong>
               </p>
             </blockquote>
             <p>
@@ -442,8 +103,14 @@
 
         <!-- II. REALITY VEILED -->
         <section class="section" id="buffer" aria-label="Reality veiled">
-          <div class="section-label">II. Reality Veiled</div>
-          <h2 class="section-heading">The buffer layer between humans and the real.</h2>
+          <header class="section-header">
+            <div class="section-label">II · Reality Veiled</div>
+            <h2 class="section-heading">The buffer layer between humans and the real.</h2>
+            <p class="section-body">
+              A membrane of infrastructure, media, and institutions sits between people and the underlying environment,
+              making fragility feel like safety.
+            </p>
+          </header>
           <div class="prose">
             <p>
               Everything people experience as “normal life” exists inside a membrane:
@@ -480,30 +147,41 @@
 
         <!-- III. SUFFERING HIDDEN -->
         <section class="section" id="suffering" aria-label="Suffering hidden">
-          <div class="section-label">III. Suffering Hidden</div>
-          <h2 class="section-heading">How cost is distributed and concealed.</h2>
+          <header class="section-header">
+            <div class="section-label">III · Suffering Hidden</div>
+            <h2 class="section-heading">How cost is distributed and concealed.</h2>
+            <p class="section-body">
+              Catastrophic suffering is real and widespread, but selectively hidden from buffered populations to
+              preserve the illusion of normalcy.
+            </p>
+          </header>
           <div class="prose">
             <p>
               The world contains immense, unambiguous suffering.<br />
               Its invisibility to the stable world is structural.
             </p>
-            <p><strong>Extreme poverty</strong> (700–800 million):<br />
+            <p>
+              <strong>Extreme poverty</strong> (700–800 million):<br />
               Niger, Chad, Somalia, Yemen, Haiti, rural India, rural Pakistan.<br />
               Conditions: malnutrition, contaminated water, untreated infections.
             </p>
-            <p><strong>Authoritarian control</strong> (hundreds of millions):<br />
+            <p>
+              <strong>Authoritarian control</strong> (hundreds of millions):<br />
               North Korea, Eritrea, China’s Xinjiang region, Iran, Russia, Egypt, Myanmar.<br />
               Conditions: imprisonment, torture, silenced dissent.
             </p>
-            <p><strong>War zones</strong>:<br />
+            <p>
+              <strong>War zones</strong>:<br />
               Ukraine, Gaza, Sudan, Ethiopia, DRC, Syria, Myanmar.<br />
               Conditions: bombardment, displacement, famine, disease.
             </p>
-            <p><strong>Refugee populations</strong> (110+ million):<br />
+            <p>
+              <strong>Refugee populations</strong> (110+ million):<br />
               Bangladesh, Turkey, Lebanon, Colombia, Uganda.<br />
               Conditions: camps, limbo, scarcity.
             </p>
-            <p><strong>Hidden Western suffering</strong>:<br />
+            <p>
+              <strong>Hidden Western suffering</strong>:<br />
               United States, UK, Canada, France, Japan.<br />
               Conditions: homelessness, addiction, untreated illness, psychological collapse.
             </p>
@@ -517,8 +195,14 @@
 
         <!-- IV. DEPENDENCE -->
         <section class="section" id="dependence" aria-label="Dependence">
-          <div class="section-label">IV. Dependence</div>
-          <h2 class="section-heading">The core weakness of a buffered civilization.</h2>
+          <header class="section-header">
+            <div class="section-label">IV · Dependence</div>
+            <h2 class="section-heading">The core weakness of a buffered civilization.</h2>
+            <p class="section-body">
+              The real crisis is structural dependence: entire populations lose the skills and autonomy needed to
+              survive shocks.
+            </p>
+          </header>
           <div class="prose">
             <p>
               The crisis is not suffering.<br />
@@ -559,8 +243,13 @@
 
         <!-- V. OPPRESSION MISIDENTIFIED -->
         <section class="section" id="oppression" aria-label="Oppression misidentified">
-          <div class="section-label">V. Oppression Misidentified</div>
-          <h2 class="section-heading">Why it doesn’t feel like oppression.</h2>
+          <header class="section-header">
+            <div class="section-label">V · Oppression Misidentified</div>
+            <h2 class="section-heading">Why it doesn’t feel like oppression.</h2>
+            <p class="section-body">
+              Oppression in a buffered system hides behind convenience and “safety,” not overt brutality.
+            </p>
+          </header>
           <div class="prose">
             <p>
               Most modern people do not feel oppressed because oppression does not look like pain.
@@ -600,8 +289,13 @@
 
         <!-- VI. STRUCTURAL DECAY -->
         <section class="section" id="decay" aria-label="Structural decay">
-          <div class="section-label">VI. Structural Decay</div>
-          <h2 class="section-heading">Where collapse is already active.</h2>
+          <header class="section-header">
+            <div class="section-label">VI · Structural Decay</div>
+            <h2 class="section-heading">Where collapse is already active.</h2>
+            <p class="section-body">
+              Collapse is not a future event; it is an active process inside critical systems right now.
+            </p>
+          </header>
           <div class="prose">
             <p>
               Collapse is not future.<br />
@@ -636,8 +330,14 @@
 
         <!-- VII. ONLY VIABLE RESPONSE -->
         <section class="section" id="response" aria-label="Only viable response">
-          <div class="section-label">VII. Response</div>
-          <h2 class="section-heading">Parallel origination as the only viable path.</h2>
+          <header class="section-header">
+            <div class="section-label">VII · Response</div>
+            <h2 class="section-heading">Parallel origination as the only viable path.</h2>
+            <p class="section-body">
+              There is no reform large enough to repair the membrane; the workable move is to originate parallel,
+              sovereign systems beneath it.
+            </p>
+          </header>
           <div class="prose">
             <p>
               There is no top-down fix.<br />
@@ -655,31 +355,38 @@
             </p>
             <p>Parallel emergence includes:</p>
 
-            <p><strong>1. Parallel Money</strong><br />
+            <p>
+              <strong>1. Parallel Money</strong><br />
               Bitcoin-native self-custody, multisig cells, local circular trade.
             </p>
 
-            <p><strong>2. Parallel Communication</strong><br />
+            <p>
+              <strong>2. Parallel Communication</strong><br />
               Nostr, offline channels, mesh networks, non-KYC pathways.
             </p>
 
-            <p><strong>3. Parallel Food &amp; Water</strong><br />
+            <p>
+              <strong>3. Parallel Food &amp; Water</strong><br />
               Gardens, micro-farming, preservation, filtration, local resilience.
             </p>
 
-            <p><strong>4. Parallel Energy</strong><br />
+            <p>
+              <strong>4. Parallel Energy</strong><br />
               Solar, microgrids, heat reuse, redundancy.
             </p>
 
-            <p><strong>5. Parallel Meaning &amp; Law</strong><br />
+            <p>
+              <strong>5. Parallel Meaning &amp; Law</strong><br />
               Personal law-core, voluntary boundaries, private arbitration.
             </p>
 
-            <p><strong>6. Parallel Community</strong><br />
+            <p>
+              <strong>6. Parallel Community</strong><br />
               Small sovereign cells, federated networks, role-based labor.
             </p>
 
-            <p><strong>7. Parallel Continuity</strong><br />
+            <p>
+              <strong>7. Parallel Continuity</strong><br />
               Archives, codices, skill transmission, redundancy of memory.
             </p>
 
@@ -696,8 +403,14 @@
 
         <!-- VIII. ROLE OF THE FEW -->
         <section class="section" id="few" aria-label="Role of the few">
-          <div class="section-label">VIII. The Few</div>
-          <h2 class="section-heading">The role of those who can see the structure.</h2>
+          <header class="section-header">
+            <div class="section-label">VIII · The Few</div>
+            <h2 class="section-heading">The role of those who can see the structure.</h2>
+            <p class="section-body">
+              A small minority perceive the mechanics clearly enough to originate parallel systems instead of clinging
+              to reform.
+            </p>
+          </header>
           <div class="prose">
             <p>
               A collapse-field generates a minority who can perceive the structure.
@@ -749,8 +462,14 @@
 
         <!-- IX. MECHANICAL TRUTH -->
         <section class="section" id="mechanical" aria-label="Mechanical truth">
-          <div class="section-label">IX. Mechanical Truth</div>
-          <h2 class="section-heading">The false premise of the modern world.</h2>
+          <header class="section-header">
+            <div class="section-label">IX · Mechanical Truth</div>
+            <h2 class="section-heading">The false premise of the modern world.</h2>
+            <p class="section-body">
+              Stability is not the baseline of history; it is a temporary artifact of industrial surplus and
+              fragile coordination.
+            </p>
+          </header>
           <div class="prose">
             <p>
               The modern world is built on a false premise:
@@ -780,8 +499,14 @@
 
         <!-- X. CLOSING MAP -->
         <section class="section" id="map" aria-label="Closing map">
-          <div class="section-label">X. Closing</div>
-          <h2 class="section-heading">The map in final form.</h2>
+          <header class="section-header">
+            <div class="section-label">X · Closing</div>
+            <h2 class="section-heading">The map in final form.</h2>
+            <p class="section-body">
+              The argument condenses into a simple mechanical map: buffered comfort, structural dependence, active
+              decay, and sovereign parallel construction.
+            </p>
+          </header>
           <div class="prose">
             <p>Here is the entire structure distilled:</p>
             <ol>
@@ -818,13 +543,25 @@
       </div>
     </main>
 
-    <footer class="footer">
+    <!-- GLOBAL FOOTER -->
+    <footer id="footer" class="footer" aria-label="Footer">
       <div class="footer-inner">
-        <div>
-          <span class="footer-label">/ the species unreal</span>
-          <span>&copy; Sov Stack Node. Replace this imprint with your own jurisdictional details.</span>
+        <div class="footer-left">
+          <span class="label">/ sov stack labs</span>
+          <span>Bitcoin-native sovereign stack experiments for parallel civilization and collapse-ready care.</span>
+          <span class="footer-meta">
+            Verify contact details and PGP keys on this domain only. No donations; only voluntary trade and signal.
+          </span>
         </div>
-        <div class="footer-pill">Bitcoin orange · terminal green · nostr violet</div>
+        <div class="footer-right">
+          <nav class="footer-nav" aria-label="Footer navigation">
+            <a href="#overview" class="footer-link">Top</a>
+            <a href="offerings.html" class="footer-link">Offerings</a>
+            <a href="treatise.html" class="footer-link" aria-current="page">Treatise</a>
+            <a href="contact.html" class="footer-link">Contact</a>
+          </nav>
+          <span class="footer-pill">Bitcoin-native · Privacy-first · Collapse-ready</span>
+        </div>
       </div>
     </footer>
   </div>
