@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Supplement Source Recommendations</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 2rem;
+      max-width: 960px;
+      line-height: 1.5;
+    }
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 0.25rem;
+    }
+    h2 {
+      font-size: 1.15rem;
+      margin: 1.5rem 0 0.15rem;
+    }
+    .meta {
+      font-size: 0.9rem;
+      color: #555;
+      margin-bottom: 0.3rem;
+    }
+    .supplement {
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 0.6rem;
+      margin-bottom: 0.6rem;
+    }
+    .sources {
+      margin: 0 0 0 1.4rem;
+      padding: 0;
+    }
+    .sources li {
+      margin: 0.1rem 0;
+    }
+    a {
+      color: #0645ad;
+      text-decoration: none;
+      word-break: break-all;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    nav {
+      margin: 1rem 0 1.5rem;
+      padding: 0.75rem 1rem;
+      border: 1px solid #ddd;
+      background: #f9f9f9;
+    }
+    nav h2 {
+      margin-top: 0;
+    }
+    nav ul {
+      columns: 2;
+      -webkit-columns: 2;
+      -moz-columns: 2;
+      margin: 0.3rem 0 0;
+      padding-left: 1.2rem;
+      font-size: 0.95rem;
+    }
+    nav li {
+      margin: 0.1rem 0;
+    }
+    @media (max-width: 640px) {
+      nav ul {
+        columns: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Supplement Source Recommendations</h1>
+    <p>Plain list of recommended sources for each supplement. Within each supplement, links are ordered by priority.</p>
+    <p>Note: All supplements should be researched carefully. Tiers are entirely subjective, and actually scored from a biologically male perspective. I've done my best to find the best sources of these supplements, from my perspective. These are not reccomendations.</p>
+  </header>
+
+  <nav>
+    <h2>Jump to supplement</h2>
+    <ul>
+      <li><a href="#beef-organs">Beef Organs (Score 96, Tier S)</a></li>
+      <li><a href="#creatine">Creatine (Score 96, Tier S)</a></li>
+      <li><a href="#carnosine">Carnosine (Score 93, Tier A+)</a></li>
+      <li><a href="#b12">B12 (Score 92, Tier A)</a></li>
+      <li><a href="#b3">B3 (Score 92, Tier A)</a></li>
+      <li><a href="#butyrate">Butyrate (Score 92, Tier A)</a></li>
+      <li><a href="#cod-liver-oil">Cod liver oil (Score 92, Tier A)</a></li>
+      <li><a href="#d3">D3 (Score 92, Tier A)</a></li>
+      <li><a href="#eaa">EAA (Score 92, Tier A)</a></li>
+      <li><a href="#fish-oil">Fish Oil (Score 92, Tier A)</a></li>
+      <li><a href="#ghk-cu">GHK-Cu (Score 92, Tier A)</a></li>
+      <li><a href="#glutathione">Glutathione (Score 92, Tier A)</a></li>
+      <li><a href="#k2">K2 (Score 92, Tier A)</a></li>
+      <li><a href="#magnesium-chloride">Magnesium Chloride (Score 92, Tier A)</a></li>
+      <li><a href="#magnesium-glycinate">Magnesium Glycinate (Score 92, Tier A)</a></li>
+      <li><a href="#melatonin">Melatonin (Score 92, Tier A)</a></li>
+      <li><a href="#sulfurophane">Sulfurophane (Score 92, Tier A)</a></li>
+      <li><a href="#taurine">Taurine (Score 92, Tier A)</a></li>
+      <li><a href="#vitamin-c">Vitamin C (Score 92, Tier A)</a></li>
+      <li><a href="#pine-pollen">Pine Pollen (Score 91, Tier A)</a></li>
+      <li><a href="#trace-minerals">Trace Minerals (Score 90, Tier A-)</a></li>
+      <li><a href="#algae">Algae (Score 89, Tier A-)</a></li>
+      <li><a href="#akkermansia">Akkermansia (Score 89, Tier A-)</a></li>
+      <li><a href="#astaxanthin">Astaxanthin (Score 89, Tier A-)</a></li>
+      <li><a href="#bee-pollen">Bee Pollen (Score 89, Tier A-)</a></li>
+      <li><a href="#bpc-157">BPC-157 (Score 89, Tier A-)</a></li>
+      <li><a href="#c60">C60 (Score 89, Tier A-)</a></li>
+      <li><a href="#collagen">Collagen (Score 89, Tier A-)</a></li>
+      <li><a href="#magnesium-taurate">Magnesium Taurate (Score 89, Tier A-)</a></li>
+      <li><a href="#probiotics">Probiotics (Score 89, Tier A-)</a></li>
+      <li><a href="#pterostilbene">Pterostilbene (Score 89, Tier A-)</a></li>
+      <li><a href="#saffron">Saffron (Score 89, Tier A-)</a></li>
+      <li><a href="#spermadine">Spermadine (Score 89, Tier A-)</a></li>
+      <li><a href="#vitamin-a">Vitamin A (Score 89, Tier A-)</a></li>
+      <li><a href="#whey">Whey (Score 89, Tier A-)</a></li>
+      <li><a href="#zinc-picolinate">Zinc Picolinate (Score 89, Tier A-)</a></li>
+      <li><a href="#spirulina">Spirulina (Score 89, Tier A-)</a></li>
+      <li><a href="#alpha-gpc">Alpha-GPC (Score 88, Tier B+)</a></li>
+      <li><a href="#chlorella">Chlorella (Score 88, Tier B+)</a></li>
+      <li><a href="#citocholine">Citocholine (Score 88, Tier B+)</a></li>
+      <li><a href="#panax-ginseng">Panax Ginseng (Score 88, Tier B+)</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <section class="supplement" id="beef-organs">
+      <h2>Beef Organs</h2>
+      <div class="meta">Score: 96 &nbsp;|&nbsp; Tier: S</div>
+      <ol class="sources">
+        <li><a href="https://solsupps.com/products/beast" target="_blank" rel="noopener noreferrer">https://solsupps.com/products/beast</a></li>
+        <li><a href="https://sport.wetestyoutrust.com/supplement-search/heart-soil/beef-organs" target="_blank" rel="noopener noreferrer">https://sport.wetestyoutrust.com/supplement-search/heart-soil/beef-organs</a></li>
+        <li><a href="https://shop.michaelkummer.com/products/freeze-dried-beef-organs?selling_plan=690719883580" target="_blank" rel="noopener noreferrer">https://shop.michaelkummer.com/products/freeze-dried-beef-organs?selling_plan=690719883580</a></li>
+        <li><a href="https://ancestralsupplements.com/products/the-ancestral-starter-pack?selling_plan=5102633097" target="_blank" rel="noopener noreferrer">https://ancestralsupplements.com/products/the-ancestral-starter-pack?selling_plan=5102633097</a></li>
+      </ol>
+    </section>
+
+    <section class="supplement" id="creatine">
+      <h2>Creatine</h2>
+      <div class="meta">Score: 96 &nbsp;|&nbsp; Tier: S</div>
+      <ol class="sources">
+        <li><a href="https://www.livemomentous.com/products/creatine-monohydrate" target="_blank" rel="noopener noreferrer">https://www.livemomentous.com/products/creatine-monohydrate</a></li>
+        <li><a href="https://gognarly.com/products/creatine-powder" target="_blank" rel="noopener noreferrer">https://gognarly.com/products/creatine-powder</a></li>
+        <li><a href="https://choice.wetestyoutrust.com/supplement-search/myprotein/creatine-creapure-global-excl-usa-can" target="_blank" rel="noopener noreferrer">https://choice.wetestyoutrust.com/supplement-search/myprotein/creatine-creapure-global-excl-usa-can</a></li>
+      </ol>
+    </section>
+
+    <section class="supplement" id="carnosine">
+      <h2>Carnosine</h2>
+      <div class="meta">Score: 93 &nbsp;|&nbsp; Tier: A+</div>
+      <ol class="sources">
+        <li><a href="https://nootropicsdepot.com/l-carnosine-powder/" target="_blank" rel="noopener noreferrer">https://nootropicsdepot.com/l-carnosine-powder/</a></li>
+        <li><a href="https://nootropicsdepot.com/l-carnosine-capsules/" target="_blank" rel="noopener noreferrer">https://nootropicsdepot.com/l-carnosine-capsules/</a></li>
+        <li><a href="https://www.pureencapsulationspro.com/l-carnosine-capsules.html?size=120+capsules" target="_blank" rel="noopener noreferrer">https://www.pureencapsulationspro.com/l-carnosine-capsules.html?size=120+capsules</a></li>
+      </ol>
+    </section>
+
+    <section class="supplement" id="b12">
+      <h2>B12</h2>
+      <div class="meta">Score: 92 &nbsp;|&nbsp; Tier: A</div>
+      <ol class="sources">
+        <li><a href="https://purethera.com/products/bioactive-b12" target="_blank" rel="noopener noreferrer">https://purethera.com/products/bioactive-b12</a></li>
+        <li><a href="https://cymbiotika.com/products/b12" target="_blank" rel="noopener noreferrer">https://cymbiotika.com/products/b12</a></li>
+        <li><a href="https://globalhealing.com/products/vitamin-b12" target="_blank" rel="noopener noreferrer">https://globalhealing.com/products/vitamin-b12</a></li>
+      </ol>
+    </section>
+
+    <section class="supplement" id="b3">
+      <h2>B3</h2>
+      <div class="meta">Score: 92 &nbsp;|&nbsp; Tier: A</div>
+      <ol class="sources">
+        <li><a href="https://www.bulksupplements.com/products/niacin-vitamin-b3-pure-powder" target="_blank" rel="noopener noreferrer">https://www.bulksupplements.com/products/niacin-vitamin-b3-pure-powder</a></li>
+        <li><a href="https://www.bulksupplements.com/products/vitamin-b3-niacinamide" target="_blank" rel="noopener noreferrer">https://www.bulksupplements.com/products/vitamin-b3-niacinamide</a></li>
+      </ol>
+    </section>
+
+    <section class="supplement" id="butyrate">
+      <h2>Butyrate</h2>
+      <div class="meta">Score: 92 &nbsp;|&nbsp; Tier: A</div>
+      <ol class="sources">
+        <li><a href="https://www.professionalsupplementcenter.com/tri-butyrin-supreme-by-designs-for-health" target="_blank" rel="noopener noreferrer">https://www.professionalsupplementcenter.com/tri-butyrin-supreme-by-designs-for-health</a></li>
+        <li><a href="https://supplementhub.com/en-gb/products/tributyrin-x-90-softgels-healthy-gut" target="_blank" rel="noopener noreferrer">https://supplementhub.com/en-gb/products/tributyrin-x-90-softgels-healthy-gut</a></li>
+        <li><a href="https://bodybio.com/products/butyrate" target="_blank" rel="noopener noreferrer">https://bodybio.com/products/butyrate</a></li>
+      </ol>
+    </section>
+
+    <section class="supplement" id="cod-liver-oil">
+      <h2>Cod liver oil</h2>
+      <div class="meta">Score: 92 &nbsp;|&nbsp; Tier: A</div>
+      <ol class="sources">
+        <li><a href="https://rositarealfoods.co.uk/product/cod-liver-oil-liquid/" target="_blank" rel="noopener noreferrer">https://rositarealfoods.co.uk/product/cod-liver-oil-liquid/</a></li>
+        <li><a href="https://www.nordic.com/products/arctic-cod-liver-oil/?variant=39472186589368" target="_blank" rel="noopener noreferrer">https://www.nordic.com/products/arctic-cod-liver-oil/?variant=39472186589368</a></li>
+      </ol>
+    </section>
+
+    <section class="supplement" id="d3">
+      <h2>D3</h2>
+      <div class="meta">Score: 92 &nbsp;|&nbsp; Tier: A</div>
+      <ol class="sources">
+        <li><a href="https://www.sportsresearch.com/products/vitamin-d3-k2" target="_blank" rel="noopener noreferrer">https://www.sportsresearch.com/products/vitamin-d3-k2</a></li>
+        <li><a href="https://www.livewise.com/products/vitamin-d3-k2" target="_blank" rel="noopener noreferrer">https://www.livewise.com/products/vitamin-d3-k2</a></li>
+        <li><a href="https://www.pureencapsulationspro.com/vitamin-d3-with-k2.html" target="_blank" rel="noopener noreferrer">https://www.pureencapsulationspro.com/vitamin-d3-with-k2.html</a></li>
+        <li><a href="https://www.barebiology.com/products/unflavoured-vitamin-d3-k2-spray" target="_blank" rel="noopener noreferrer">https://www.barebiology.com/products/unflavoured-vitamin-d3-k2-spray</a></li>
+      </ol>
+    </section>
+
+    <section class="supplement" id="eaa">
+      <h2>EAA</h2>
+      <div class="meta">Score: 92 &nbsp;|&nbsp; Tier: A</div>
+      <ol class="sources">
+        <li><a href="https://bodyhealth.com/products/perfect-amino-tablets-nsf-certified-for-sport-330ct" target="_blank" rel="noopener noreferrer">https://bodyhealth.com/products/perfect-amino-tablets-nsf-certified-for-sport-330ct</a></li>
+        <li><a href="https://www.thorne.com/products/dp/amino-complex-lemon" target="_blank" rel="noopener noreferrer">https://www.thorne.com/products/dp/amino-complex-lemon</a></li>
+        <li><a href="https://nutrabio.com/products/eaa-pure" target="_blank" rel="noopener noreferrer">https://nutrabio.com/products/eaa-pure</a></li>
+        <li><a href="https://www.getkion.com/products/aminos-powder" target="_blank" rel="noopener noreferrer">https://www.getkion.com/products/aminos-powder</a></li>
+      </ol>
+    </section>
+
+    <section class="supplement" id="fish-oil">
+      <h2>Fish Oil</h2>
+      <div class="meta">Score: 92 &nbsp;|&nbsp; Tier: A</div>
+      <ol class="sources">
+        <li><a href="https://puori.com/products/o3-ultra-pure-fish-oil-capsules" target="_blank" rel="noopener noreferrer">https://puori.com/products/o3-ultra-pure-fish-oil-capsules</a></li>
+        <li><a href="https://www.barebiology.com/products/life-and-soul-daily-omega-3-capsules-1700mg?variant=44259198009502" target="_blank" rel="noopener noreferrer">https://www.barebiology.com/products/life-and-soul-daily-omega-3-capsules-1700mg?variant=44259198009502</a></li>
+        <li><a href="https://www.amazon.com/WHC-UnoCardio-Softgels-Triglyceride-concentration/dp/B00QFTGSK6" target="_blank" rel="noopener noreferrer">https://www.amazon.com/WHC-UnoCardio-Softgels-Triglyceride-concentration/dp/B00QFTGSK6</a></li>
+        <li><a href="https://wileysfinest.com/products/peak-epa" target="_blank" rel="noopener noreferrer">https://wileysfinest.com/products/peak-epa</a></li>
+      </ol>
+    </section>
+
+    <section class="supplement" id="ghk-cu">
+      <h2>GHK-Cu</h2>
+      <div class="meta">Score: 92 &nbsp;|&nbsp; Tier: A</div>
+      <ol class="sources">
+        <li><a href="https://niod.com/en-us/copper-amino-isolate-serum-3-11-cais3-serum-100368.html" target="_blank" rel="noopener noreferrer">https://niod.com/en-us/copper-amino-isolate-serum-3-11-cais3-serum-100368.html</a></li>
+        <li><a href="https://aseircustom.com/products/ghk-cu-royal-blue-serum" target="_blank" rel="noopener noreferrer">https://aseircustom.com/products/ghk-cu-royal-blue-serum</a></li>
+        <li><a href="https://store.reverseskinaging.com/3-ghk-vip-luxury-serum/" target="_blank" rel="noopener noreferrer">https://store.reverseskinaging.com/3-ghk-vip-luxury-serum/</a></li>
+      </ol>
+    </section>
+
+    <section class="supplement" id="glutathione">
+      <h2>Glutathione</h2>
+      <div class="meta">Score: 92 &nbsp;|&nbsp; Tier: A</div>
+      <ol class="sources">
+        <li><a href="https://www.researchednutritionals.com/wp-content/uploads/2022/03/Research-Alert-Tri-Fortify-REV0420.pdf" target="_blank" rel="noopener noreferrer">https://www.researchednutritionals.com/wp-content/uploads/2022/03/Research-Alert-Tri-Fortify-REV0420.pdf</a></li>
+        <li><a href="https://www.nhc.com/liposomal-glutathione-by-quicksilver-scientific" target="_blank" rel="noopener noreferrer">https://www.nhc.com/liposomal-glutathione-by-quicksilver-scientific</a></li>
+        <li><a href="https://www.vitacost.com/livon-laboratories-lypo-spheric-glutathione" target="_blank" rel="noopener noreferrer">https://www.vitacost.com/livon-laboratories-lypo-spheric-glutathione</a></li>
+      </ol>
+    </section>
+
+    <section class="supplement" id="k2">
+      <h2>K2</h2>
+      <div class="meta">Score: 92 &nbsp;|&nbsp; Tier: A</div>
+      <p>See <a href="#d3">D3</a> for recommended sources.</p>
+    </section>
+
+    <section class="supplement" id="magnesium-chloride">
+      <h2>Magnesium Chloride</h2>
+      <div class="meta">Score: 92 &nbsp;|&nbsp; Tier: A</div>
+      <ol class="sources">
+        <li><a href="https://www.smithsfoodanddrug.com/p/eidon-ionic-minerals-magnesium/0064092300008" target="_blank" rel="noopener noreferrer">https://www.smithsfoodanddrug.com/p/eidon-ionic-minerals-magnesium/0064092300008</a></li>
+        <li><a href="https://www.jaycfoods.com/p/eidon-ionic-minerals-magnesium-liquid-concentrate/0064092300024?fulfillment=PICKUP" target="_blank" rel="noopener noreferrer">https://www.jaycfoods.com/p/eidon-ionic-minerals-magnesium-liquid-concentrate/0064092300024?fulfillment=PICKUP</a></li>
+        <li><a href="https://www.ancient-minerals.com/product/magnesium-oil/" target="_blank" rel="noopener noreferrer">https://www.ancient-minerals.com/product/magnesium-oil/</a></li>
+      </ol>
+    </section>
+
+    <section class="supplement" id="magnesium-glycinate">
+      <h2>Magnesium Glycinate</h2>
+      <div class="meta">Score: 92 &nbsp;|&nbsp; Tier: A</div>
+      <ol class="sources">
+        <li><a href="https://www.kleanathlete.com/klean-magnesium.html" target="_blank" rel="noopener noreferrer">https://www.kleanathlete.com/klean-magnesium.html</a></li>
+        <li><a href="https://www.thorne.com/products/dp/magnesium-bisglycinate" target="_blank" rel="noopener noreferrer">https://www.thorne.com/products/dp/magnesium-bisglycinate</a></li>
+      </ol>
+    </section>
+
+    <section class="supplement" id="melatonin">
+      <h2>Melatonin</h2>
+      <div class="meta">Score: 92 &nbsp;|&nbsp; Tier: A</div>
+      <ol class="sources">
+        <li><a href="https://nootropicsdepot.com/melatonin-capsules/" target="_blank" rel="noopener noreferrer">https://nootropicsdepot.com/melatonin-capsules/</a></li>
+        <li><a href="https://symphonynaturalhealth.com/products/herbatonin-0-3mg" target="_blank" rel="noopener noreferrer">https://symphonynaturalhealth.com/products/herbatonin-0-3mg</a></li>
+        <li><a href="https://www.amazon.com/BulkSupplements-Melatonin-Powder-25-grams/dp/B00JV46FFU" target="_blank" rel="noopener noreferrer">https://www.amazon.com/BulkSupplements-Melatonin-Powder-25-grams/dp/B00JV46FFU</a></li>
+      </ol>
+    </section>
+
+    <section class="supplement" id="sulfurophane">
+      <h2>Sulfurophane</h2>
+      <div class="meta">Score: 92 &nbsp;|&nbsp; Tier: A</div>
+      <ol class="sources">
+        <li><a href="https://www.thorne.com/products/dp/crucera-sgs" target="_blank" rel="noopener noreferrer">https://www.thorne.com/products/dp/crucera-sgs</a></li>
+      </ol>
+    </section>
+
+    <section class="supplement" id="taurine">
+      <h2>Taurine</h2>
+      <div class="meta">Score: 92 &nbsp;|&nbsp; Tier: A</div>
+      <ol class="sources">
+        <li><a href="https://purebulk.com/products/taurine" target="_blank" rel="noopener noreferrer">https://purebulk.com/products/taurine</a></li>
+        <li><a href="https://www.nowfoods.com/products/supplements/taurine-pure-powder" target="_blank" rel="noopener noreferrer">https://www.nowfoods.com/products/supplements/taurine-pure-powder</a></li>
+        <li><a href="https://www.amazon.com/Nutricost-Taurine-Powder-500-Grams/dp/B01N8Q0N53" target="_blank" rel="noopener noreferrer">https://www.amazon.com/Nutricost-Taurine-Powder-500-Grams/dp/B01N8Q0N53</a></li>
+        <li><a href="https://www.myprotein.com/p/sports-nutrition/100-taurine-powder/10530303/" target="_blank" rel="noopener noreferrer">https://www.myprotein.com/p/sports-nutrition/100-taurine-powder/10530303/</a></li>
+      </ol>
+    </section>
+
+    <section class="supplement" id="vitamin-c">
+      <h2>Vitamin C</h2>
+      <div class="meta">Score: 92 &nbsp;|&nbsp; Tier: A</div>
+      <ol class="sources">
+        <li><a href="https://www.nutri.com/Shop/Vitamins-and-Minerals/CSALTS-Buffered-Vitamin-C-Powder-26oz/" target="_blank" rel="noopener noreferrer">https://www.nutri.com/Shop/Vitamins-and-Minerals/CSALTS-Buffered-Vitamin-C-Powder-26oz/</a></li>
+        <li><a href="https://www.getsmidge.com/products/kakadu-plum-capsules" target="_blank" rel="noopener noreferrer">https://www.getsmidge.com/products/kakadu-plum-capsules</a></li>
+        <li><a href="https://www.amazon.com/Doctors-Best-Vitamin-Quali-C-Scotland/dp/B005CD3J4O" target="_blank" rel="noopener noreferrer">https://www.amazon.com/Doctors-Best-Vitamin-Quali-C-Scotland/dp/B005CD3J4O</a></li>
+        <li><a href="https://www.amazon.com/Designs-Health-Liposomal-Vitamin-1000mg/dp/B073DKB51D" target="_blank" rel="noopener noreferrer">https://www.amazon.com/Designs-Health-Liposomal-Vitamin-1000mg/dp/B073DKB51D</a></li>
+        <li><a href="https://www.quicksilverscientific.com/products/vitamin-c" target="_blank" rel="noopener noreferrer">https://www.quicksilverscientific.com/products/vitamin-c</a></li>
+        <li><a href="https://igennus.com/products/super-vitamin-c-complex-1000mg-microencapsulated-pureway-c-with-bioflavonoids" target="_blank" rel="noopener noreferrer">https://igennus.com/products/super-vitamin-c-complex-1000mg-microencapsulated-pureway-c-with-bioflavonoids</a></li>
+      </ol>
+    </section>
+
+    <section class="supplement" id="pine-pollen">
+      <h2>Pine Pollen</h2>
+      <div class="meta">Score: 91 &nbsp;|&nbsp; Tier: A</div>
+      <ol class="sources">
+        <li><a href="https://lostempireherbs.com/product/pine-pollen-tincture/" target="_blank" rel="noopener noreferrer">https://lostempireherbs.com/product/pine-pollen-tincture/</a></li>
+        <li><a href="https://www.rawforestfoods.com/forest-manna-raw-pine-pollen-powder/" target="_blank" rel="noopener noreferrer">https://www.rawforestfoods.com/forest-manna-raw-pine-pollen-powder/</a></li>
+        <li><a href="https://lostempireherbs.com/product/pine-pollen/" target="_blank" rel="noopener noreferrer">https://lostempireherbs.com/product/pine-pollen/</a></li>
+        <li><a href="https://www.surthrival.com/products/pine-pollen-pure-potency?variant=32446226399311" target="_blank" rel="noopener noreferrer">https://www.surthrival.com/products/pine-pollen-pure-potency?variant=32446226399311</a></li>
+        <li><a href="https://barlowesherbalelixirs.com/pine-pollen" target="_blank" rel="noopener noreferrer">https://barlowesherbalelixirs.com/pine-pollen</a></li>
+      </ol>
+    </section>
+
+    <section class="supplement" id="trace-minerals">
+      <h2>Trace Minerals</h2>
+      <div class="meta">Score: 90 &nbsp;|&nbsp; Tier: A-</div>
+      <ol class="sources">
+        <li><a href="https://aussietraceminerals.com/" target="_blank" rel="noopener noreferrer">https://aussietraceminerals.com/</a></li>
+        <li><a href="https://www.traceminerals.com/blogs/nutrition/why-concentrace%C2%AE-trace-mineral-drops-is-our-best-selling-product" target="_blank" rel="noopener noreferrer">https://www.traceminerals.com/blogs/nutrition/why-concentrace%C2%AE-trace-mineral-drops-is-our-best-selling-product</a></li>
+        <li><a href="https://www.quicksilverscientific.com/products/quintessential-r-3-3-sachets" target="_blank" rel="noopener noreferrer">https://www.quicksilverscientific.com/products/quintessential-r-3-3-sachets</a></li>
+        <li><a href="https://www.amazon.com/Trace-Minerals-Liquid-Ionic-Magnesium/dp/B006NXSKFU" target="_blank" rel="noopener noreferrer">https://www.amazon.com/Trace-Minerals-Liquid-Ionic-Magnesium/dp/B006NXSKFU</a></li>
+      </ol>
+    </section>
+
+    <section class="supplement" id="algae">
+      <h2>Algae</h2>
+      <div class="meta">Score: 89 &nbsp;|&nbsp; Tier: A-</div>
+      <ol class="sources">
+        <li><a href="https://e3live.com/products/e3afa" target="_blank" rel="noopener noreferrer">https://e3live.com/products/e3afa</a></li>
+        <li><a href="https://e3live.com/products/brainon" target="_blank" rel="noopener noreferrer">https://e3live.com/products/brainon</a></li>
+        <li><a href="https://thesynergycompany.com/products/blue-green-algae-capsules" target="_blank" rel="noopener noreferrer">https://thesynergycompany.com/products/blue-green-algae-capsules</a></li>
+        <li><a href="https://radiantlifecatalog.com/organic-blue-green-algae/" target="_blank" rel="noopener noreferrer">https://radiantlifecatalog.com/organic-blue-green-algae/</a></li>
+      </ol>
+    </section>
+
+    <section class="supplement" id="akkermansia">
+      <h2>Akkermansia</h2>
+      <div class="meta">Score: 89 &nbsp;|&nbsp; Tier: A-</div>
+      <ol class="sources">
+        <li><a href="https://layerorigin.com/products/akkermansia-muciniphila-daily-probiotic-with-hmo-and-resistant-starch" target="_blank" rel="noopener noreferrer">https://layerorigin.com/products/akkermansia-muciniphila-daily-probiotic-with-hmo-and-resistant-starch</a></li>
+      </ol>
+    </section>
+
+    <section class="supplement" id="astaxanthin">
+      <h2>Astaxanthin</h2>
+      <div class="meta">Score: 89 &nbsp;|&nbsp; Tier: A-</div>
+      <ol class="sources">
+        <li><a href="https://doublewoodsupplements.store/products/astaxanthin?_pos=1&_psq=asta&_ss=e&_v=1.0" target="_blank" rel="noopener noreferrer">https://doublewoodsupplements.store/products/astaxanthin?_pos=1&_psq=asta&_ss=e&_v=1.0</a></li>
+        <li><a href="https://www.sportsresearch.com/products/astaxanthin-12mg" target="_blank" rel="noopener noreferrer">https://www.sportsresearch.com/products/astaxanthin-12mg</a></li>
+        <li><a href="https://www.costco.com/trunature-astaxanthin-6-mg.%2C-100-softgels.product.100397602.html" target="_blank" rel="noopener noreferrer">https://www.costco.com/trunature-astaxanthin-6-mg.%2C-100-softgels.product.100397602.html</a></li>
+        <li><a href="https://valasta.net/products/copy-of-valasta-liquid-astaxanthin-100ml?_pos=1&_psq=astax&_ss=e&_v=1.0" target="_blank" rel="noopener noreferrer">https://valasta.net/products/copy-of-valasta-liquid-astaxanthin-100ml?_pos=1&_psq=astax&_ss=e&_v=1.0</a></li>
+      </ol>
+    </section>
+
+    <section class="supplement" id="bee-pollen">
+      <h2>Bee Pollen</h2>
+      <div class="meta">Score: 89 &nbsp;|&nbsp; Tier: A-</div>
+      <ol class="sources">
+        <li><a href="https://www.beekeepersnaturals.com/products/b-fueled-bee-pollen" target="_blank" rel="noopener noreferrer">https://www.beekeepersnaturals.com/products/b-fueled-bee-pollen</a></li>
+        <li><a href="https://thehoneyland.com/en/collections/organic-bee-pollen" target="_blank" rel="noopener noreferrer">https://thehoneyland.com/en/collections/organic-bee-pollen</a></li>
+        <li><a href="https://manukahoneyofnz.com/products/multi-pack-nz-bee-pollen-granules-abeeco" target="_blank" rel="noopener noreferrer">https://manukahoneyofnz.com/products/multi-pack-nz-bee-pollen-granules-abeeco</a></li>
+      </ol>
+    </section>
+
+    <section class="supplement" id="bpc-157">
+      <h2>BPC-157</h2>
+      <div class="meta">Score: 89 &nbsp;|&nbsp; Tier: A-</div>
+      <ol class="sources">
+        <li><a href="https://www.sigmaaldrich.com/GB/en/product/sigma/sml1719" target="_blank" rel="noopener noreferrer">https://www.sigmaaldrich.com/GB/en/product/sigma/sml1719</a></li>
+        <li><a href="https://www.peptidepros.net/product/bpc-157-5mg/" target="_blank" rel="noopener noreferrer">https://www.peptidepros.net/product/bpc-157-5mg/</a></li>
+        <li><a href="https://www.peptidesciences.com/bpc-157-tb-500-10mg-blend" target="_blank" rel="noopener noreferrer">https://www.peptidesciences.com/bpc-157-tb-500-10mg-blend</a></li>
+      </ol>
+    </section>
+
+    <section class="supplement" id="c60">
+      <h2>C60</h2>
+      <div class="meta">Score: 89 &nbsp;|&nbsp; Tier: A-</div>
+      <ol class="sources">
+        <li><a href="https://www.c60evo.com/product/c60-evo-olive-4oz/" target="_blank" rel="noopener noreferrer">https://www.c60evo.com/product/c60-evo-olive-4oz/</a></li>
+        <li><a href="https://www.sesres.com/product/fine-grade-carbon-60-99-99-in-iliada-olive-oil-extra-virgin-organic-case-of-12-1440ml-total/" target="_blank" rel="noopener noreferrer">https://www.sesres.com/product/fine-grade-carbon-60-99-99-in-iliada-olive-oil-extra-virgin-organic-case-of-12-1440ml-total/</a></li>
+        <li><a href="https://longevity-essentials.com/products/carbon-60-organic-sunflower-oiltm-45-day-supply-bob-greska-c60" target="_blank" rel="noopener noreferrer">https://longevity-essentials.com/products/carbon-60-organic-sunflower-oiltm-45-day-supply-bob-greska-c60</a></li>
+      </ol>
+    </section>
+
+    <section class="supplement" id="collagen">
+      <h2>Collagen</h2>
+      <div class="meta">Score: 89 &nbsp;|&nbsp; Tier: A-</div>
+      <ol class="sources">
+        <li><a href="https://ca.iherb.com/pr/further-food-wild-caught-marine-collagen-unflavored-5-93-oz-168-g/141335" target="_blank" rel="noopener noreferrer">https://ca.iherb.com/pr/further-food-wild-caught-marine-collagen-unflavored-5-93-oz-168-g/141335</a></li>
+        <li><a href="https://greatlakeswellness.com/products/16oz-collagen-peptides?selling_plan=1241153671" target="_blank" rel="noopener noreferrer">https://greatlakeswellness.com/products/16oz-collagen-peptides?selling_plan=1241153671</a></li>
+        <li><a href="https://www.sportsresearch.com/products/collagen-peptides-hydrolyzed-gelatin-2" target="_blank" rel="noopener noreferrer">https://www.sportsresearch.com/products/collagen-peptides-hydrolyzed-gelatin-2</a></li>
+        <li><a href="https://cleanlabelproject.org/transparency-project/cp1-collagen/" target="_blank" rel="noopener noreferrer">https://cleanlabelproject.org/transparency-project/cp1-collagen/</a></li>
+        <li><a href="https://www.vitalproteins.com/products/daily-foundational-support" target="_blank" rel="noopener noreferrer">https://www.vitalproteins.com/products/daily-foundational-support</a></li>
+        <li><a href="https://www.livemomentous.com/products/collagen-peptides" target="_blank" rel="noopener noreferrer">https://www.livemomentous.com/products/collagen-peptides</a></li>
+        <li><a href="https://pillarperformance.us/products/collagen-repair" target="_blank" rel="noopener noreferrer">https://pillarperformance.us/products/collagen-repair</a></li>
+      </ol>
+    </section>
+
+    <section class="supplement" id="magnesium-taurate">
+      <h2>Magnesium Taurate</h2>
+      <div class="meta">Score: 89 &nbsp;|&nbsp; Tier: A-</div>
+      <ol class="sources">
+        <li><a href="https://viridian-nutrition.com/products/magnesium-taurate" target="_blank" rel="noopener noreferrer">https://viridian-nutrition.com/products/magnesium-taurate</a></li>
+        <li><a href="https://peaksupps.co.uk/products/magnesium-taurate-powder" target="_blank" rel="noopener noreferrer">https://peaksupps.co.uk/products/magnesium-taurate-powder</a></li>
+      </ol>
+    </section>
+
+    <section class="supplement" id="probiotics">
+      <h2>Probiotics</h2>
+      <div class="meta">Score: 89 &nbsp;|&nbsp; Tier: A-</div>
+      <ol class="sources">
+        <li><a href="https://purethera.com/products/saccharomyces-boulardii" target="_blank" rel="noopener noreferrer">https://purethera.com/products/saccharomyces-boulardii</a></li>
+        <li><a href="https://www.amazon.com/Smidge%C2%AE-Sensitive-Probiotic-Powder-GutPro%C2%AE/dp/B00D8TMSIC" target="_blank" rel="noopener noreferrer">https://www.amazon.com/Smidge%C2%AE-Sensitive-Probiotic-Powder-GutPro%C2%AE/dp/B00D8TMSIC</a></li>
+        <li><a href="https://purethera.com/products/power-probiotic-daily-30-acid-resistant-vegetable-capsules?selling_plan=" target="_blank" rel="noopener noreferrer">https://purethera.com/products/power-probiotic-daily-30-acid-resistant-vegetable-capsules?selling_plan=</a></li>
+        <li><a href="https://justthrivehealth.com/products/probiotic?selling_plan=837910593" target="_blank" rel="noopener noreferrer">https://justthrivehealth.com/products/probiotic?selling_plan=837910593</a></li>
+        <li><a href="https://seed.com/daily-synbiotic" target="_blank" rel="noopener noreferrer">https://seed.com/daily-synbiotic</a></li>
+      </ol>
+    </section>
+
+    <section class="supplement" id="pterostilbene">
+      <h2>Pterostilbene</h2>
+      <div class="meta">Score: 89 &nbsp;|&nbsp; Tier: A-</div>
+      <ol class="sources">
+        <li><a href="https://vitality-pro.com/product/advanced-pterostilbene-60/" target="_blank" rel="noopener noreferrer">https://vitality-pro.com/product/advanced-pterostilbene-60/</a></li>
+        <li><a href="https://www.purenootropics.net/products/pterostilbene" target="_blank" rel="noopener noreferrer">https://www.purenootropics.net/products/pterostilbene</a></li>
+      </ol>
+    </section>
+
+    <section class="supplement" id="saffron">
+      <h2>Saffron</h2>
+      <div class="meta">Score: 89 &nbsp;|&nbsp; Tier: A-</div>
+      <ol class="sources">
+        <li><a href="https://www.amazon.com/Saffron-Supplements-Extract-Capsules-Micronutrients/dp/B097TKQSQD" target="_blank" rel="noopener noreferrer">https://www.amazon.com/Saffron-Supplements-Extract-Capsules-Micronutrients/dp/B097TKQSQD</a></li>
+        <li><a href="https://mindnutrition.com/nootropics/affron-saffron-extract-capsules#lg=1&amp;slide=1" target="_blank" rel="noopener noreferrer">https://mindnutrition.com/nootropics/affron-saffron-extract-capsules#lg=1&amp;slide=1</a></li>
+        <li><a href="https://ca.iherb.com/pr/emerald-laboratories-elevated-mood-with-affron-saffron-extract-60-vegetable-caps/116437" target="_blank" rel="noopener noreferrer">https://ca.iherb.com/pr/emerald-laboratories-elevated-mood-with-affron-saffron-extract-60-vegetable-caps/116437</a></li>
+      </ol>
+    </section>
+
+    <section class="supplement" id="spermadine">
+      <h2>Spermadine</h2>
+      <div class="meta">Score: 89 &nbsp;|&nbsp; Tier: A-</div>
+      <ol class="sources">
+        <li><a href="https://oxfordhealthspan.com/products/primeadine%C2%AE-gf-gluten-free-spermidine-supplement-2-bottles-2-month-supply" target="_blank" rel="noopener noreferrer">https://oxfordhealthspan.com/products/primeadine%C2%AE-gf-gluten-free-spermidine-supplement-2-bottles-2-month-supply</a></li>
+        <li><a href="https://oxfordhealthspan.com/products/spermidine-supplement-primeadine-original-1-bottle-30-day-supply" target="_blank" rel="noopener noreferrer">https://oxfordhealthspan.com/products/spermidine-supplement-primeadine-original-1-bottle-30-day-supply</a></li>
+      </ol>
+    </section>
+
+    <section class="supplement" id="vitamin-a">
+      <h2>Vitamin A</h2>
+      <div class="meta">Score: 89 &nbsp;|&nbsp; Tier: A-</div>
+      <ol class="sources">
+        <li><a href="https://www.amazon.com/Designs-Health-ADK-Evail-Tocotrienols/dp/B08NL9P8G6" target="_blank" rel="noopener noreferrer">https://www.amazon.com/Designs-Health-ADK-Evail-Tocotrienols/dp/B08NL9P8G6</a></li>
+        <li><a href="https://healthnatura.com/simply-a-2-500-i-u-1oz/" target="_blank" rel="noopener noreferrer">https://healthnatura.com/simply-a-2-500-i-u-1oz/</a></li>
+        <li><a href="https://www.feelgood-shop.com/en/detail/0195704040527e9bb53b56ded37b51a8" target="_blank" rel="noopener noreferrer">https://www.feelgood-shop.com/en/detail/0195704040527e9bb53b56ded37b51a8</a></li>
+        <li><a href="https://www.vitalabo.com/vitamaze/vitamin-a-drops" target="_blank" rel="noopener noreferrer">https://www.vitalabo.com/vitamaze/vitamin-a-drops</a></li>
+      </ol>
+    </section>
+
+    <section class="supplement" id="whey">
+      <h2>Whey</h2>
+      <div class="meta">Score: 89 &nbsp;|&nbsp; Tier: A-</div>
+      <ol class="sources">
+        <li><a href="https://www.equipfoods.com/blogs/news/third-party-testing-for-supplements" target="_blank" rel="noopener noreferrer">https://www.equipfoods.com/blogs/news/third-party-testing-for-supplements</a></li>
+      </ol>
+    </section>
+
+    <section class="supplement" id="zinc-picolinate">
+      <h2>Zinc Picolinate</h2>
+      <div class="meta">Score: 89 &nbsp;|&nbsp; Tier: A-</div>
+      <ol class="sources">
+        <li><a href="https://www.metabolics.com/products/zinc-picolinate-capsules" target="_blank" rel="noopener noreferrer">https://www.metabolics.com/products/zinc-picolinate-capsules</a></li>
+        <li><a href="https://biogena.com/en/products/zinc-picolinate-15_p_51936" target="_blank" rel="noopener noreferrer">https://biogena.com/en/products/zinc-picolinate-15_p_51936</a></li>
+        <li><a href="https://supplementsstudio.com/products/quercetin-with-bromelain-zinc-vitamin-c?variant=41014026272811" target="_blank" rel="noopener noreferrer">https://supplementsstudio.com/products/quercetin-with-bromelain-zinc-vitamin-c?variant=41014026272811</a></li>
+      </ol>
+    </section>
+
+    <section class="supplement" id="spirulina">
+      <h2>Spirulina</h2>
+      <div class="meta">Score: 89 &nbsp;|&nbsp; Tier: A-</div>
+      <ol class="sources">
+        <li><a href="https://energybits.com/products/vitalitybits-large-canister" target="_blank" rel="noopener noreferrer">https://energybits.com/products/vitalitybits-large-canister</a></li>
+        <li><a href="https://sevenhillswholefoods.com/products/organic-chlorella-spirulina-tablets" target="_blank" rel="noopener noreferrer">https://sevenhillswholefoods.com/products/organic-chlorella-spirulina-tablets</a></li>
+        <li><a href="https://naturecomplete.com/certified-organic-chlorella-spirulina-2-in-1-tablets-180-x-500mg/" target="_blank" rel="noopener noreferrer">https://naturecomplete.com/certified-organic-chlorella-spirulina-2-in-1-tablets-180-x-500mg/</a></li>
+        <li><a href="https://www.gosupps.com/rainforest-foods-organic-combined-chlorella-and-spirulina-tablets-500mg-pack-of-1500-300-count-pack-of-5.html" target="_blank" rel="noopener noreferrer">https://www.gosupps.com/rainforest-foods-organic-combined-chlorella-and-spirulina-tablets-500mg-pack-of-1500-300-count-pack-of-5.html</a></li>
+      </ol>
+    </section>
+
+    <section class="supplement" id="alpha-gpc">
+      <h2>Alpha-GPC</h2>
+      <div class="meta">Score: 88 &nbsp;|&nbsp; Tier: B+</div>
+      <ol class="sources">
+        <li><a href="https://ca.iherb.com/pr/designs-for-health-designs-for-sport-gpc-liquid-600-mg-2-fl-oz-59-ml/149261" target="_blank" rel="noopener noreferrer">https://ca.iherb.com/pr/designs-for-health-designs-for-sport-gpc-liquid-600-mg-2-fl-oz-59-ml/149261</a></li>
+        <li><a href="https://www.pureencapsulationspro.com/media/Alpha_GPC.pdf" target="_blank" rel="noopener noreferrer">https://www.pureencapsulationspro.com/media/Alpha_GPC.pdf</a></li>
+      </ol>
+    </section>
+
+    <section class="supplement" id="chlorella">
+      <h2>Chlorella</h2>
+      <div class="meta">Score: 88 &nbsp;|&nbsp; Tier: B+</div>
+      <p>See <a href="#spirulina">Spirulina</a> for recommended sources.</p>
+    </section>
+
+    <section class="supplement" id="citocholine">
+      <h2>Citocholine</h2>
+      <div class="meta">Score: 88 &nbsp;|&nbsp; Tier: B+</div>
+      <ol class="sources">
+        <li><a href="https://www.british-supplements.net/products/clean-cdp-choline-citicoline-355mg-per-veg-cap-very-rare?variant=27884613763146" target="_blank" rel="noopener noreferrer">https://www.british-supplements.net/products/clean-cdp-choline-citicoline-355mg-per-veg-cap-very-rare?variant=27884613763146</a></li>
+        <li><a href="https://cyos.online/product/all-products/powders/citicoline-cdp-choline-powder/" target="_blank" rel="noopener noreferrer">https://cyos.online/product/all-products/powders/citicoline-cdp-choline-powder/</a></li>
+        <li><a href="https://nootropicsdepot.com/cognizin-citicoline-powder/" target="_blank" rel="noopener noreferrer">https://nootropicsdepot.com/cognizin-citicoline-powder/</a></li>
+        <li><a href="https://mindnutrition.com/nootropics/citicoline-cdp-powder" target="_blank" rel="noopener noreferrer">https://mindnutrition.com/nootropics/citicoline-cdp-powder</a></li>
+      </ol>
+    </section>
+
+    <section class="supplement" id="panax-ginseng">
+      <h2>Panax Ginseng</h2>
+      <div class="meta">Score: 88 &nbsp;|&nbsp; Tier: B+</div>
+      <ol class="sources">
+        <li><a href="https://jungkwanjang.us/products/legacy-extract-jar-copy" target="_blank" rel="noopener noreferrer">https://jungkwanjang.us/products/legacy-extract-jar-copy</a></li>
+        <li><a href="https://jungkwanjang.us/products/everytime-korean-red-ginseng-extract-liquid-stick-3000mg-jungkwanjang" target="_blank" rel="noopener noreferrer">https://jungkwanjang.us/products/everytime-korean-red-ginseng-extract-liquid-stick-3000mg-jungkwanjang</a></li>
+        <li><a href="https://www.amazon.com/JUNG-KWAN-JANG-Supplements-Supplement/dp/B0DFJGYJK5" target="_blank" rel="noopener noreferrer">https://www.amazon.com/JUNG-KWAN-JANG-Supplements-Supplement/dp/B0DFJGYJK5</a></li>
+        <li><a href="https://www.farmacopia.net/products/enzyme-fermented-ginseng" target="_blank" rel="noopener noreferrer">https://www.farmacopia.net/products/enzyme-fermented-ginseng</a></li>
+      </ol>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <script>
+    L_NO_TOUCH = false;
+    L_DISABLE_3D = false;
+  </script>
+
+  <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+  <style>#map_sov {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet.js"></script>
+  <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet.css"/>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"/>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+
+  <meta name="viewport" content="width=device-width,
+        initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+</head>
+<body>
+
+<!-- Legend -->
+<div style="position: fixed; bottom: 24px; left: 24px; z-index: 9999;
+            background: rgba(255,255,255,0.94); padding: 10px 12px; border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Inter, Helvetica, Arial;
+            font-size: 13px; line-height: 1.4;">
+  <div style="font-weight: 600; margin-bottom: 6px;">Sovereignty Score Gradient</div>
+  <div style="display:flex; align-items:center; gap:8px;">
+    <div style="width:18px; height:12px; background:#F7931A; border:1px solid #00000022;"></div>
+    <div>Min: <b>40</b></div>
+    <div style="width:120px; height:10px; background:linear-gradient(90deg, #F7931A, #00C853); border:1px solid #00000022;"></div>
+    <div>Max: <b>78</b></div>
+    <div style="width:18px; height:12px; background:#00C853; border:1px solid #00000022;"></div>
+  </div>
+  <div style="margin-top:6px; color:#333;"></div>
+</div>
+
+<!-- Title -->
+<div style="position: fixed; top: 10px; left: 50%; transform: translateX(-50%);
+            z-index: 9999; background: rgba(255,255,255,0.94); padding: 8px 12px;
+            border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Inter, Helvetica, Arial;
+            font-size: 16px; font-weight: 600;">
+Sovereignty Map — Sov Stack Alignment (Highest Scoring Nodes in the World)
+
+</div>
+
+<div id="map_sov"></div>
+
+<script>
+  var map_sov = L.map("map_sov", {
+    center: [20.0, 0.0],
+    crs: L.CRS.EPSG3857,
+    zoom: 2,
+    zoomControl: true,
+    preferCanvas: false
+  });
+  L.control.scale().addTo(map_sov);
+
+  var tile_layer = L.tileLayer(
+    "https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png",
+    {
+      attribution: "&copy; <a href=\"http://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors &copy; <a href=\"http://cartodb.com/attributions\">CartoDB</a>",
+      detectRetina: false,
+      maxNativeZoom: 18,
+      maxZoom: 18,
+      minZoom: 0,
+      noWrap: false,
+      opacity: 1,
+      subdomains: "abc",
+      tms: false
+    }
+  ).addTo(map_sov);
+
+  var minScore = 40;
+  var maxScore = 78;
+
+  function applyGamma(t, gamma) {
+    return Math.pow(t, gamma);
+  }
+
+  // Map score [min,max] to color from orange (#F7931A) to green (#00C853)
+  function getColor(score) {
+    var t = (score - minScore) / (maxScore - minScore);
+    t = Math.max(0, Math.min(1, t));
+    t = applyGamma(t, 2.0); // gamma to avoid "all green"
+
+    var r1 = 247, g1 = 147, b1 = 26;   // low (orange)
+    var r2 = 0,   g2 = 200, b2 = 83;   // high (green)
+
+    var r = Math.round(r1 + t * (r2 - r1));
+    var g = Math.round(g1 + t * (g2 - g1));
+    var b = Math.round(b1 + t * (b2 - b1));
+
+    return "rgb(" + r + "," + g + "," + b + ")";
+  }
+
+  // Marker radius (visual weight)
+  function getRadius(score) {
+    var t = (score - minScore) / (maxScore - minScore);
+    t = Math.max(0, Math.min(1, t));
+    var minR = 8;
+    var maxR = 14;
+    return minR + t * (maxR - minR);
+  }
+
+  var locations = [
+    {
+      name: "Wyoming (USA)",
+      score: 78,
+      coords: [43.07597, -107.290283],
+      short: "Best overall US Sov node: strong physical substrate + legal tooling, still under US imperial AML.",
+      pros: [
+        "Big land, low density, decent water; ranch / homestead culture.",
+        "No state income tax; strong LLC / trust / DAO regimes for BTC entities.",
+        "Culturally tolerant of off-grid, prepper, 'cowboy Bitcoiner' archetypes."
+      ],
+      risks: [
+        "Full exposure to US federal AML/FATCA/OFAC and any future CBDC/ID regime.",
+        "Harsh winters and wind; resilience costs more than it seems.",
+        "Legal visibility: Wyoming entities are very legible to US courts."
+      ],
+      uses: [
+        "Primary US physical base + structuring hub for BTC-native families.",
+        "HQ for compliant-but-hardcore Bitcoin infra (mining, DAOs, services)."
+      ],
+      nonUses: [
+        "Not a privacy/anonymity haven against serious US attention.",
+        "Not ideal for cutting fiat/US exposure entirely."
+      ]
+    },
+    {
+      name: "Montana (USA)",
+      score: 75,
+      coords: [46.8797, -110.3626],
+      short: "Harsh frontier: excellent land/food/cover, weak as a legal or financial hub.",
+      pros: [
+        "Mountains, forests, rivers; strong hunting and wood/heat profile.",
+        "Low population density, pockets with very light enforcement.",
+        "Good gun culture and 'leave us alone' attitude in many areas."
+      ],
+      risks: [
+        "Full US AML/FATCA environment; no legal escape.",
+        "Long, cold winters; remote areas with thin infrastructure.",
+        "Rising land prices in attractive rural pockets."
+      ],
+      uses: [
+        "Deep physical base for hardy homestead families.",
+        "Retreat / bug-out node paired with offshore or other structuring hubs."
+      ],
+      nonUses: [
+        "Not a primary legal shell jurisdiction.",
+        "Not ideal for people needing easy city-style infrastructure or care."
+      ]
+    },
+    {
+      name: "Idaho (USA)",
+      score: 70,
+      coords: [44.1, -114.7],
+      short: "Solid food and land base; some cultural friction and price pressure.",
+      pros: [
+        "Fertile valleys and irrigation; strong small-farm potential.",
+        "Mountain backcountry for concealment and hunting.",
+        "Strong pro-gun, pro-independence culture in many regions."
+      ],
+      risks: [
+        "Influx from coastal states driving price and political shifts.",
+        "Conservative religious belt may dislike overt 'weird sovereignty'.",
+        "Standard US AML/ID; no special legal advantages."
+      ],
+      uses: [
+        "Family homestead / small farm with BTC as savings unit.",
+        "Physical node for food + community; legal/financial layers elsewhere."
+      ],
+      nonUses: [
+        "Not a premier jurisdiction for advanced entity or DAO structuring.",
+        "Not ideal for loudly ideological or visibly radical projects."
+      ]
+    },
+    {
+      name: "Alaska (USA)",
+      score: 72,
+      coords: [64.2008, -149.4937],
+      short: "Maximum wilderness sovereignty; logistics and climate are the price.",
+      pros: [
+        "Huge wilderness, clean water, fish, timber, and local energy.",
+        "Culture that accepts bush living and off-grid cabins.",
+        "Good micro-hydro, wind, and wood heating potential."
+      ],
+      risks: [
+        "Logistics dependence on imperial transport and imports.",
+        "Brutal climate and darkness; strong psychological demands.",
+        "Distance from rest of network/family for emergencies."
+      ],
+      uses: [
+        "High-commitment frontier base for a resilient clan.",
+        "Experimental 'end-of-world' outpost paired with more accessible nodes."
+      ],
+      nonUses: [
+        "Not ideal for older/vulnerable people without serious medical planning.",
+        "Not a primary business or network hub."
+      ]
+    },
+    {
+      name: "South Dakota (USA)",
+      score: 68,
+      coords: [44.5, -100.0],
+      short: "Superb asset-protection and structuring; moderate physical sovereignty.",
+      pros: [
+        "Premier US trust/asset-protection locale.",
+        "No state income tax; very business-friendly legal regime.",
+        "Rural land still reasonably available."
+      ],
+      risks: [
+        "Less wilderness cover than WY/MT; more open plains.",
+        "Fully within US AML/FATCA; structures are legible and attachable.",
+        "More 'normal Midwest' culture; less tolerance for extreme weirdness."
+      ],
+      uses: [
+        "Entities, trusts, and estate planning for BTC wealth.",
+        "Paper shield plus moderate rural base."
+      ],
+      nonUses: [
+        "Not ideal for deep off-grid sovereignty.",
+        "Not a ghost zone; everything tends to be neat and on-paper."
+      ]
+    },
+    {
+      name: "Texas (USA)",
+      score: 73,
+      coords: [31.0, -100.0],
+      short: "Energy-sovereign megaregion; great for mining and business, heavy climate tax.",
+      pros: [
+        "Massive oil/gas/solar/wind resources; cheap energy in many pockets.",
+        "Strong gun rights and 'don’t tread on me' ethos.",
+        "No state income tax; large BTC-mining and Bitcoin ecosystem."
+      ],
+      risks: [
+        "Extreme heat, drought, storms; water stress in some basins.",
+        "Rapid urbanization and surveillance in big cities.",
+        "Political volatility and state–federal tug-of-war."
+      ],
+      uses: [
+        "Bitcoin mining, energy-linked ventures, and Lightning infrastructure.",
+        "Network-rich physical base in carefully chosen rural/small-town areas."
+      ],
+      nonUses: [
+        "Not a low-visibility hideout if you sit in major metros.",
+        "Not ideal as sole base for people sensitive to heat/climate stress."
+      ]
+    },
+    {
+      name: "Tennessee (USA)",
+      score: 60,
+      coords: [35.8, -86.4],
+      short: "Comfortable mid-sovereignty: livable, moderate, not hardcore.",
+      pros: [
+        "Good rainfall and moderate climate; useful for gardens/small farms.",
+        "Reasonable cost of living, access to infrastructure and airports.",
+        "Historically favorable personal tax regime."
+      ],
+      risks: [
+        "Conservative culture; limited tolerance for radical 'sovereign weirdness'.",
+        "No special legal/regulatory advantages for BTC.",
+        "Risk of gradual assimilation into mainstream consumer life."
+      ],
+      uses: [
+        "Soft homestead for families wanting some sovereignty near normal society.",
+        "Satellite node for people doing business in bigger US markets."
+      ],
+      nonUses: [
+        "Not a 'doomsday sovereign HQ'.",
+        "Not ideal for highly experimental parallel communities."
+      ]
+    },
+    {
+      name: "New Hampshire (USA)",
+      score: 67,
+      coords: [43.8, -71.6],
+      short: "High-signal liberty enclave; tight physical scale.",
+      pros: [
+        "Free State Project and libertarian clusters; pro-BTC, pro-freedom culture.",
+        "Forests, lakes, some rural backcountry; still drivable to larger markets.",
+        "State-level policy sometimes pushed in pro-freedom directions."
+      ],
+      risks: [
+        "Limited land area; less deep-rural anonymity vs big Western states.",
+        "Cold winters; short growing season.",
+        "Embedded in wider New England cultural/political environment."
+      ],
+      uses: [
+        "Network node and 'liberty lab' for activism and ideological networking.",
+        "Small homesteads for people wanting both community and some land."
+      ],
+      nonUses: [
+        "Not ideal for large sovereign compounds or stealth operations.",
+        "Not suitable if you need lots of cheap land and serious isolation."
+      ]
+    },
+    {
+      name: "West Virginia (USA)",
+      score: 65,
+      coords: [38.6, -80.6],
+      short: "Cheap, rugged camouflage; institutional fragility is the cost.",
+      pros: [
+        "Forested hills, hollers, rivers; plenty of water and firewood.",
+        "Very low land costs in many areas; lots of concealment potential.",
+        "Culture used to roughness and DIY survival."
+      ],
+      risks: [
+        "Economic underdevelopment; drug issues in some regions.",
+        "Uneven governance and possible petty corruption.",
+        "Decent healthcare/services often far away."
+      ],
+      uses: [
+        "Low-budget stealth base if you fit local working-class culture.",
+        "Backup retreat node for people anchored in stronger jurisdictions."
+      ],
+      nonUses: [
+        "Not ideal as only long-term base if you need stable institutions.",
+        "Not a clean hub for serious BTC business or wealth management."
+      ]
+    },
+    {
+      name: "Uruguay",
+      score: 74,
+      coords: [-32.5228, -55.7658],
+      short: "Temperate, stable, liberal-ish; regulated but not hostile BTC environment.",
+      pros: [
+        "Great agriculture and climate; physically strong for food/water.",
+        "Politically stable, low regional war risk.",
+        "Clear virtual asset regulation under the Central Bank."
+      ],
+      risks: [
+        "VASPs under AML supervision; regulated rails are fully visible.",
+        "Moderate ESG/IMF alignment; Synthetic creep via regulation, not chaos.",
+        "Spanish integration required outside expat circles."
+      ],
+      uses: [
+        "Primary physical base for BTC families operating mostly above-board.",
+        "HQ for regulated BTC services and rural sovereign communities."
+      ],
+      nonUses: [
+        "Not ideal for deep privacy coin-operations.",
+        "Not for people wanting zero contact with AML/Travel-Rule structures."
+      ]
+    },
+    {
+      name: "Argentina",
+      score: 62,
+      coords: [-38.4161, -63.6167],
+      short: "Physical/cultural Eden, macro-financial chaos.",
+      pros: [
+        "World-class land, water, and climate diversity.",
+        "Culturally tolerant of eccentric, independent types.",
+        "Big informal economy; BTC used as hedge by many."
+      ],
+      risks: [
+        "Inflation, capital controls, and IMF programs are recurrent.",
+        "Increasing crypto disclosure/tax rules; state hungry for revenue.",
+        "Political volatility and periodic social unrest."
+      ],
+      uses: [
+        "Physical sanctuary for resilient families with external redundancy.",
+        "Lab for learning to thrive under chronic collapse conditions."
+      ],
+      nonUses: [
+        "Not a safe primary financial or legal hub.",
+        "Not ideal for fragile or highly risk-averse people."
+      ]
+    },
+    {
+      name: "Paraguay",
+      score: 69,
+      coords: [-23.4425, -58.4438],
+      short: "Energy + land backfield; powerful if you have deep local intel.",
+      pros: [
+        "Major hydropower; strong candidate for BTC mining/energy workloads.",
+        "Fertile land, low population density; plenty of space.",
+        "Less global attention than larger neighbors."
+      ],
+      risks: [
+        "Corruption and institutional fragility; informal power brokers matter.",
+        "In Brazil’s shadow; may follow regional regulatory moves.",
+        "Crime/smuggling corridors require careful siting."
+      ],
+      uses: [
+        "Agro + energy physical base with BTC mining/processing.",
+        "Production hinterland within a multi-country SovStack."
+      ],
+      nonUses: [
+        "Not ideal as a clean legal/financial front-end.",
+        "Not for people unwilling to embed locally and speak the languages."
+      ]
+    },
+    {
+      name: "Chile",
+      score: 58,
+      coords: [-35.6751, -71.5430],
+      short: "Great micro-regions; strong candidate for ESG/CBDC model state.",
+      pros: [
+        "Central valley and southern regions excellent for food and water.",
+        "Historically strong institutions and infrastructure.",
+        "Access to Pacific trade routes and global markets."
+      ],
+      risks: [
+        "Highly digital, technocratic, ESG-leaning policy elite.",
+        "Likely early mover in climate/CBDC/ID integration.",
+        "Polarized politics and constitutional churn."
+      ],
+      uses: [
+        "Orderly, comfortable physical base for someone okay with high regulation.",
+        "Base for regulated BTC/tech ventures aimed at mainstream users."
+      ],
+      nonUses: [
+        "Not suitable if you want to escape ESG, CBDC, and strong IDs.",
+        "Not a refuge for adversarial privacy-tech activity."
+      ]
+    },
+    {
+      name: "Costa Rica",
+      score: 71,
+      coords: [9.7489, -83.7534],
+      short: "Eco-sovereign paradise with AML-compliant rails.",
+      pros: [
+        "Outstanding natural abundance and varied microclimates.",
+        "Long tradition of alt-lifestyle communities, expats, and peace.",
+        "BTC legal for private use and settlements."
+      ],
+      risks: [
+        "VASP bill pushes providers into FATF-aligned AML registration.",
+        "Tourism/expat economy can become a target for taxes/regulation.",
+        "Spanish proficiency needed outside bubbles."
+      ],
+      uses: [
+        "Physical/ecological base + sovereign community building.",
+        "Health/nature/homeschool/homestead focused lifestyle with P2P BTC."
+      ],
+      nonUses: [
+        "Not for large anonymous BTC operations or opaque rails.",
+        "Not ideal as main jurisdiction for regulated financial infra (heavy compliance)."
+      ]
+    },
+    {
+      name: "Panama",
+      score: 55,
+      coords: [8.538, -80.7821],
+      short: "Territorial, compliant financial adapter—not a secrecy haven.",
+      pros: [
+        "Territorial tax regime; many foreign-sourced income streams untaxed locally.",
+        "Major banking and corporate hub; strong professional services.",
+        "Good connectivity and logistical position."
+      ],
+      risks: [
+        "Cleaned up AML to exit grey lists; now hyper-compliant and monitored.",
+        "Banks skittish around BTC-heavy or unusual flows.",
+        "Small, unequal country; some crime and political noise."
+      ],
+      uses: [
+        "Clean legal shell and fiat interface for global BTC actors.",
+        "Banking and company front-end to talk to legacy system."
+      ],
+      nonUses: [
+        "Not a ghost or secrecy jurisdiction.",
+        "Not ideal as a primary physical base for food/water homesteading."
+      ]
+    },
+    {
+      name: "El Salvador",
+      score: 40,
+      coords: [13.7942, -88.8965],
+      short: "Bitcoin myth-stage subordinated to IMF; security-state with IDs.",
+      pros: [
+        "Strong BTC symbolism and some grassroots adoption.",
+        "Simple USD-centered tax environment.",
+        "Symbolically powerful node in BTC narrative."
+      ],
+      risks: [
+        "BTC scaled back under IMF program; USD/IMF dominate fiscal core.",
+        "Security state, militarized policing, heavy digital ID vector.",
+        "Potential reputational targeting of foreign BTC people."
+      ],
+      uses: [
+        "Symbolic and network node: visit, speak, build selected projects.",
+        "Narrative leverage rather than deep anchoring."
+      ],
+      nonUses: [
+        "Not a primary physical base or family deployment center.",
+        "Not for critical BTC custody or sensitive infra."
+      ]
+    },
+    {
+      name: "Serbia",
+      score: 60,
+      coords: [44.0165, 21.0059],
+      short: "EU-adjacent hacker periphery; decent land, moderate Synthetic pressure.",
+      pros: [
+        "Good agricultural regions and moderate climate.",
+        "Belgrade and other cities host strong hacker/crypto communities.",
+        "Lower cost of living than core EU."
+      ],
+      risks: [
+        "AML convergence with EU and FATF pressure.",
+        "Geopolitical balancing between Russia and West.",
+        "Language barrier outside urban English circles."
+      ],
+      uses: [
+        "Tech/dev/hacker network node with optional rural anchor.",
+        "Staging ground for Balkan SovStack activity."
+      ],
+      nonUses: [
+        "Not a permanent escape from EU-style regulation.",
+        "Not ideal for long-term BTC privacy infrastructure."
+      ]
+    },
+    {
+      name: "Bulgaria",
+      score: 50,
+      coords: [42.7339, 25.4858],
+      short: "Good land; EU + MiCA + FATF grey-list pressure cooker.",
+      pros: [
+        "Black Sea, mountains, fertile lands; solid physical potential.",
+        "Lower costs vs Western Europe; some tech scene.",
+        "Big rural zones where the state is softer day-to-day."
+      ],
+      risks: [
+        "On FATF grey list; elevated AML monitoring.",
+        "National MiCA act: CASPs licensed and heavily supervised.",
+        "EU CBDC/digital ID/online-regulation pipeline baked in."
+      ],
+      uses: [
+        "Physical base for locals who don’t need financial secrecy.",
+        "Small, in-person P2P BTC circles."
+      ],
+      nonUses: [
+        "Not for privacy-focused crypto-financial hubs.",
+        "Not a long-term refuge from Synthetic EU evolution."
+      ]
+    },
+    {
+      name: "Romania",
+      score: 62,
+      coords: [45.9432, 24.9668],
+      short: "Strong physical substrate fully inside EU Synthetic envelope.",
+      pros: [
+        "Forests, mountains, rivers, agriculture; very good for land/water/food.",
+        "Growing tech scene and relatively low costs.",
+        "Large rural areas where day-to-day state presence is lighter."
+      ],
+      risks: [
+        "EU AML, MiCA, digital ID, and CBDC trajectory locked in.",
+        "Corruption and bureaucratic friction.",
+        "Language barrier outside cities."
+      ],
+      uses: [
+        "Physical base for EU-tied families, especially with local roots.",
+        "Node for sovereign-ish life while keeping EU access."
+      ],
+      nonUses: [
+        "Not a break from EU regulatory regime.",
+        "Not great for adversarial BTC/privacy infra."
+      ]
+    },
+    {
+      name: "Montenegro",
+      score: 52,
+      coords: [42.7087, 19.3744],
+      short: "Tiny Euro-aspirant boutique hub; useful but shallow.",
+      pros: [
+        "Attractive coastal lifestyle; some crypto-friendly PR/projects.",
+        "Small, navigable bureaucracy; residency routes exist.",
+        "Easy access to broader Balkans."
+      ],
+      risks: [
+        "Strategic goal is EU alignment; regulation follows Brussels.",
+        "Tourism economy + small population = high visibility.",
+        "Limited backcountry scale for large sovereign communities."
+      ],
+      uses: [
+        "Secondary lifestyle/passport node; small-scale structuring.",
+        "Network place for deals and relationships."
+      ],
+      nonUses: [
+        "Not a serious physical base for large sovereign homesteads.",
+        "Not a deep or dark BTC operations hub."
+      ]
+    },
+    {
+      name: "Georgia (country)",
+      score: 63,
+      coords: [42.3154, 43.3569],
+      short: "Fertile, open, relatively free; sits on geopolitical thin ice.",
+      pros: [
+        "Good agricultural valleys and mountain retreats.",
+        "Historically friendly to foreigners, nomads, and crypto.",
+        "Light visa regimes and simple company setups."
+      ],
+      risks: [
+        "Conflict corridor between Russia and NATO/EU; past wars.",
+        "Pressure from both East and West could force alignment.",
+        "Institutional fragility under major stress."
+      ],
+      uses: [
+        "Medium-term physical + network base if you accept conflict risk.",
+        "Node for BTC/mining, wine/agro, and dev communities."
+      ],
+      nonUses: [
+        "Not great as sole, long-term stable base.",
+        "Not ideal for families needing guaranteed continuity."
+      ]
+    },
+    {
+      name: "Botswana",
+      score: 64,
+      coords: [-22.3285, 24.6849],
+      short: "Low-density, semi-arid stability; water and ESG leverage are key.",
+      pros: [
+        "Small population with relatively good governance regionally.",
+        "Some zones with usable soil and water (esp. near rivers).",
+        "Sparse settlement allows quiet, low-profile living."
+      ],
+      risks: [
+        "Semi-arid climate; water scarcity likely to intensify.",
+        "Mineral economy invites ESG/IMF leverage and pilots.",
+        "Limited infrastructure outside a few centers."
+      ],
+      uses: [
+        "Specialized physical base for small nodes who solve water.",
+        "Backup desert/steppe retreat inside multi-node network."
+      ],
+      nonUses: [
+        "Not a financial or structuring hub.",
+        "Not suitable for large communities without serious capital."
+      ]
+    },
+    {
+      name: "Namibia",
+      score: 61,
+      coords: [-22.9576, 18.4904],
+      short: "Desert sovereignty with AML spotlight.",
+      pros: [
+        "Huge, sparsely populated; outstanding sun and terrain for off-grid.",
+        "Strong potential for solar + satellite comms + remote BTC mining.",
+        "Very good for physical disappearance."
+      ],
+      risks: [
+        "On FATF grey list; banks under pressure to over-comply.",
+        "Water scarcity outside key aquifers/coastal zones.",
+        "Donor/ESG structures may use it as sandbox."
+      ],
+      uses: [
+        "Physical and energy sovereignty node paired with offshore banking.",
+        "Small, highly capable community that can handle harsh environment."
+      ],
+      nonUses: [
+        "Not a financial base; don’t rely on local banks for critical flows.",
+        "Not ideal for large or vulnerable communities."
+      ]
+    },
+    {
+      name: "Mauritius",
+      score: 48,
+      coords: [-20.3484, 57.5522],
+      short: "Clean, compliant offshore adapter—not a sovereign refuge.",
+      pros: [
+        "High-reputation, OECD/EU-accepted financial center.",
+        "Many double-tax treaties and robust professional services.",
+        "Politically stable, moderate island lifestyle."
+      ],
+      risks: [
+        "Value prop is hyper-compliance and transparency.",
+        "Small, climate-risk exposed; limited physical sovereignty.",
+        "Easy to become socially mapped in small networks."
+      ],
+      uses: [
+        "Clean legal shell / treaty node with low reputational risk.",
+        "Interface layer between BTC treasury and TradFi."
+      ],
+      nonUses: [
+        "Not for anonymity or Ghost operations.",
+        "Not for large physical communities or deep food/water sovereignty."
+      ]
+    },
+    {
+      name: "Iceland",
+      score: 57,
+      coords: [64.9631, -19.0208],
+      short: "Energy/compute sovereign; socially small and Synthetic-leaning.",
+      pros: [
+        "Huge renewable energy relative to population.",
+        "Clean water, robust infrastructure, high resilience.",
+        "Educated population and high baseline trust."
+      ],
+      risks: [
+        "NATO/ESG alignment; strong candidate for 'green CBDC' experiments.",
+        "Tiny social graph; anonymity is difficult.",
+        "Harsh climate and import dependence for many goods."
+      ],
+      uses: [
+        "Energy + compute infra node (archives, mining, relays).",
+        "High-trust summit/network node."
+      ],
+      nonUses: [
+        "Not a primary anonymous physical base.",
+        "Not for mass inbound sovereign communities."
+      ]
+    }
+  ];
+
+  // Add markers
+  locations.forEach(function(loc) {
+    var color = getColor(loc.score);
+    var radius = getRadius(loc.score);
+
+    var marker = L.circleMarker(loc.coords, {
+      bubblingMouseEvents: true,
+      color: color,
+      fillColor: color,
+      fillOpacity: 0.9,
+      opacity: 1.0,
+      radius: radius,
+      weight: 2,
+      lineCap: "round",
+      lineJoin: "round"
+    }).addTo(map_sov);
+
+    var popupHtml = `
+      <div style="width: 260px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Inter,Helvetica,Arial; font-size:12px; line-height:1.4;">
+        <b>${loc.name}</b><br/>
+        <b>Score:</b> ${loc.score}<br/>
+        <div style="margin-top:4px;"><small>${loc.short}</small></div>
+        <hr style="margin:6px 0;"/>
+        <b>Pros</b>
+        <ul style="padding-left:18px; margin:2px 0 4px 0;">
+          ${loc.pros.map(p => `<li>${p}</li>`).join("")}
+        </ul>
+        <b>Risks</b>
+        <ul style="padding-left:18px; margin:2px 0 4px 0;">
+          ${loc.risks.map(p => `<li>${p}</li>`).join("")}
+        </ul>
+        <b>Best Use Cases</b>
+        <ul style="padding-left:18px; margin:2px 0 4px 0;">
+          ${loc.uses.map(p => `<li>${p}</li>`).join("")}
+        </ul>
+        <b>Non-Use Cases</b>
+        <ul style="padding-left:18px; margin:2px 0 0 0;">
+          ${loc.nonUses.map(p => `<li>${p}</li>`).join("")}
+        </ul>
+      </div>
+    `;
+
+    marker.bindPopup(popupHtml, {maxWidth: 320});
+    marker.bindTooltip(`<div>${loc.name} — ${loc.score}</div>`, {sticky: true});
+  });
+
+  // Fit bounds to all points (rough global window covering this set)
+  map_sov.fitBounds(
+    [[-40, -150], [70, 80]],
+    {padding: [20, 20]}
+  );
+</script>
+</body>
+</html>

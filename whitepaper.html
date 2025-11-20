@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitcoin: A Peer-to-Peer Electronic Cash System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --charcoal: #1a1a1a;
+            --cream: #f5f3f0;
+            --gold: #d4af37;
+            --gray-light: #a0a0a0;
+            --gray-medium: #666666;
+            --gray-dark: #333333;
+            --spacing-xs: 8px;
+            --spacing-sm: 16px;
+            --spacing-md: 24px;
+            --spacing-lg: 40px;
+            --spacing-xl: 60px;
+            --transition: 300ms ease;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 18px;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            background-color: var(--charcoal);
+            color: var(--cream);
+            line-height: 1.8;
+            letter-spacing: 0.01em;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-lg);
+        }
+
+        @media (max-width: 768px) {
+            html {
+                font-size: 16px;
+            }
+            .container {
+                padding: 0 20px;
+            }
+        }
+
+        /* Title Page */
+        .title-page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: var(--spacing-xl) var(--spacing-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .title-page::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, rgba(212, 175, 55, 0.05) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .title-page h1 {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: var(--spacing-md);
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+            text-shadow: 0 2px 20px rgba(212, 175, 55, 0.3);
+        }
+
+        .author-info {
+            margin: var(--spacing-md) 0;
+            font-family: 'Inter', sans-serif;
+            font-size: 1.1rem;
+            color: var(--gray-light);
+        }
+
+        .author-info .author {
+            font-size: 1.3rem;
+            color: var(--cream);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .author-info a {
+            color: var(--gold);
+            text-decoration: none;
+            transition: opacity var(--transition);
+        }
+
+        .author-info a:hover {
+            opacity: 0.7;
+        }
+
+        .abstract {
+            max-width: 800px;
+            margin: var(--spacing-xl) auto 0;
+            padding: var(--spacing-lg);
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 8px;
+            text-align: left;
+            backdrop-filter: blur(10px);
+        }
+
+        .abstract h2 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.2rem;
+            color: var(--gold);
+            margin-bottom: var(--spacing-sm);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .abstract p {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: var(--cream);
+        }
+
+        /* Navigation */
+        nav {
+            position: sticky;
+            top: 0;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            z-index: 1000;
+            transition: all var(--transition);
+        }
+
+        .nav-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: var(--spacing-sm) var(--spacing-lg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--gold);
+            cursor: pointer;
+            transition: opacity var(--transition);
+        }
+
+        .nav-title:hover {
+            opacity: 0.7;
+        }
+
+        .toc-toggle {
+            font-family: 'Inter', sans-serif;
+            background: transparent;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all var(--transition);
+        }
+
+        .toc-toggle:hover {
+            background: var(--gold);
+            color: var(--charcoal);
+        }
+
+        /* Table of Contents */
+        .toc {
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height var(--transition);
+        }
+
+        .toc.open {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .toc-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: var(--spacing-md) var(--spacing-lg);
+        }
+
+        .toc h2 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.1rem;
+            color: var(--gold);
+            margin-bottom: var(--spacing-sm);
+            font-weight: 600;
+        }
+
+        .toc ol {
+            list-style: none;
+            counter-reset: section;
+        }
+
+        .toc li {
+            counter-increment: section;
+            margin-bottom: 12px;
+        }
+
+        .toc a {
+            font-family: 'Inter', sans-serif;
+            color: var(--cream);
+            text-decoration: none;
+            transition: color var(--transition);
+            display: block;
+            padding: 8px 0;
+        }
+
+        .toc a::before {
+            content: counter(section) ". ";
+            color: var(--gold);
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .toc a:hover {
+            color: var(--gold);
+        }
+
+        /* Content Sections */
+        .content {
+            padding: var(--spacing-xl) 0;
+        }
+
+        section {
+            margin-bottom: var(--spacing-xl);
+            scroll-margin-top: 80px;
+        }
+
+        h2 {
+            font-family: 'Inter', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: var(--spacing-md);
+            line-height: 1.3;
+            letter-spacing: -0.01em;
+        }
+
+        h2::before {
+            content: attr(data-number) ". ";
+            color: var(--gold);
+        }
+
+        p {
+            margin-bottom: var(--spacing-md);
+            text-align: justify;
+        }
+
+        /* Diagrams */
+        .diagram {
+            margin: var(--spacing-lg) 0;
+            padding: var(--spacing-lg);
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+
+        .diagram svg {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        /* Code Blocks */
+        .code-block {
+            margin: var(--spacing-lg) 0;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .code-header {
+            background: rgba(212, 175, 55, 0.1);
+            padding: 12px var(--spacing-sm);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            color: var(--gold);
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .copy-btn {
+            background: transparent;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 4px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all var(--transition);
+        }
+
+        .copy-btn:hover {
+            background: var(--gold);
+            color: var(--charcoal);
+        }
+
+        pre {
+            padding: var(--spacing-md);
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+
+        code {
+            color: #89ddff;
+        }
+
+        .keyword { color: #c792ea; }
+        .function { color: #82aaff; }
+        .number { color: #f78c6c; }
+        .comment { color: #676e95; font-style: italic; }
+
+        /* Tables */
+        table {
+            width: 100%;
+            margin: var(--spacing-lg) 0;
+            border-collapse: collapse;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+        }
+
+        th {
+            background: rgba(212, 175, 55, 0.15);
+            color: var(--gold);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* References */
+        .references {
+            margin-top: var(--spacing-xl);
+            padding-top: var(--spacing-xl);
+            border-top: 2px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .references ol {
+            list-style: none;
+            counter-reset: ref;
+        }
+
+        .references li {
+            counter-increment: ref;
+            margin-bottom: var(--spacing-sm);
+            font-size: 0.9rem;
+            padding-left: var(--spacing-md);
+            position: relative;
+        }
+
+        .references li::before {
+            content: "[" counter(ref) "]";
+            position: absolute;
+            left: 0;
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        .references a {
+            color: var(--gold);
+            text-decoration: none;
+        }
+
+        .references a:hover {
+            text-decoration: underline;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: var(--spacing-xl);
+            padding: var(--spacing-lg);
+            text-align: center;
+            border-top: 1px solid rgba(212, 175, 55, 0.2);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            color: var(--gray-light);
+        }
+
+        /* Print Styles */
+        @media print {
+            html {
+                font-size: 12pt;
+            }
+            body {
+                background: white;
+                color: black;
+            }
+            nav, .toc-toggle, .copy-btn {
+                display: none;
+            }
+            section {
+                page-break-inside: avoid;
+            }
+            h2 {
+                page-break-after: avoid;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--charcoal);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gray-dark);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--gray-medium);
+        }
+
+        .math {
+            font-family: 'Times New Roman', serif;
+            font-style: italic;
+        }
+
+        .inline-ref {
+            color: var(--gold);
+            text-decoration: none;
+            font-weight: 600;
+            transition: opacity var(--transition);
+        }
+
+        .inline-ref:hover {
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <!-- Title Page -->
+    <div class="title-page">
+        <h1>Bitcoin: A Peer-to-Peer Electronic Cash System</h1>
+        <div class="author-info">
+            <div class="author">Satoshi Nakamoto</div>
+            <div><a href="mailto:satoshin@gmx.com">satoshin@gmx.com</a></div>
+            <div><a href="https://www.bitcoin.org" target="_blank">www.bitcoin.org</a></div>
+        </div>
+        <div class="abstract">
+            <h2>Abstract</h2>
+            <p>A purely peer-to-peer version of electronic cash would allow online payments to be sent directly from one party to another without going through a financial institution. Digital signatures provide part of the solution, but the main benefits are lost if a trusted third party is still required to prevent double-spending. We propose a solution to the double-spending problem using a peer-to-peer network. The network timestamps transactions by hashing them into an ongoing chain of hash-based proof-of-work, forming a record that cannot be changed without redoing the proof-of-work. The longest chain not only serves as proof of the sequence of events witnessed, but proof that it came from the largest pool of CPU power. As long as a majority of CPU power is controlled by nodes that are not cooperating to attack the network, they'll generate the longest chain and outpace attackers. The network itself requires minimal structure. Messages are broadcast on a best effort basis, and nodes can leave and rejoin the network at will, accepting the longest proof-of-work chain as proof of what happened while they were gone.</p>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-content">
+            <div class="nav-title" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">Bitcoin Whitepaper</div>
+            <button class="toc-toggle" onclick="toggleTOC()">Table of Contents</button>
+        </div>
+    </nav>
+
+    <!-- Table of Contents -->
+    <div class="toc" id="toc">
+        <div class="toc-content">
+            <h2>Contents</h2>
+            <ol>
+                <li><a href="#introduction" onclick="closeTOC()">Introduction</a></li>
+                <li><a href="#transactions" onclick="closeTOC()">Transactions</a></li>
+                <li><a href="#timestamp-server" onclick="closeTOC()">Timestamp Server</a></li>
+                <li><a href="#proof-of-work" onclick="closeTOC()">Proof-of-Work</a></li>
+                <li><a href="#network" onclick="closeTOC()">Network</a></li>
+                <li><a href="#incentive" onclick="closeTOC()">Incentive</a></li>
+                <li><a href="#reclaiming-disk-space" onclick="closeTOC()">Reclaiming Disk Space</a></li>
+                <li><a href="#simplified-payment-verification" onclick="closeTOC()">Simplified Payment Verification</a></li>
+                <li><a href="#combining-splitting-value" onclick="closeTOC()">Combining and Splitting Value</a></li>
+                <li><a href="#privacy" onclick="closeTOC()">Privacy</a></li>
+                <li><a href="#calculations" onclick="closeTOC()">Calculations</a></li>
+                <li><a href="#conclusion" onclick="closeTOC()">Conclusion</a></li>
+                <li><a href="#references" onclick="closeTOC()">References</a></li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container content">
+        <!-- Section 1: Introduction -->
+        <section id="introduction">
+            <h2 data-number="1">Introduction</h2>
+            <p>Commerce on the Internet has come to rely almost exclusively on financial institutions serving as trusted third parties to process electronic payments. While the system works well enough for most transactions, it still suffers from the inherent weaknesses of the trust based model. Completely non-reversible transactions are not really possible, since financial institutions cannot avoid mediating disputes. The cost of mediation increases transaction costs, limiting the minimum practical transaction size and cutting off the possibility for small casual transactions, and there is a broader cost in the loss of ability to make non-reversible payments for non-reversible services. With the possibility of reversal, the need for trust spreads. Merchants must be wary of their customers, hassling them for more information than they would otherwise need. A certain percentage of fraud is accepted as unavoidable. These costs and payment uncertainties can be avoided in person by using physical currency, but no mechanism exists to make payments over a communications channel without a trusted party.</p>
+            <p>What is needed is an electronic payment system based on cryptographic proof instead of trust, allowing any two willing parties to transact directly with each other without the need for a trusted third party. Transactions that are computationally impractical to reverse would protect sellers from fraud, and routine escrow mechanisms could easily be implemented to protect buyers. In this paper, we propose a solution to the double-spending problem using a peer-to-peer distributed timestamp server to generate computational proof of the chronological order of transactions. The system is secure as long as honest nodes collectively control more CPU power than any cooperating group of attacker nodes.</p>
+        </section>
+
+        <!-- Section 2: Transactions -->
+        <section id="transactions">
+            <h2 data-number="2">Transactions</h2>
+            <p>We define an electronic coin as a chain of digital signatures. Each owner transfers the coin to the next by digitally signing a hash of the previous transaction and the public key of the next owner and adding these to the end of the coin. A payee can verify the signatures to verify the chain of ownership.</p>
+            
+            <div class="diagram">
+                <svg viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Transaction 0 -->
+                    <g>
+                        <rect x="20" y="50" width="180" height="120" fill="none" stroke="#d4af37" stroke-width="2" rx="8"/>
+                        <text x="110" y="75" fill="#d4af37" font-size="14" font-weight="600" text-anchor="middle" font-family="Inter, sans-serif">Transaction</text>
+                        <rect x="35" y="90" width="150" height="30" fill="rgba(212, 175, 55, 0.1)" stroke="#666" stroke-width="1" rx="4"/>
+                        <text x="110" y="110" fill="#f5f3f0" font-size="12" text-anchor="middle" font-family="Inter, sans-serif">Owner 1's Public Key</text>
+                        <rect x="35" y="130" width="150" height="30" fill="rgba(212, 175, 55, 0.1)" stroke="#666" stroke-width="1" rx="4"/>
+                        <text x="110" y="150" fill="#f5f3f0" font-size="12" text-anchor="middle" font-family="Inter, sans-serif">Owner 0's Signature</text>
+                    </g>
+
+                    <!-- Arrow 1 -->
+                    <path d="M 200 110 L 230 110" stroke="#d4af37" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+                    <text x="215" y="100" fill="#a0a0a0" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">Hash</text>
+
+                    <!-- Transaction 1 -->
+                    <g>
+                        <rect x="230" y="50" width="180" height="140" fill="none" stroke="#d4af37" stroke-width="2" rx="8"/>
+                        <text x="320" y="75" fill="#d4af37" font-size="14" font-weight="600" text-anchor="middle" font-family="Inter, sans-serif">Transaction</text>
+                        <rect x="245" y="90" width="150" height="30" fill="rgba(212, 175, 55, 0.1)" stroke="#666" stroke-width="1" rx="4"/>
+                        <text x="320" y="110" fill="#f5f3f0" font-size="12" text-anchor="middle" font-family="Inter, sans-serif">Owner 2's Public Key</text>
+                        <rect x="245" y="130" width="150" height="50" fill="rgba(212, 175, 55, 0.1)" stroke="#666" stroke-width="1" rx="4"/>
+                        <text x="320" y="145" fill="#f5f3f0" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">Hash</text>
+                        <text x="320" y="165" fill="#f5f3f0" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">Owner 1's Signature</text>
+                    </g>
+
+                    <!-- Arrow 2 -->
+                    <path d="M 410 120 L 440 120" stroke="#d4af37" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+                    <text x="425" y="110" fill="#a0a0a0" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">Hash</text>
+
+                    <!-- Transaction 2 -->
+                    <g>
+                        <rect x="440" y="50" width="180" height="140" fill="none" stroke="#d4af37" stroke-width="2" rx="8"/>
+                        <text x="530" y="75" fill="#d4af37" font-size="14" font-weight="600" text-anchor="middle" font-family="Inter, sans-serif">Transaction</text>
+                        <rect x="455" y="90" width="150" height="30" fill="rgba(212, 175, 55, 0.1)" stroke="#666" stroke-width="1" rx="4"/>
+                        <text x="530" y="110" fill="#f5f3f0" font-size="12" text-anchor="middle" font-family="Inter, sans-serif">Owner 3's Public Key</text>
+                        <rect x="455" y="130" width="150" height="50" fill="rgba(212, 175, 55, 0.1)" stroke="#666" stroke-width="1" rx="4"/>
+                        <text x="530" y="145" fill="#f5f3f0" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">Hash</text>
+                        <text x="530" y="165" fill="#f5f3f0" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">Owner 2's Signature</text>
+                    </g>
+
+                    <!-- Keys -->
+                    <ellipse cx="110" cy="240" rx="40" ry="30" fill="rgba(212, 175, 55, 0.1)" stroke="#d4af37" stroke-width="2"/>
+                    <text x="110" y="235" fill="#d4af37" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">Private</text>
+                    <text x="110" y="250" fill="#d4af37" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">Key 0</text>
+                    
+                    <ellipse cx="320" cy="260" rx="40" ry="30" fill="rgba(212, 175, 55, 0.1)" stroke="#d4af37" stroke-width="2"/>
+                    <text x="320" y="255" fill="#d4af37" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">Private</text>
+                    <text x="320" y="270" fill="#d4af37" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">Key 1</text>
+                    
+                    <ellipse cx="530" cy="260" rx="40" ry="30" fill="rgba(212, 175, 55, 0.1)" stroke="#d4af37" stroke-width="2"/>
+                    <text x="530" y="255" fill="#d4af37" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">Private</text>
+                    <text x="530" y="270" fill="#d4af37" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">Key 2</text>
+
+                    <!-- Verify arrows -->
+                    <path d="M 110 210 L 110 170" stroke="#666" stroke-width="1.5" stroke-dasharray="4,4" fill="none"/>
+                    <path d="M 320 230 L 320 190" stroke="#666" stroke-width="1.5" stroke-dasharray="4,4" fill="none"/>
+                    <path d="M 530 230 L 530 190" stroke="#666" stroke-width="1.5" stroke-dasharray="4,4" fill="none"/>
+
+                    <!-- Labels -->
+                    <text x="15" y="220" fill="#a0a0a0" font-size="11" font-family="Inter, sans-serif">Owner 0</text>
+                    <text x="225" y="240" fill="#a0a0a0" font-size="11" font-family="Inter, sans-serif">Owner 1</text>
+                    <text x="435" y="240" fill="#a0a0a0" font-size="11" font-family="Inter, sans-serif">Owner 2</text>
+                    
+                    <text x="110" y="330" fill="#a0a0a0" font-size="12" text-anchor="middle" font-family="Inter, sans-serif" font-style="italic">Sign</text>
+                    <text x="320" y="330" fill="#a0a0a0" font-size="12" text-anchor="middle" font-family="Inter, sans-serif" font-style="italic">Sign</text>
+                    <text x="530" y="330" fill="#a0a0a0" font-size="12" text-anchor="middle" font-family="Inter, sans-serif" font-style="italic">Sign</text>
+
+                    <!-- Arrow marker definition -->
+                    <defs>
+                        <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                            <polygon points="0 0, 10 3, 0 6" fill="#d4af37" />
+                        </marker>
+                    </defs>
+                </svg>
+            </div>
+
+            <p>The problem of course is the payee can't verify that one of the owners did not double-spend the coin. A common solution is to introduce a trusted central authority, or mint, that checks every transaction for double spending. After each transaction, the coin must be returned to the mint to issue a new coin, and only coins issued directly from the mint are trusted not to be double-spent. The problem with this solution is that the fate of the entire money system depends on the company running the mint, with every transaction having to go through them, just like a bank.</p>
+            <p>We need a way for the payee to know that the previous owners did not sign any earlier transactions. For our purposes, the earliest transaction is the one that counts, so we don't care about later attempts to double-spend. The only way to confirm the absence of a transaction is to be aware of all transactions. In the mint based model, the mint was aware of all transactions and decided which arrived first. To accomplish this without a trusted party, transactions must be publicly announced, and we need a system for participants to agree on a single history of the order in which they were received. The payee needs proof that at the time of each transaction, the majority of nodes agreed it was the first received.</p>
+        </section>
+
+        <!-- Section 3: Timestamp Server -->
+        <section id="timestamp-server">
+            <h2 data-number="3">Timestamp Server</h2>
+            <p>The solution we propose begins with a timestamp server. A timestamp server works by taking a hash of a block of items to be timestamped and widely publishing the hash, such as in a newspaper or Usenet post <a href="#ref-2" class="inline-ref">[2-5]</a>. The timestamp proves that the data must have existed at the time, obviously, in order to get into the hash. Each timestamp includes the previous timestamp in its hash, forming a chain, with each additional timestamp reinforcing the ones before it.</p>
+            
+            <div class="diagram">
+                <svg viewBox="0 0 800 200" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Block 1 -->
+                    <g>
+                        <rect x="30" y="30" width="180" height="140" fill="none" stroke="#d4af37" stroke-width="2" rx="8"/>
+                        <text x="120" y="55" fill="#d4af37" font-size="14" font-weight="600" text-anchor="middle" font-family="Inter, sans-serif">Block</text>
+                        <rect x="50" y="70" width="140" height="35" fill="rgba(212, 175, 55, 0.05)" stroke="#666" stroke-width="1" rx="4"/>
+                        <text x="120" y="90" fill="#f5f3f0" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">Item Item Item</text>
+                        <rect x="50" y="115" width="140" height="35" fill="rgba(212, 175, 55, 0.15)" stroke="#d4af37" stroke-width="1.5" rx="4"/>
+                        <text x="120" y="135" fill="#d4af37" font-size="11" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600">Hash</text>
+                    </g>
+
+                    <!-- Arrow 1 -->
+                    <path d="M 210 120 L 260 120" stroke="#d4af37" stroke-width="2" fill="none" marker-end="url(#arrowhead2)"/>
+
+                    <!-- Block 2 -->
+                    <g>
+                        <rect x="260" y="30" width="180" height="140" fill="none" stroke="#d4af37" stroke-width="2" rx="8"/>
+                        <text x="350" y="55" fill="#d4af37" font-size="14" font-weight="600" text-anchor="middle" font-family="Inter, sans-serif">Block</text>
+                        <rect x="280" y="70" width="140" height="35" fill="rgba(212, 175, 55, 0.05)" stroke="#666" stroke-width="1" rx="4"/>
+                        <text x="350" y="90" fill="#f5f3f0" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">Item Item Item</text>
+                        <rect x="280" y="115" width="140" height="35" fill="rgba(212, 175, 55, 0.15)" stroke="#d4af37" stroke-width="1.5" rx="4"/>
+                        <text x="350" y="135" fill="#d4af37" font-size="11" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600">Hash</text>
+                    </g>
+
+                    <!-- Arrow 2 -->
+                    <path d="M 440 120 L 490 120" stroke="#d4af37" stroke-width="2" fill="none" marker-end="url(#arrowhead2)"/>
+
+                    <!-- Block 3 -->
+                    <g>
+                        <rect x="490" y="30" width="180" height="140" fill="none" stroke="#d4af37" stroke-width="2" rx="8"/>
+                        <text x="580" y="55" fill="#d4af37" font-size="14" font-weight="600" text-anchor="middle" font-family="Inter, sans-serif">Block</text>
+                        <rect x="510" y="70" width="140" height="35" fill="rgba(212, 175, 55, 0.05)" stroke="#666" stroke-width="1" rx="4"/>
+                        <text x="580" y="90" fill="#f5f3f0" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">Item Item Item</text>
+                        <rect x="510" y="115" width="140" height="35" fill="rgba(212, 175, 55, 0.15)" stroke="#d4af37" stroke-width="1.5" rx="4"/>
+                        <text x="580" y="135" fill="#d4af37" font-size="11" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600">Hash</text>
+                    </g>
+
+                    <!-- Arrow 3 -->
+                    <path d="M 670 120 L 715 120" stroke="#d4af37" stroke-width="2" stroke-dasharray="5,5" fill="none" marker-end="url(#arrowhead2)"/>
+
+                    <defs>
+                        <marker id="arrowhead2" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                            <polygon points="0 0, 10 3, 0 6" fill="#d4af37" />
+                        </marker>
+                    </defs>
+                </svg>
+            </div>
+        </section>
+
+        <!-- Section 4: Proof-of-Work -->
+        <section id="proof-of-work">
+            <h2 data-number="4">Proof-of-Work</h2>
+            <p>To implement a distributed timestamp server on a peer-to-peer basis, we will need to use a proof-of-work system similar to Adam Back's Hashcash <a href="#ref-6" class="inline-ref">[6]</a>, rather than newspaper or Usenet posts. The proof-of-work involves scanning for a value that when hashed, such as with SHA-256, the hash begins with a number of zero bits. The average work required is exponential in the number of zero bits required and can be verified by executing a single hash.</p>
+            
+            <div class="diagram">
+                <svg viewBox="0 0 800 280" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Block 1 -->
+                    <g>
+                        <rect x="20" y="20" width="200" height="180" fill="none" stroke="#d4af37" stroke-width="2" rx="8"/>
+                        <text x="120" y="45" fill="#d4af37" font-size="14" font-weight="600" text-anchor="middle" font-family="Inter, sans-serif">Block</text>
+                        
+                        <rect x="35" y="60" width="170" height="30" fill="rgba(212, 175, 55, 0.05)" stroke="#666" stroke-width="1" rx="4"/>
+                        <text x="120" y="80" fill="#f5f3f0" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">Prev Hash: 000000...</text>
+                        
+                        <rect x="35" y="100" width="170" height="30" fill="rgba(212, 175, 55, 0.05)" stroke="#666" stroke-width="1" rx="4"/>
+                        <text x="120" y="120" fill="#f5f3f0" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">Tx Tx Tx Tx</text>
+                        
+                        <rect x="35" y="140" width="170" height="30" fill="rgba(212, 175, 55, 0.1)" stroke="#d4af37" stroke-width="1.5" rx="4"/>
+                        <text x="120" y="160" fill="#d4af37" font-size="11" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600">Nonce: 42891</text>
+                    </g>
+
+                    <!-- Arrow 1 -->
+                    <path d="M 220 110 L 270 110" stroke="#d4af37" stroke-width="2" fill="none" marker-end="url(#arrowhead3)"/>
+                    <text x="245" y="100" fill="#a0a0a0" font-size="10" text-anchor="middle" font-family="Inter, sans-serif">hash</text>
+
+                    <!-- Block 2 -->
+                    <g>
+                        <rect x="270" y="20" width="200" height="180" fill="none" stroke="#d4af37" stroke-width="2" rx="8"/>
+                        <text x="370" y="45" fill="#d4af37" font-size="14" font-weight="600" text-anchor="middle" font-family="Inter, sans-serif">Block</text>
+                        
+                        <rect x="285" y="60" width="170" height="30" fill="rgba(212, 175, 55, 0.05)" stroke="#666" stroke-width="1" rx="4"/>
+                        <text x="370" y="80" fill="#f5f3f0" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">Prev Hash: 000000...</text>
+                        
+                        <rect x="285" y="100" width="170" height="30" fill="rgba(212, 175, 55, 0.05)" stroke="#666" stroke-width="1" rx="4"/>
+                        <text x="370" y="120" fill="#f5f3f0" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">Tx Tx Tx Tx</text>
+                        
+                        <rect x="285" y="140" width="170" height="30" fill="rgba(212, 175, 55, 0.1)" stroke="#d4af37" stroke-width="1.5" rx="4"/>
+                        <text x="370" y="160" fill="#d4af37" font-size="11" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600">Nonce: 91047</text>
+                    </g>
+
+                    <!-- Arrow 2 -->
+                    <path d="M 470 110 L 520 110" stroke="#d4af37" stroke-width="2" fill="none" marker-end="url(#arrowhead3)"/>
+                    <text x="495" y="100" fill="#a0a0a0" font-size="10" text-anchor="middle" font-family="Inter, sans-serif">hash</text>
+
+                    <!-- Block 3 -->
+                    <g>
+                        <rect x="520" y="20" width="200" height="180" fill="none" stroke="#d4af37" stroke-width="2" rx="8"/>
+                        <text x="620" y="45" fill="#d4af37" font-size="14" font-weight="600" text-anchor="middle" font-family="Inter, sans-serif">Block</text>
+                        
+                        <rect x="535" y="60" width="170" height="30" fill="rgba(212, 175, 55, 0.05)" stroke="#666" stroke-width="1" rx="4"/>
+                        <text x="620" y="80" fill="#f5f3f0" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">Prev Hash: 000000...</text>
+                        
+                        <rect x="535" y="100" width="170" height="30" fill="rgba(212, 175, 55, 0.05)" stroke="#666" stroke-width="1" rx="4"/>
+                        <text x="620" y="120" fill="#f5f3f0" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">Tx Tx Tx Tx</text>
+                        
+                        <rect x="535" y="140" width="170" height="30" fill="rgba(212, 175, 55, 0.1)" stroke="#d4af37" stroke-width="1.5" rx="4"/>
+                        <text x="620" y="160" fill="#d4af37" font-size="11" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600">Nonce: ?</text>
+                    </g>
+
+                    <!-- CPU Work Indicator -->
+                    <ellipse cx="120" cy="240" rx="60" ry="25" fill="rgba(212, 175, 55, 0.1)" stroke="#d4af37" stroke-width="1.5" stroke-dasharray="3,3"/>
+                    <text x="120" y="245" fill="#d4af37" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">CPU Work</text>
+                    
+                    <ellipse cx="370" cy="240" rx="60" ry="25" fill="rgba(212, 175, 55, 0.1)" stroke="#d4af37" stroke-width="1.5" stroke-dasharray="3,3"/>
+                    <text x="370" y="245" fill="#d4af37" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">CPU Work</text>
+                    
+                    <ellipse cx="620" cy="240" rx="60" ry="25" fill="rgba(212, 175, 55, 0.1)" stroke="#d4af37" stroke-width="1.5" stroke-dasharray="3,3"/>
+                    <text x="620" y="245" fill="#d4af37" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">CPU Work</text>
+
+                    <path d="M 120 215 L 120 200" stroke="#666" stroke-width="1" stroke-dasharray="2,2" fill="none"/>
+                    <path d="M 370 215 L 370 200" stroke="#666" stroke-width="1" stroke-dasharray="2,2" fill="none"/>
+                    <path d="M 620 215 L 620 200" stroke="#666" stroke-width="1" stroke-dasharray="2,2" fill="none"/>
+
+                    <defs>
+                        <marker id="arrowhead3" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                            <polygon points="0 0, 10 3, 0 6" fill="#d4af37" />
+                        </marker>
+                    </defs>
+                </svg>
+            </div>
+
+            <p>For our timestamp network, we implement the proof-of-work by incrementing a nonce in the block until a value is found that gives the block's hash the required zero bits. Once the CPU effort has been expended to make it satisfy the proof-of-work, the block cannot be changed without redoing the work. As later blocks are chained after it, the work to change the block would include redoing all the blocks after it.</p>
+            <p>The proof-of-work also solves the problem of determining representation in majority decision making. If the majority were based on one-IP-address-one-vote, it could be subverted by anyone able to allocate many IPs. Proof-of-work is essentially one-CPU-one-vote. The majority decision is represented by the longest chain, which has the greatest proof-of-work effort invested in it. If a majority of CPU power is controlled by honest nodes, the honest chain will grow the fastest and outpace any competing chains. To modify a past block, an attacker would have to redo the proof-of-work of the block and all blocks after it and then catch up with and surpass the work of the honest nodes. We will show later that the probability of a slower attacker catching up diminishes exponentially as subsequent blocks are added.</p>
+            <p>To compensate for increasing hardware speed and varying interest in running nodes over time, the proof-of-work difficulty is determined by a moving average targeting an average number of blocks per hour. If they're generated too fast, the difficulty increases.</p>
+        </section>
+
+        <!-- Section 5: Network -->
+        <section id="network">
+            <h2 data-number="5">Network</h2>
+            <p>The steps to run the network are as follows:</p>
+            <ol style="margin-left: 24px; margin-bottom: 24px;">
+                <li style="margin-bottom: 8px;">New transactions are broadcast to all nodes.</li>
+                <li style="margin-bottom: 8px;">Each node collects new transactions into a block.</li>
+                <li style="margin-bottom: 8px;">Each node works on finding a difficult proof-of-work for its block.</li>
+                <li style="margin-bottom: 8px;">When a node finds a proof-of-work, it broadcasts the block to all nodes.</li>
+                <li style="margin-bottom: 8px;">Nodes accept the block only if all transactions in it are valid and not already spent.</li>
+                <li style="margin-bottom: 8px;">Nodes express their acceptance of the block by working on creating the next block in the chain, using the hash of the accepted block as the previous hash.</li>
+            </ol>
+            
+            <div class="diagram">
+                <svg viewBox="0 0 800 200" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Block chain representation -->
+                    <g>
+                        <rect x="50" y="30" width="150" height="100" fill="none" stroke="#d4af37" stroke-width="2" rx="6"/>
+                        <text x="125" y="55" fill="#d4af37" font-size="12" font-weight="600" text-anchor="middle" font-family="Inter, sans-serif">Block n</text>
+                        <rect x="65" y="65" width="120" height="20" fill="rgba(212, 175, 55, 0.05)" stroke="#666" stroke-width="1" rx="3"/>
+                        <text x="125" y="79" fill="#f5f3f0" font-size="10" text-anchor="middle" font-family="Inter, sans-serif">Prev Hash</text>
+                        <rect x="65" y="90" width="120" height="20" fill="rgba(212, 175, 55, 0.05)" stroke="#666" stroke-width="1" rx="3"/>
+                        <text x="125" y="104" fill="#f5f3f0" font-size="10" text-anchor="middle" font-family="Inter, sans-serif">Nonce + Tx</text>
+                    </g>
+
+                    <path d="M 200 80 L 240 80" stroke="#d4af37" stroke-width="2" fill="none" marker-end="url(#arrowhead4)"/>
+
+                    <g>
+                        <rect x="240" y="30" width="150" height="100" fill="none" stroke="#d4af37" stroke-width="2" rx="6"/>
+                        <text x="315" y="55" fill="#d4af37" font-size="12" font-weight="600" text-anchor="middle" font-family="Inter, sans-serif">Block n+1</text>
+                        <rect x="255" y="65" width="120" height="20" fill="rgba(212, 175, 55, 0.05)" stroke="#666" stroke-width="1" rx="3"/>
+                        <text x="315" y="79" fill="#f5f3f0" font-size="10" text-anchor="middle" font-family="Inter, sans-serif">Prev Hash</text>
+                        <rect x="255" y="90" width="120" height="20" fill="rgba(212, 175, 55, 0.05)" stroke="#666" stroke-width="1" rx="3"/>
+                        <text x="315" y="104" fill="#f5f3f0" font-size="10" text-anchor="middle" font-family="Inter, sans-serif">Nonce + Tx</text>
+                    </g>
+
+                    <path d="M 390 80 L 430 80" stroke="#d4af37" stroke-width="2" fill="none" marker-end="url(#arrowhead4)"/>
+
+                    <g>
+                        <rect x="430" y="30" width="150" height="100" fill="none" stroke="#d4af37" stroke-width="2" rx="6"/>
+                        <text x="505" y="55" fill="#d4af37" font-size="12" font-weight="600" text-anchor="middle" font-family="Inter, sans-serif">Block n+2</text>
+                        <rect x="445" y="65" width="120" height="20" fill="rgba(212, 175, 55, 0.05)" stroke="#666" stroke-width="1" rx="3"/>
+                        <text x="505" y="79" fill="#f5f3f0" font-size="10" text-anchor="middle" font-family="Inter, sans-serif">Prev Hash</text>
+                        <rect x="445" y="90" width="120" height="20" fill="rgba(212, 175, 55, 0.05)" stroke="#666" stroke-width="1" rx="3"/>
+                        <text x="505" y="104" fill="#f5f3f0" font-size="10" text-anchor="middle" font-family="Inter, sans-serif">Nonce + Tx</text>
+                    </g>
+
+                    <path d="M 580 80 L 620 80" stroke="#d4af37" stroke-width="2" stroke-dasharray="5,5" fill="none" marker-end="url(#arrowhead4)"/>
+
+                    <!-- Nodes representation -->
+                    <text x="400" y="170" fill="#a0a0a0" font-size="11" text-anchor="middle" font-family="Inter, sans-serif" font-style="italic">Network nodes maintain the longest chain</text>
+
+                    <defs>
+                        <marker id="arrowhead4" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                            <polygon points="0 0, 10 3, 0 6" fill="#d4af37" />
+                        </marker>
+                    </defs>
+                </svg>
+            </div>
+
+            <p>Nodes always consider the longest chain to be the correct one and will keep working on extending it. If two nodes broadcast different versions of the next block simultaneously, some nodes may receive one or the other first. In that case, they work on the first one they received, but save the other branch in case it becomes longer. The tie will be broken when the next proof-of-work is found and one branch becomes longer; the nodes that were working on the other branch will then switch to the longer one.</p>
+            <p>New transaction broadcasts do not necessarily need to reach all nodes. As long as they reach many nodes, they will get into a block before long. Block broadcasts are also tolerant of dropped messages. If a node does not receive a block, it will request it when it receives the next block and realizes it missed one.</p>
+        </section>
+
+        <!-- Section 6: Incentive -->
+        <section id="incentive">
+            <h2 data-number="6">Incentive</h2>
+            <p>By convention, the first transaction in a block is a special transaction that starts a new coin owned by the creator of the block. This adds an incentive for nodes to support the network, and provides a way to initially distribute coins into circulation, since there is no central authority to issue them. The steady addition of a constant of amount of new coins is analogous to gold miners expending resources to add gold to circulation. In our case, it is CPU time and electricity that is expended.</p>
+            <p>The incentive can also be funded with transaction fees. If the output value of a transaction is less than its input value, the difference is a transaction fee that is added to the incentive value of the block containing the transaction. Once a predetermined number of coins have entered circulation, the incentive can transition entirely to transaction fees and be completely inflation free.</p>
+            <p>The incentive may help encourage nodes to stay honest. If a greedy attacker is able to assemble more CPU power than all the honest nodes, he would have to choose between using it to defraud people by stealing back his payments, or using it to generate new coins. He ought to find it more profitable to play by the rules, such rules that favour him with more new coins than everyone else combined, than to undermine the system and the validity of his own wealth.</p>
+        </section>
+
+        <!-- Section 7: Reclaiming Disk Space -->
+        <section id="reclaiming-disk-space">
+            <h2 data-number="7">Reclaiming Disk Space</h2>
+            <p>Once the latest transaction in a coin is buried under enough blocks, the spent transactions before it can be discarded to save disk space. To facilitate this without breaking the block's hash, transactions are hashed in a Merkle Tree <a href="#ref-7" class="inline-ref">[7]</a> <a href="#ref-2" class="inline-ref">[2]</a> <a href="#ref-5" class="inline-ref">[5]</a>, with only the root included in the block's hash. Old blocks can then be compacted by stubbing off branches of the tree. The interior hashes do not need to be stored.</p>
+            
+            <div class="diagram">
+                <svg viewBox="0 0 800 380" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Full Merkle Tree -->
+                    <text x="200" y="20" fill="#d4af37" font-size="13" font-weight="600" font-family="Inter, sans-serif">Full Merkle Tree</text>
+                    
+                    <!-- Root -->
+                    <rect x="120" y="35" width="160" height="35" fill="rgba(212, 175, 55, 0.15)" stroke="#d4af37" stroke-width="2" rx="6"/>
+                    <text x="200" y="58" fill="#d4af37" font-size="11" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600">Root Hash</text>
+
+                    <!-- Level 1 -->
+                    <path d="M 160 70 L 120 100" stroke="#666" stroke-width="1.5" fill="none"/>
+                    <path d="M 240 70 L 280 100" stroke="#666" stroke-width="1.5" fill="none"/>
+                    
+                    <rect x="50" y="100" width="100" height="30" fill="rgba(212, 175, 55, 0.1)" stroke="#666" stroke-width="1.5" rx="4"/>
+                    <text x="100" y="120" fill="#f5f3f0" font-size="10" text-anchor="middle" font-family="Inter, sans-serif">Hash01</text>
+                    
+                    <rect x="250" y="100" width="100" height="30" fill="rgba(212, 175, 55, 0.1)" stroke="#666" stroke-width="1.5" rx="4"/>
+                    <text x="300" y="120" fill="#f5f3f0" font-size="10" text-anchor="middle" font-family="Inter, sans-serif">Hash23</text>
+
+                    <!-- Level 2 -->
+                    <path d="M 70 130 L 50 160" stroke="#666" stroke-width="1.5" fill="none"/>
+                    <path d="M 130 130 L 150 160" stroke="#666" stroke-width="1.5" fill="none"/>
+                    <path d="M 270 130 L 250 160" stroke="#666" stroke-width="1.5" fill="none"/>
+                    <path d="M 330 130 L 350 160" stroke="#666" stroke-width="1.5" fill="none"/>
+                    
+                    <rect x="10" y="160" width="70" height="25" fill="rgba(212, 175, 55, 0.05)" stroke="#666" stroke-width="1" rx="3"/>
+                    <text x="45" y="177" fill="#f5f3f0" font-size="9" text-anchor="middle" font-family="Inter, sans-serif">Hash0</text>
+                    
+                    <rect x="130" y="160" width="70" height="25" fill="rgba(212, 175, 55, 0.05)" stroke="#666" stroke-width="1" rx="3"/>
+                    <text x="165" y="177" fill="#f5f3f0" font-size="9" text-anchor="middle" font-family="Inter, sans-serif">Hash1</text>
+                    
+                    <rect x="210" y="160" width="70" height="25" fill="rgba(212, 175, 55, 0.05)" stroke="#666" stroke-width="1" rx="3"/>
+                    <text x="245" y="177" fill="#f5f3f0" font-size="9" text-anchor="middle" font-family="Inter, sans-serif">Hash2</text>
+                    
+                    <rect x="330" y="160" width="70" height="25" fill="rgba(212, 175, 55, 0.05)" stroke="#666" stroke-width="1" rx="3"/>
+                    <text x="365" y="177" fill="#f5f3f0" font-size="9" text-anchor="middle" font-family="Inter, sans-serif">Hash3</text>
+
+                    <!-- Transactions -->
+                    <path d="M 45 185 L 45 210" stroke="#666" stroke-width="1" stroke-dasharray="2,2" fill="none"/>
+                    <path d="M 165 185 L 165 210" stroke="#666" stroke-width="1" stroke-dasharray="2,2" fill="none"/>
+                    <path d="M 245 185 L 245 210" stroke="#666" stroke-width="1" stroke-dasharray="2,2" fill="none"/>
+                    <path d="M 365 185 L 365 210" stroke="#666" stroke-width="1" stroke-dasharray="2,2" fill="none"/>
+                    
+                    <rect x="10" y="210" width="70" height="25" fill="rgba(212, 175, 55, 0.2)" stroke="#d4af37" stroke-width="1.5" rx="3"/>
+                    <text x="45" y="227" fill="#d4af37" font-size="9" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600">Tx0</text>
+                    
+                    <rect x="130" y="210" width="70" height="25" fill="rgba(212, 175, 55, 0.2)" stroke="#d4af37" stroke-width="1.5" rx="3"/>
+                    <text x="165" y="227" fill="#d4af37" font-size="9" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600">Tx1</text>
+                    
+                    <rect x="210" y="210" width="70" height="25" fill="rgba(212, 175, 55, 0.2)" stroke="#d4af37" stroke-width="1.5" rx="3"/>
+                    <text x="245" y="227" fill="#d4af37" font-size="9" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600">Tx2</text>
+                    
+                    <rect x="330" y="210" width="70" height="25" fill="rgba(212, 175, 55, 0.2)" stroke="#d4af37" stroke-width="1.5" rx="3"/>
+                    <text x="365" y="227" fill="#d4af37" font-size="9" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600">Tx3</text>
+
+                    <!-- Pruned Merkle Tree -->
+                    <text x="600" y="20" fill="#d4af37" font-size="13" font-weight="600" font-family="Inter, sans-serif">After Pruning</text>
+                    
+                    <!-- Root -->
+                    <rect x="520" y="35" width="160" height="35" fill="rgba(212, 175, 55, 0.15)" stroke="#d4af37" stroke-width="2" rx="6"/>
+                    <text x="600" y="58" fill="#d4af37" font-size="11" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600">Root Hash</text>
+
+                    <!-- Level 1 -->
+                    <path d="M 560 70 L 540 100" stroke="#666" stroke-width="1.5" fill="none"/>
+                    <path d="M 640 70 L 660 100" stroke="#666" stroke-width="1.5" fill="none"/>
+                    
+                    <rect x="490" y="100" width="100" height="30" fill="rgba(212, 175, 55, 0.1)" stroke="#666" stroke-width="1.5" rx="4"/>
+                    <text x="540" y="120" fill="#f5f3f0" font-size="10" text-anchor="middle" font-family="Inter, sans-serif">Hash01</text>
+                    
+                    <rect x="610" y="100" width="100" height="30" fill="rgba(212, 175, 55, 0.1)" stroke="#666" stroke-width="1.5" rx="4"/>
+                    <text x="660" y="120" fill="#f5f3f0" font-size="10" text-anchor="middle" font-family="Inter, sans-serif">Hash23</text>
+
+                    <!-- Level 2 - only Hash3 branch remains -->
+                    <path d="M 690 130 L 710 160" stroke="#666" stroke-width="1.5" fill="none"/>
+                    
+                    <rect x="690" y="160" width="70" height="25" fill="rgba(212, 175, 55, 0.05)" stroke="#666" stroke-width="1" rx="3"/>
+                    <text x="725" y="177" fill="#f5f3f0" font-size="9" text-anchor="middle" font-family="Inter, sans-serif">Hash3</text>
+
+                    <!-- Transaction 3 only -->
+                    <path d="M 725 185 L 725 210" stroke="#666" stroke-width="1" stroke-dasharray="2,2" fill="none"/>
+                    
+                    <rect x="690" y="210" width="70" height="25" fill="rgba(212, 175, 55, 0.2)" stroke="#d4af37" stroke-width="1.5" rx="3"/>
+                    <text x="725" y="227" fill="#d4af37" font-size="9" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600">Tx3</text>
+
+                    <!-- Block Headers -->
+                    <text x="400" y="290" fill="#d4af37" font-size="13" font-weight="600" text-anchor="middle" font-family="Inter, sans-serif">Block Header with Merkle Root</text>
+                    
+                    <rect x="250" y="305" width="300" height="60" fill="rgba(0, 0, 0, 0.3)" stroke="#d4af37" stroke-width="2" rx="6"/>
+                    <text x="400" y="325" fill="#f5f3f0" font-size="10" text-anchor="middle" font-family="Inter, sans-serif">Prev Block | Nonce | Timestamp</text>
+                    <rect x="270" y="335" width="260" height="20" fill="rgba(212, 175, 55, 0.15)" stroke="#d4af37" stroke-width="1.5" rx="4"/>
+                    <text x="400" y="349" fill="#d4af37" font-size="10" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600">Merkle Root Hash</text>
+                </svg>
+            </div>
+
+            <p>A block header with no transactions would be about 80 bytes. If we suppose blocks are generated every 10 minutes, 80 bytes * 6 * 24 * 365 = 4.2MB per year. With computer systems typically selling with 2GB of RAM as of 2008, and Moore's Law predicting current growth of 1.2GB per year, storage should not be a problem even if the block headers must be kept in memory.</p>
+        </section>
+
+        <!-- Section 8: Simplified Payment Verification -->
+        <section id="simplified-payment-verification">
+            <h2 data-number="8">Simplified Payment Verification</h2>
+            <p>It is possible to verify payments without running a full network node. A user only needs to keep a copy of the block headers of the longest proof-of-work chain, which he can get by querying network nodes until he's convinced he has the longest chain, and obtain the Merkle branch linking the transaction to the block it's timestamped in. He can't check the transaction for himself, but by linking it to a place in the chain, he can see that a network node has accepted it, and blocks added after it further confirm the network has accepted it.</p>
+            
+            <div class="diagram">
+                <svg viewBox="0 0 800 250" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Blockchain -->
+                    <g>
+                        <rect x="50" y="30" width="100" height="60" fill="rgba(212, 175, 55, 0.05)" stroke="#666" stroke-width="1.5" rx="4"/>
+                        <text x="100" y="50" fill="#a0a0a0" font-size="10" text-anchor="middle" font-family="Inter, sans-serif">Block</text>
+                        <text x="100" y="65" fill="#f5f3f0" font-size="9" text-anchor="middle" font-family="Inter, sans-serif">Header</text>
+                    </g>
+
+                    <path d="M 150 60 L 180 60" stroke="#666" stroke-width="1.5" fill="none"/>
+
+                    <g>
+                        <rect x="180" y="30" width="100" height="60" fill="rgba(212, 175, 55, 0.05)" stroke="#666" stroke-width="1.5" rx="4"/>
+                        <text x="230" y="50" fill="#a0a0a0" font-size="10" text-anchor="middle" font-family="Inter, sans-serif">Block</text>
+                        <text x="230" y="65" fill="#f5f3f0" font-size="9" text-anchor="middle" font-family="Inter, sans-serif">Header</text>
+                    </g>
+
+                    <path d="M 280 60 L 310 60" stroke="#666" stroke-width="1.5" fill="none"/>
+
+                    <g>
+                        <rect x="310" y="30" width="100" height="60" fill="rgba(212, 175, 55, 0.2)" stroke="#d4af37" stroke-width="2" rx="4"/>
+                        <text x="360" y="50" fill="#d4af37" font-size="10" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600">Block with Tx</text>
+                        <text x="360" y="65" fill="#d4af37" font-size="9" text-anchor="middle" font-family="Inter, sans-serif">Header</text>
+                    </g>
+
+                    <path d="M 410 60 L 440 60" stroke="#666" stroke-width="1.5" fill="none"/>
+
+                    <g>
+                        <rect x="440" y="30" width="100" height="60" fill="rgba(212, 175, 55, 0.05)" stroke="#666" stroke-width="1.5" rx="4"/>
+                        <text x="490" y="50" fill="#a0a0a0" font-size="10" text-anchor="middle" font-family="Inter, sans-serif">Block</text>
+                        <text x="490" y="65" fill="#f5f3f0" font-size="9" text-anchor="middle" font-family="Inter, sans-serif">Header</text>
+                    </g>
+
+                    <path d="M 540 60 L 570 60" stroke="#666" stroke-width="1.5" fill="none"/>
+
+                    <g>
+                        <rect x="570" y="30" width="100" height="60" fill="rgba(212, 175, 55, 0.05)" stroke="#666" stroke-width="1.5" rx="4"/>
+                        <text x="620" y="50" fill="#a0a0a0" font-size="10" text-anchor="middle" font-family="Inter, sans-serif">Block</text>
+                        <text x="620" y="65" fill="#f5f3f0" font-size="9" text-anchor="middle" font-family="Inter, sans-serif">Header</text>
+                    </g>
+
+                    <path d="M 670 60 L 700 60" stroke="#666" stroke-width="1.5" stroke-dasharray="4,4" fill="none"/>
+
+                    <!-- Merkle Branch -->
+                    <text x="360" y="125" fill="#d4af37" font-size="12" font-weight="600" text-anchor="middle" font-family="Inter, sans-serif">Merkle Branch</text>
+                    
+                    <rect x="290" y="140" width="140" height="25" fill="rgba(212, 175, 55, 0.15)" stroke="#d4af37" stroke-width="1.5" rx="4"/>
+                    <text x="360" y="157" fill="#d4af37" font-size="10" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600">Merkle Root</text>
+
+                    <path d="M 320 165 L 300 185" stroke="#666" stroke-width="1.5" fill="none"/>
+                    <path d="M 400 165 L 420 185" stroke="#666" stroke-width="1.5" fill="none"/>
+
+                    <rect x="250" y="185" width="80" height="20" fill="rgba(212, 175, 55, 0.1)" stroke="#666" stroke-width="1" rx="3"/>
+                    <text x="290" y="199" fill="#f5f3f0" font-size="9" text-anchor="middle" font-family="Inter, sans-serif">Hash01</text>
+
+                    <rect x="390" y="185" width="80" height="20" fill="rgba(212, 175, 55, 0.1)" stroke="#666" stroke-width="1" rx="3"/>
+                    <text x="430" y="199" fill="#f5f3f0" font-size="9" text-anchor="middle" font-family="Inter, sans-serif">Hash23</text>
+
+                    <path d="M 410 205 L 400 220" stroke="#666" stroke-width="1.5" fill="none"/>
+
+                    <rect x="360" y="220" width="80" height="20" fill="rgba(212, 175, 55, 0.2)" stroke="#d4af37" stroke-width="1.5" rx="3"/>
+                    <text x="400" y="234" fill="#d4af37" font-size="9" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600">Tx (verified)</text>
+
+                    <!-- Arrow from block to tx -->
+                    <path d="M 360 90 L 360 140" stroke="#d4af37" stroke-width="2" stroke-dasharray="3,3" fill="none" marker-end="url(#arrowhead5)"/>
+
+                    <defs>
+                        <marker id="arrowhead5" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                            <polygon points="0 0, 10 3, 0 6" fill="#d4af37" />
+                        </marker>
+                    </defs>
+                </svg>
+            </div>
+
+            <p>As such, the verification is reliable as long as honest nodes control the network, but is more vulnerable if the network is overpowered by an attacker. While network nodes can verify transactions for themselves, the simplified method can be fooled by an attacker's fabricated transactions for as long as the attacker can continue to overpower the network. One strategy to protect against this would be to accept alerts from network nodes when they detect an invalid block, prompting the user's software to download the full block and alerted transactions to confirm the inconsistency. Businesses that receive frequent payments will probably still want to run their own nodes for more independent security and quicker verification.</p>
+        </section>
+
+        <!-- Section 9: Combining and Splitting Value -->
+        <section id="combining-splitting-value">
+            <h2 data-number="9">Combining and Splitting Value</h2>
+            <p>Although it would be possible to handle coins individually, it would be unwieldy to make a separate transaction for every cent in a transfer. To allow value to be split and combined, transactions contain multiple inputs and outputs. Normally there will be either a single input from a larger previous transaction or multiple inputs combining smaller amounts, and at most two outputs: one for the payment, and one returning the change, if any, back to the sender.</p>
+            
+            <div class="diagram">
+                <svg viewBox="0 0 800 200" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Transaction with multiple inputs and outputs -->
+                    <g>
+                        <!-- Inputs -->
+                        <rect x="50" y="30" width="120" height="30" fill="rgba(212, 175, 55, 0.1)" stroke="#666" stroke-width="1.5" rx="4"/>
+                        <text x="110" y="50" fill="#f5f3f0" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">Input 1</text>
+
+                        <rect x="50" y="70" width="120" height="30" fill="rgba(212, 175, 55, 0.1)" stroke="#666" stroke-width="1.5" rx="4"/>
+                        <text x="110" y="90" fill="#f5f3f0" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">Input 2</text>
+
+                        <rect x="50" y="110" width="120" height="30" fill="rgba(212, 175, 55, 0.1)" stroke="#666" stroke-width="1.5" rx="4"/>
+                        <text x="110" y="130" fill="#f5f3f0" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">Input 3</text>
+
+                        <!-- Transaction box -->
+                        <rect x="230" y="50" width="200" height="80" fill="rgba(212, 175, 55, 0.15)" stroke="#d4af37" stroke-width="2" rx="6"/>
+                        <text x="330" y="75" fill="#d4af37" font-size="13" font-weight="600" text-anchor="middle" font-family="Inter, sans-serif">Transaction</text>
+                        <text x="330" y="95" fill="#f5f3f0" font-size="10" text-anchor="middle" font-family="Inter, sans-serif">Combine &amp; Split</text>
+                        <text x="330" y="110" fill="#a0a0a0" font-size="9" text-anchor="middle" font-family="Inter, sans-serif" font-style="italic">Sum Inputs → Outputs</text>
+
+                        <!-- Outputs -->
+                        <rect x="490" y="60" width="120" height="30" fill="rgba(212, 175, 55, 0.2)" stroke="#d4af37" stroke-width="1.5" rx="4"/>
+                        <text x="550" y="80" fill="#d4af37" font-size="11" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600">Output (Pay)</text>
+
+                        <rect x="490" y="100" width="120" height="30" fill="rgba(212, 175, 55, 0.1)" stroke="#666" stroke-width="1.5" rx="4"/>
+                        <text x="550" y="120" fill="#f5f3f0" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">Output (Change)</text>
+
+                        <!-- Arrows -->
+                        <path d="M 170 45 L 230 70" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arrowhead6)"/>
+                        <path d="M 170 85 L 230 90" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arrowhead6)"/>
+                        <path d="M 170 125 L 230 110" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arrowhead6)"/>
+
+                        <path d="M 430 75 L 490 75" stroke="#d4af37" stroke-width="2" fill="none" marker-end="url(#arrowhead6)"/>
+                        <path d="M 430 105 L 490 115" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arrowhead6)"/>
+                    </g>
+
+                    <text x="400" y="180" fill="#a0a0a0" font-size="11" text-anchor="middle" font-family="Inter, sans-serif" font-style="italic">Fan-out is not a problem</text>
+
+                    <defs>
+                        <marker id="arrowhead6" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                            <polygon points="0 0, 10 3, 0 6" fill="#666" />
+                        </marker>
+                    </defs>
+                </svg>
+            </div>
+
+            <p>It should be noted that fan-out, where a transaction depends on several transactions, and those transactions depend on many more, is not a problem here. There is never the need to extract a complete standalone copy of a transaction's history.</p>
+        </section>
+
+        <!-- Section 10: Privacy -->
+        <section id="privacy">
+            <h2 data-number="10">Privacy</h2>
+            <p>The traditional banking model achieves a level of privacy by limiting access to information to the parties involved and the trusted third party. The necessity to announce all transactions publicly precludes this method, but privacy can still be maintained by breaking the flow of information in another place: by keeping public keys anonymous. The public can see that someone is sending an amount to someone else, but without information linking the transaction to anyone. This is similar to the level of information released by stock exchanges, where the time and size of individual trades, the "tape", is made public, but without telling who the parties were.</p>
+            
+            <div class="diagram">
+                <svg viewBox="0 0 800 280" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Traditional Privacy Model -->
+                    <text x="200" y="25" fill="#d4af37" font-size="13" font-weight="600" text-anchor="middle" font-family="Inter, sans-serif">Traditional Privacy Model</text>
+                    
+                    <rect x="30" y="50" width="100" height="50" fill="rgba(212, 175, 55, 0.1)" stroke="#666" stroke-width="1.5" rx="6"/>
+                    <text x="80" y="70" fill="#f5f3f0" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">Identities</text>
+                    <text x="80" y="85" fill="#a0a0a0" font-size="9" text-anchor="middle" font-family="Inter, sans-serif">(Known)</text>
+
+                    <path d="M 130 75 L 170 75" stroke="#666" stroke-width="2" fill="none" marker-end="url(#arrowhead7)"/>
+
+                    <rect x="170" y="50" width="100" height="50" fill="rgba(212, 175, 55, 0.15)" stroke="#d4af37" stroke-width="2" rx="6"/>
+                    <text x="220" y="70" fill="#d4af37" font-size="11" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600">Trusted</text>
+                    <text x="220" y="85" fill="#d4af37" font-size="11" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600">Third Party</text>
+
+                    <path d="M 270 75 L 310 75" stroke="#666" stroke-width="2" fill="none" marker-end="url(#arrowhead7)"/>
+
+                    <rect x="310" y="50" width="100" height="50" fill="rgba(212, 175, 55, 0.1)" stroke="#666" stroke-width="1.5" rx="6"/>
+                    <text x="360" y="70" fill="#f5f3f0" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">Transactions</text>
+                    <text x="360" y="85" fill="#a0a0a0" font-size="9" text-anchor="middle" font-family="Inter, sans-serif">(Limited Access)</text>
+
+                    <!-- New Privacy Model -->
+                    <text x="200" y="165" fill="#d4af37" font-size="13" font-weight="600" text-anchor="middle" font-family="Inter, sans-serif">New Privacy Model</text>
+                    
+                    <rect x="30" y="190" width="100" height="50" fill="rgba(212, 175, 55, 0.1)" stroke="#666" stroke-width="1.5" rx="6"/>
+                    <text x="80" y="210" fill="#f5f3f0" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">Identities</text>
+                    <text x="80" y="225" fill="#a0a0a0" font-size="9" text-anchor="middle" font-family="Inter, sans-serif">(Anonymous)</text>
+
+                    <path d="M 130 215 L 210 215" stroke="#666" stroke-width="2" stroke-dasharray="5,5" fill="none"/>
+
+                    <rect x="210" y="190" width="100" height="50" fill="rgba(212, 175, 55, 0.2)" stroke="#d4af37" stroke-width="2" rx="6"/>
+                    <text x="260" y="210" fill="#d4af37" font-size="11" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600">Public Keys</text>
+                    <text x="260" y="225" fill="#d4af37" font-size="9" text-anchor="middle" font-family="Inter, sans-serif">(Anonymous)</text>
+
+                    <path d="M 310 215 L 350 215" stroke="#d4af37" stroke-width="2" fill="none" marker-end="url(#arrowhead7)"/>
+
+                    <rect x="350" y="190" width="100" height="50" fill="rgba(212, 175, 55, 0.1)" stroke="#666" stroke-width="1.5" rx="6"/>
+                    <text x="400" y="210" fill="#f5f3f0" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">Transactions</text>
+                    <text x="400" y="225" fill="#a0a0a0" font-size="9" text-anchor="middle" font-family="Inter, sans-serif">(Public)</text>
+
+                    <text x="475" y="220" fill="#a0a0a0" font-size="10" font-family="Inter, sans-serif">→ The Public</text>
+
+                    <defs>
+                        <marker id="arrowhead7" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                            <polygon points="0 0, 10 3, 0 6" fill="#666" />
+                        </marker>
+                    </defs>
+                </svg>
+            </div>
+
+            <p>As an additional firewall, a new key pair should be used for each transaction to keep them from being linked to a common owner. Some linking is still unavoidable with multi-input transactions, which necessarily reveal that their inputs were owned by the same owner. The risk is that if the owner of a key is revealed, linking could reveal other transactions that belonged to the same owner.</p>
+        </section>
+
+        <!-- Section 11: Calculations -->
+        <section id="calculations">
+            <h2 data-number="11">Calculations</h2>
+            <p>We consider the scenario of an attacker trying to generate an alternate chain faster than the honest chain. Even if this is accomplished, it does not throw the system open to arbitrary changes, such as creating value out of thin air or taking money that never belonged to the attacker. Nodes are not going to accept an invalid transaction as payment, and honest nodes will never accept a block containing them. An attacker can only try to change one of his own transactions to take back money he recently spent.</p>
+            <p>The race between the honest chain and an attacker chain can be characterized as a Binomial Random Walk. The success event is the honest chain being extended by one block, increasing its lead by +1, and the failure event is the attacker's chain being extended by one block, reducing the gap by -1.</p>
+            <p>The probability of an attacker catching up from a given deficit is analogous to a Gambler's Ruin problem. Suppose a gambler with unlimited credit starts at a deficit and plays potentially an infinite number of trials to try to reach breakeven. We can calculate the probability he ever reaches breakeven, or that an attacker ever catches up with the honest chain, as follows:</p>
+            
+            <p style="text-align: center; font-family: 'Times New Roman', serif; font-style: italic; margin: 24px 0;">
+                <span class="math">p</span> = probability an honest node finds the next block<br>
+                <span class="math">q</span> = probability the attacker finds the next block<br>
+                <span class="math">q<sub>z</sub></span> = probability the attacker will ever catch up from <span class="math">z</span> blocks behind
+            </p>
+
+            <p>Given our assumption that <span class="math">p</span> &gt; <span class="math">q</span>, the probability drops exponentially as the number of blocks the attacker has to catch up with increases. With the odds against him, if he doesn't make a lucky lunge forward early on, his chances become vanishingly small as he falls further behind.</p>
+            
+            <p>We now consider how long the recipient of a new transaction needs to wait before being sufficiently certain the sender can't change the transaction. We assume the sender is an attacker who wants to make the recipient believe he paid him for a while, then switch it to pay back to himself after some time has passed. The receiver will be alerted when that happens, but the sender hopes it will be too late.</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span>C Code Implementation</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code><span class="comment">// Calculate attacker success probability</span>
+<span class="keyword">#include</span> &lt;math.h&gt;
+<span class="keyword">double</span> <span class="function">AttackerSuccessProbability</span>(<span class="keyword">double</span> q, <span class="keyword">int</span> z)
+{
+    <span class="keyword">double</span> p = <span class="number">1.0</span> - q;
+    <span class="keyword">double</span> lambda = z * (q / p);
+    <span class="keyword">double</span> sum = <span class="number">1.0</span>;
+    <span class="keyword">int</span> i, k;
+    <span class="keyword">for</span> (k = <span class="number">0</span>; k &lt;= z; k++)
+    {
+        <span class="keyword">double</span> poisson = <span class="function">exp</span>(-lambda);
+        <span class="keyword">for</span> (i = <span class="number">1</span>; i &lt;= k; i++)
+            poisson *= lambda / i;
+        sum -= poisson * (<span class="number">1</span> - <span class="function">pow</span>(q / p, z - k));
+    }
+    <span class="keyword">return</span> sum;
+}</code></pre>
+            </div>
+
+            <p style="margin-top: 40px;">Running some results, we can see the probability drop off exponentially with <span class="math">z</span>.</p>
+
+            <table>
+                <caption style="caption-side: top; color: var(--gold); font-family: 'Inter', sans-serif; font-weight: 600; padding: 12px; font-size: 0.95rem;">Probability for q = 0.1</caption>
+                <thead>
+                    <tr>
+                        <th>z</th>
+                        <th>Probability</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>0</td><td>1.0000000</td></tr>
+                    <tr><td>1</td><td>0.2045873</td></tr>
+                    <tr><td>2</td><td>0.0509779</td></tr>
+                    <tr><td>3</td><td>0.0131722</td></tr>
+                    <tr><td>4</td><td>0.0034552</td></tr>
+                    <tr><td>5</td><td>0.0009137</td></tr>
+                    <tr><td>6</td><td>0.0002428</td></tr>
+                    <tr><td>7</td><td>0.0000647</td></tr>
+                    <tr><td>8</td><td>0.0000173</td></tr>
+                    <tr><td>9</td><td>0.0000046</td></tr>
+                    <tr><td>10</td><td>0.0000012</td></tr>
+                </tbody>
+            </table>
+
+            <table>
+                <caption style="caption-side: top; color: var(--gold); font-family: 'Inter', sans-serif; font-weight: 600; padding: 12px; font-size: 0.95rem;">Probability for q = 0.3</caption>
+                <thead>
+                    <tr>
+                        <th>z</th>
+                        <th>Probability</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>0</td><td>1.0000000</td></tr>
+                    <tr><td>5</td><td>0.1773523</td></tr>
+                    <tr><td>10</td><td>0.0416605</td></tr>
+                    <tr><td>15</td><td>0.0101008</td></tr>
+                    <tr><td>20</td><td>0.0024804</td></tr>
+                    <tr><td>25</td><td>0.0006132</td></tr>
+                    <tr><td>30</td><td>0.0001522</td></tr>
+                    <tr><td>35</td><td>0.0000379</td></tr>
+                    <tr><td>40</td><td>0.0000095</td></tr>
+                    <tr><td>45</td><td>0.0000024</td></tr>
+                    <tr><td>50</td><td>0.0000006</td></tr>
+                </tbody>
+            </table>
+
+            <p>Solving for P less than 0.1%...</p>
+
+            <table>
+                <caption style="caption-side: top; color: var(--gold); font-family: 'Inter', sans-serif; font-weight: 600; padding: 12px; font-size: 0.95rem;">Blocks needed for P &lt; 0.001</caption>
+                <thead>
+                    <tr>
+                        <th>q (Attacker %)</th>
+                        <th>z (Blocks)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>0.10</td><td>5</td></tr>
+                    <tr><td>0.15</td><td>8</td></tr>
+                    <tr><td>0.20</td><td>11</td></tr>
+                    <tr><td>0.25</td><td>15</td></tr>
+                    <tr><td>0.30</td><td>24</td></tr>
+                    <tr><td>0.35</td><td>41</td></tr>
+                    <tr><td>0.40</td><td>89</td></tr>
+                    <tr><td>0.45</td><td>340</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section 12: Conclusion -->
+        <section id="conclusion">
+            <h2 data-number="12">Conclusion</h2>
+            <p>We have proposed a system for electronic transactions without relying on trust. We started with the usual framework of coins made from digital signatures, which provides strong control of ownership, but is incomplete without a way to prevent double-spending. To solve this, we proposed a peer-to-peer network using proof-of-work to record a public history of transactions that quickly becomes computationally impractical for an attacker to change if honest nodes control a majority of CPU power. The network is robust in its unstructured simplicity. Nodes work all at once with little coordination. They do not need to be identified, since messages are not routed to any particular place and only need to be delivered on a best effort basis. Nodes can leave and rejoin the network at will, accepting the proof-of-work chain as proof of what happened while they were gone. They vote with their CPU power, expressing their acceptance of valid blocks by working on extending them and rejecting invalid blocks by refusing to work on them. Any needed rules and incentives can be enforced with this consensus mechanism.</p>
+        </section>
+
+        <!-- References -->
+        <section id="references" class="references">
+            <h2 data-number="">References</h2>
+            <ol>
+                <li id="ref-1">W. Dai, "b-money," <a href="http://www.weidai.com/bmoney.txt" target="_blank">http://www.weidai.com/bmoney.txt</a>, 1998.</li>
+                <li id="ref-2">H. Massias, X.S. Avila, and J.-J. Quisquater, "Design of a secure timestamping service with minimal trust requirements," In 20th Symposium on Information Theory in the Benelux, May 1999.</li>
+                <li id="ref-3">S. Haber, W.S. Stornetta, "How to time-stamp a digital document," In Journal of Cryptology, vol 3, no 2, pages 99-111, 1991.</li>
+                <li id="ref-4">D. Bayer, S. Haber, W.S. Stornetta, "Improving the efficiency and reliability of digital time-stamping," In Sequences II: Methods in Communication, Security and Computer Science, pages 329-334, 1993.</li>
+                <li id="ref-5">S. Haber, W.S. Stornetta, "Secure names for bit-strings," In Proceedings of the 4th ACM Conference on Computer and Communications Security, pages 28-35, April 1997.</li>
+                <li id="ref-6">A. Back, "Hashcash - a denial of service counter-measure," <a href="http://www.hashcash.org/papers/hashcash.pdf" target="_blank">http://www.hashcash.org/papers/hashcash.pdf</a>, 2002.</li>
+                <li id="ref-7">R.C. Merkle, "Protocols for public key cryptosystems," In Proc. 1980 Symposium on Security and Privacy, IEEE Computer Society, pages 122-133, April 1980.</li>
+                <li id="ref-8">W. Feller, "An introduction to probability theory and its applications," 1957.</li>
+            </ol>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>Bitcoin: A Peer-to-Peer Electronic Cash System</p>
+        <p>Satoshi Nakamoto &middot; 2008</p>
+        <p style="margin-top: 16px; font-size: 0.8rem; color: var(--gray-medium);">Formatted with care &middot; October 2025</p>
+    </footer>
+
+    <script>
+        // Table of Contents Toggle
+        function toggleTOC() {
+            const toc = document.getElementById('toc');
+            toc.classList.toggle('open');
+        }
+
+        function closeTOC() {
+            const toc = document.getElementById('toc');
+            toc.classList.remove('open');
+        }
+
+        // Copy Code Function
+        function copyCode(button) {
+            const codeBlock = button.closest('.code-block');
+            const code = codeBlock.querySelector('code').textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                button.textContent = 'Copied!';
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                }, 2000);
+            });
+        }
+
+        // Smooth scroll with offset for fixed nav
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    const offset = 80;
+                    const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Add scroll indicator to nav
+        let lastScroll = 0;
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            const currentScroll = window.pageYOffset;
+            
+            if (currentScroll > 100) {
+                nav.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.3)';
+            } else {
+                nav.style.boxShadow = 'none';
+            }
+            
+            lastScroll = currentScroll;
+        });
+    </script>
+</body>
+</html>

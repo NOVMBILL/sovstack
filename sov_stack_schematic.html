@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SOV Stack Radial Schematic</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px 16px 40px;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      margin: 0 0 0.5rem;
+    }
+
+    .lead {
+      font-size: 0.95rem;
+      color: #9ca3af;
+      margin-bottom: 1rem;
+    }
+
+    #schematic-wrapper {
+      margin-top: 1rem;
+      border-radius: 12px;
+      background: #111827;
+      padding: 16px;
+      border: 1px solid #1f2937;
+      overflow-x: auto;   /* horizontal scroll if needed */
+      overflow-y: visible;
+    }
+
+    #schematic {
+      display: block;
+      margin: 0 auto;
+      max-width: 100%;
+      height: auto;      /* keep aspect ratio */
+    }
+
+    .legend-section {
+      margin-top: 16px;
+      padding: 12px 14px;
+      background: #020617;
+      border-radius: 10px;
+      border: 1px solid #1f2937;
+    }
+
+    .legend-section h2 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+    }
+
+    #legend-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    #legend-list button {
+      border: none;
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      background: #111827;
+      color: #e5e7eb;
+      border: 1px solid #1f2937;
+      transition: background 0.15s, transform 0.1s, border-color 0.15s;
+    }
+
+    #legend-list button:hover {
+      background: #1f2937;
+      transform: translateY(-1px);
+    }
+
+    #legend-list button.active {
+      background: #f97316;
+      color: #111827;
+      border-color: #fed7aa;
+    }
+
+    #layer-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 4px 12px;
+      font-size: 0.85rem;
+    }
+
+    #layer-list div {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    #layer-list .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 1px solid #111827;
+    }
+
+    .node-circle {
+      cursor: pointer;
+      transition: stroke 0.2s, fill 0.2s, r 0.2s;
+    }
+
+    .node-circle:hover {
+      stroke: #facc15;
+      stroke-width: 2.5px;
+      r: 14;
+    }
+
+    .node-circle.selected {
+      stroke: #f97316;
+      stroke-width: 3px;
+      r: 15;
+      filter: drop-shadow(0 0 6px rgba(249, 115, 22, 0.6));
+    }
+
+    /* Info panel at bottom */
+    #info-panel {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+      display: flex;
+      justify-content: center;
+      padding: 0 12px 12px;
+    }
+
+    #info-inner {
+      pointer-events: auto;
+      max-width: 700px;
+      width: 100%;
+      background: #020617;
+      border: 1px solid #1f2937;
+      border-radius: 10px;
+      padding: 10px 12px 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+      display: none;
+    }
+
+    #info-inner header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    #info-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    #info-close {
+      border: none;
+      background: transparent;
+      color: #9ca3af;
+      font-size: 1.1rem;
+      cursor: pointer;
+      padding: 0 4px;
+    }
+
+    #info-close:hover {
+      color: #f97316;
+    }
+
+    #info-content {
+      font-size: 0.85rem;
+      color: #d1d5db;
+      white-space: pre-wrap;
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 1.4rem;
+      }
+      .legend-section {
+        padding: 10px 10px;
+      }
+      #info-inner {
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>SOV Stack – Radial Schematic</h1>
+    <p class="lead">
+      Click any node to see its cell text. Click a domain button to highlight all nodes for that domain.
+      Each cell is keyed as <code>Lx_Dy</code> in the script and can have unique content.
+    </p>
+
+    <div id="schematic-wrapper">
+      <svg id="schematic"></svg>
+    </div>
+
+    <div class="legend-section">
+      <h2>Domain Legend</h2>
+      <div id="legend-list"></div>
+    </div>
+
+    <div class="legend-section">
+      <h2>Layer Legend</h2>
+      <div id="layer-list"></div>
+    </div>
+  </div>
+
+  <div id="info-panel">
+    <div id="info-inner">
+      <header>
+        <div id="info-title"></div>
+        <button id="info-close" type="button" aria-label="Close">×</button>
+      </header>
+      <div id="info-content"></div>
+    </div>
+  </div>
+
+  <script>
+    // -----------------------------
+    // CORE DATA
+    // -----------------------------
+
+    const layers = [
+      { id: 'L0', name: 'Individual' },
+      { id: 'L1', name: 'Family/Household' },
+      { id: 'L2', name: 'Neighborhood' },
+      { id: 'L3', name: 'Community' },
+      { id: 'L4', name: 'City' },
+      { id: 'L5', name: 'Federation' }
+    ];
+
+    const domains = [
+      { id: 'D1',  name: 'Money' },
+      { id: 'D2',  name: 'Comms' },
+      { id: 'D3',  name: 'Energy' },
+      { id: 'D4',  name: 'Food/Water' },
+      { id: 'D5',  name: 'Shelter' },
+      { id: 'D6',  name: 'Time' },
+      { id: 'D7',  name: 'Myth/Codex' },
+      { id: 'D8',  name: 'Law/Governance' },
+      { id: 'D9',  name: 'Defense/Security' },
+      { id: 'D10', name: 'Compute/Data' },
+      { id: 'D11', name: 'Health/Medicine' },
+      { id: 'D12', name: 'Trade' },
+      { id: 'D13', name: 'Mobility' },
+      { id: 'D14', name: 'Death/Legacy' },
+      { id: 'D15', name: 'Education/Knowledge' },
+      { id: 'D16', name: 'Waste/Cycle/Ecology' },
+      { id: 'D17', name: 'Manufacturing/Tools' }
+    ];
+
+    // Layer colours (rings) inner → outer
+    const layerColors = [
+      '#FFDED6', // Individual
+      '#FFF6CC', // Family/Household
+      '#D9F2FF', // Neighborhood
+      '#E5E0FF', // Community
+      '#DFF8E3', // City
+      '#FFE0F0'  // Federation
+    ];
+
+    // -----------------------------
+    // PER-CELL CONTENT MAP
+    // -----------------------------
+    //
+    // Key format: "Lx_Dy"
+    // Example keys:
+    //   L0_D1 = Individual → Money
+    //   L3_D4 = Community → Food/Water
+    //   L5_D17 = Federation → Manufacturing/Tools
+    //
+    // Add/modify entries here. Anything not defined will use makeDefaultCell().
+
+    const nodeData = {
+      // EXAMPLES — you can change/remove these and add more.
+
+      "L0_D1": {
+        title: "Individual → Money",
+        description: [
+          "L0 MONEY STACK:",
+          "- Decoy wallet (mobile Lightning)",
+          "      - For recieving lightning",
+          "      - Never send to your daily spending wallet. Always send to a trusted friend's wallet first",
+          "      - Easy to drop and spin up anew",  
+          "      - Reccomended: CoinOS, Blixt",
+          "- Daily spending wallet (mobile Lightning)",
+          "      - A small balance wallet on your phone for everyday use.",
+          "      - Treat like cash in your pocket: easy to spend, never huge amounts",
+          "      - Prefer self-custodial. Learn how to run a node!",
+          "      - Reccomended: ZUES, Blixt, BitBanana, Pheonix",
+          "- Mobile watch-only wallet (on-chain)",
+          "      - For receiving (and watching) only",
+          "      - Reccomended: Nunchuck, Electrum, Bluewallet, Bull Wallet",
+          "- Desktop watch-only wallet (on-chain)",
+          "      - For receiving (and watching) only",
+          "      - Reccomended: Nunchuck, Electrum, Bluewallet, Bull Wallet",
+          "- Cold storage (long-term savings)",
+          "      - Hardware wallet, airgapped device, or other setup that never connects casually",
+          "      - Holds the bulk of your sats; not used for frequent spending",
+          "      - Reccomended: Nunchuck, Sparrow, Core, Liana, Spectre",
+          "- Cashu / ecash wallet",
+          "      - Private, fast, casual payments",
+          "      - Good for small amounts",
+          "      - Reccomended: MiniBits (still in beta), Nutshell CLI, Nutstash, Cashu.me",
+          "- Write down all seed phrases on paper and steel, never digital files!",
+          "      - Label each seed with its purpose",
+          "      - One backup per seed",
+          "- Decide simple rules for how much goes where",
+          "      - Example: 'Never keep more than X sats on phone; rest goes to cold storage monthly.'",
+          "- Privacy routine (UTXO management, Coinjoin, etc.)",
+          "      - Never mix KYC linked UTXOs to clean UTXOs. Use a separate wallet if necessary",
+          "- Run a full Bitcoin node",
+          "      - Set to auto-start and auto-update (or manual update with reminders)",
+          "      - Tor always on",
+          "      - For advanced users:",
+          "            - Run ≥2 implementations where stable (e.g., Core + alt client). Do not enable content-based relay bans.",
+          "            - Refuse peer-ban lists targeting lawful policy differences. Maintain ≥32 peers across diverse ASNs/jurisdictions.",
+          "            - Relay discipline. Feerate-based mempool eviction only; no content filters. Keep standardness aligned with consensus; avoid bespoke “moral” filters.",
+          "            - Maintain peering with both restrictive and permissive policy nodes to prevent network silos.",
+          "- Connect your wallet to your own node",
+          "- Run a Lightning node",
+          "      - Open a few channels.",
+          "      - Have a basic backup/“static channel backup” routine in case the node dies.",
+        ].join("\n")
+      },
+
+      "L0_D2": {
+        title: "Individual → Comms",
+        description: [
+          "L0 COMMS STACK:",
+          "- NOSTR ID",
+          "      - Generate and store your Nostr keys",
+          "      - Save your npub & nsec and back them up like a wallet seed!",
+          "      - Reccomended clients: Gossip (Desktop), Notedeck (Desktop), Coracle, Jumble, Habla.news, Yakihonne, 0xchat (messenger)",
+          "      - Use a key manager, never input your nsec!",
+          "            - Reccomended: Amber (Android)",
+          "- Run a NOSTR Relay",
+          "      - Restrict access and set simple policies.",
+          "- Primary messaging app (E2EE)",
+          "      - Agree with your key people what app you use as “default”",
+          "      - Reccomended: Simplex (only until 2026), CWTCH (for more advanced users), White Noise (still in Alpha), KeyChat.io (still in Beta)",
+          "- Backup messaging channel",
+          "      - Another app or method in case the first one fails or is blocked",
+          "- Email",
+          "      - One email address per identity (nym)",
+          "      - Use alias(es) for each role (work, finance, personal) per nym",
+          "      - Store credentials in your password manager",
+          "      - Reccomended: Proton, Tuta, Mailcow (for advanced users), Stalwart (advanced)",
+          "- PGP Keypair",
+          "      - Generate a PGP key and back it up",
+          "      - Keep public key handy to share if needed",
+          "- Voice/Video",
+          "      - More difficult due to lack of options",
+          "      - Reccomended: Keet (not OSS), MATRIX + ELEMENT CALL",
+          "- Mesh/Lora",
+          "      - For local comms and in case of emergency",
+          "      - Reccomended: Briar, Bitchat, Gotenna pro x2, Hyphamesh, Meshtastic",
+          "- Emergency contact plan",
+          "      - Decide how you’d reach key people if internet/app goes down (e.g. burner SMS, phone call, in-person meeting point)."
+        ].join("\n")
+      },
+
+      "L0_D3": {
+        title: "Individual → Energy",
+        description: [
+          "L0 ENERGY STACK:",
+          "- Power banks for devices",
+          "      - One per type of device. Ensure its powerful enough for the device.",
+          "- Backup for router / modem",
+          "      - Small UPS or power bank that can run your internet box briefly",
+          "- Basic solar / off-grid",
+          "      - At least a small panel and battery to charge phone/lights",
+          "- List of what must stay powered in an outage",
+          "      - Phone, laptop, lights, fridge.",
+          "      - Align your backup gear with this list",
+        ].join("\n")
+      },
+
+      "L0_D4": {
+        title: "Individual → Food/Water",
+        description: [
+          "L0 FOOD/WATER STACK:",
+          "- 2–4 weeks of shelf-stable food at home",
+          "      -  Simple staples you actually eat (rice, beans, canned goods, oats, etc.)",
+          "             - Get helthy stuff! Do research!",
+          "      - Rotate and use them so nothing expires.",
+          "- Daily food plan",
+          "      - A small list of go-to meals that are affordable, nutritious, and easy.",
+          "- Local food sources mapped",
+          "      - Which farmers, markets, butchers, etc. you prefer",
+          "      - Where you can buy with cash or BTC",
+          "      - Prioritize redundancy",
+          "      - Build relationships",
+          "- Garden/grow set up",
+          "      - Start with easy crops that work in your region",
+          "- Livestock (advanced)",
+          "      - Chickens are viable even in rural areas",
+          "      - Goats, sheep, cattle, rabbit, etc.",
+          "- At least one solid water filter",
+          "      - Get a Lifestraw bottle for travelling",
+          "      - Use Pur filter on your sink, or look at Berkey",
+          "      - Avoid plastic filter bottles unless as a last resort",
+          "- Stored water",
+          "      - A few days’ worth of drinking water in containers",
+          "      - Rotate occasionally",
+          "- Backup Plan",
+          "      - Where would you get water if your normal supply suddenly stopped",
+          "- Stop drinking out of plastic",
+          "      - Priority: sterling silver, copper, stainless steel, glass, ceramic",
+          "      - If waterbottle is the only option, choose the hardest, stiffest plastic",
+          "- Learn about vortexing, and structuring",
+          "      - Chickens are viable even in rural areas",
+          "      - Goats, sheep, cattle, rabbit, etc.",
+        ].join("\n")
+      },
+
+
+      "L0_D5": {
+        title: "Individual → Shelter",
+        description: [
+          "L0 SHELTER STACK:",
+          "- Stabilize your current housing",
+          "      - Understand your lease/mortgage terms",
+          "      - Know how much notice you’d get if things went bad",
+          "      - Try to secure housing for cash/BTC",
+          "- Basic physical security (see also DEFENSE/SECURITY)",
+          "      - Main door(s): deadbolt, anti-shim, sturdy frame",
+          "      - Windows: secondary locks or dowels for sliding windows",
+          "      - Room/closet with a lock for storing backups/valuables if you rent",
+          "      - Door viewer/peephole. Know who’s knocking",
+          "      - If you install cameras, do not cloud-link",
+          "      - Lights: outside and inside",
+          "            - Motion-activated or manually switched lights at main entries",
+          "            - Have at least one reliable flashlight/headlamp per person",
+          "      - Layered “zones” for valuables. Nothing important in plain sight",
+          "            - “Decoy” valuables for opportunistic thieves (old phone, some cash)",
+          "            - True backups/essentials deeply hidden, hard to find under stress",
+          "      - (Legal) self-defense tool by bed or door if allowed",
+          "            -Know where it is, keep it simple and always accessible",
+          "      - Lights: outside and inside",
+          "- Clear plan: what do you do in case of emergency (fire, break in, flooding, high winds, leak, gas, etc.?",
+          "      - Know at least two ways to leave your home",
+          "      - Have keys/fobs in the same accessible place each night"
+        ].join("\n")
+      },
+
+
+      "L0_D6": {
+        title: "Individual → Time",
+        description: [
+          "L0 TIME STACK:",
+          "- Calendar system",
+          "      - Get off synthetic time (Gregorian, days of the week, 9-5, tax cycles, notification cycles, state holidays, etc.)",
+          "            - Start syncing to your own clock",
+          "      - Whats your chronotype?",
+          "            - What rhythms does your body naturally want to follow?",
+          "      - Study your circadian rhythm. Wake with the sun, wind down with the night",
+          "            - Turn of blue light at night, get red lights and blue blockers",
+          "      - Learn about how the moon affects humans. How does it affect you? Follow its rhythms",
+          "      - Science says we are more productive when we follow this schedule",
+          "            - 7 day week",
+          "            - 4 day work sprint",
+          "            - 1 day for errands/synthesis",
+          "            - 2 days rest",
+          "- Daily routine",
+          "      - Create habits and rituals that put you into flow, that set your future self up for success",
+          "      - Go to bed, wake up, move, and eat at the same time everyday (within ~45 min)",
+          "      - Be intentional. Do what works for you",
+          "- Weekly review slot",
+          "      - One block of time in your week to review: wealth, tasks, health, relationships",
+          "- What is your astrology (yes, you should study it)",
+          "      - Find your rhythms",
+          "- What rhythms/cycles did your ancestors follow?",
+          "- Turn off notifications",
+          "      - Have set communication times that you share with your circle. Specific times to check your comms",
+          "            - Reccomended: before lunch time, after your first deep work block; before dinner, after your last deep work block; if necessary, add a window about 90 min before sleeping ",
+          "- Quarterly SovStack audit",
+          "      - A longer block every few months to walk through this checklist again and update",
+        ].join("\n")
+      },
+
+      "L0_D7": {
+        title: "Individual → Myth/Codex",
+        description: [
+          "L0 MYTH/CODEX STACK:",
+          "- Personal codex",
+          "      - Plain text or markdown file that answers: “What do I stand for, and what rules do I live by?”",
+          "            - Whats your story? Who are you? Where did you come from? Where are you going?",
+          "            - What are your non-negotiables?",
+          "            - How do you decide right/wrong in adversarial scenarios?",
+          "      - Keep it short and clear first; you can expand later",
+          "      - Continuously revise, update, and audit",
+          "      - Update origin story as you evolve",
+          "- Define money rules",
+          "      - How you earn, what you refuse to do for money",
+          "      - How much you save vs spend",
+          "      - A simple rule for donations/gifts",
+          "- Define risk rules",
+          "      - What you never risk (e.g. rent buffer, emergency sats, health)",
+          "      - When you say “no” even if it looks profitable",
+          "- Define relationship/interaction rules",
+          "      - How you handle conflict",
+          "      - How you set boundaries",
+          "      - When you cut ties",
+          "- Create your identity stack",
+          "      - Nyms",
+          "      - Public keys (Bitcoin, Nostr, PGP) stored in one clear document",
+          "- Write simple rituals",
+          "      - Daily: short check-in (e.g. “review day, check wallets, note one key decision”).",
+          "      - Weekly: review goals, money, time, and health",
+          "      - Quarterly: full SovStack audit",
+          "- Version your codex",
+          "      - Add dates: “Codex v1 – YYYY-MM-DD”",
+          "      - When you change it, save as v2, v3, etc., so you see your evolution",
+          "- Store codex securely",
+          "      - Encrypted folder, plus backup in your usual backup system",
+        ].join("\n")
+      },
+
+      "L0_D8": {
+        title: "Individual → Law/Governance",
+        description: [
+          "L0 LAW/GOVERNANCE STACK:",
+          "- Contract Protocols",
+          "      - Draft template for voluntary contract (any deal, partnership, agreement)",
+          "      - Name, purpose, mutual benefit, boundaries, duration, exit/termination clause, proof of fulfillment.",
+          "      - Signed (even if pseudonymous), stored in your archive",
+          "      - Continuously revise, update, and audit",
+          "- Dispute & Audit Protocol",
+          "      - Dispute process: how do you handle broken agreements?",
+          "            - Steps: direct resolution → mediation (trusted peer) → codex audit → expulsion or ritual settlement",
+          "      - Audit process: regular self-audit (monthly/quarterly), check your own adherence to codex/law",
+          "      - External audit: allow a trusted peer to “red team” your law/behavior once per year",
+          "- Define the ritual/process for changing your own law",
+          "      - How often is mutation allowed? What’s the process? Who witnesses the change?",
+          "      - All amendments are logged, with reasons and context",
+          "- Property & Custody Law",
+          "      - Spell out custody boundaries: who holds your keys/assets if you are gone, and how do they access them?",
+          "      - Define rules for shared property/tools: e.g., “Tool X can be lent to Person Y if they follow rule Z.”",
+          "- Succession & Death Protocol",
+          "      - If incapacitated or dead, what law supersedes yours? (e.g., inheritance instructions, death ritual, destroy keys, or handoff process)",
+          "      - Appoint at least one “executor”—person trusted to follow your instructions",
+          "- Sovereign Governance Rituals",
+          "      - Schedule regular law-core rituals: codex review, audit, collapse test (simulate loss, betrayal, error)",
+          "      - Enforce a kill-switch: every system has a protocol for self-destruction, reset, or exile, if compromised",
+          "- External Law Boundary",
+          "      - Map all external laws (state, corporate, etc.) that claim jurisdiction over you",
+          "      - Note which you comply with (and why), which you contest, which you actively evade, and what your strategy is for each",
+
+        ].join("\n")
+      },
+
+      "L0_D9": {
+        title: "Individual → Defense/Security",
+        description: [
+          "L0 DEFENSE/SECURITY STACK:",
+          "- Physical Security",
+          "      - See SHELTER section for more",
+          "      - Learn self-defense",
+          "            - Reccomended: boxing, kickboxing, Muay Thai, wrestling, judo, (no-gi) BJJ, Krav Maga, Kali/Arnis",
+          "      - EDC (depends on your jurisidiction)",
+          "            - Minimal: flashlight, emergency med kit, multi tool",
+          "      - Don’t advertise valuables, cash, BTC holdings",
+          "            - Watch who you tell about backup locations, habits, routines",
+          "      - Go-bag",
+          "            - Copies of important documents",
+          "            - Clothes",
+          "            - Cash",
+          "- Digital Security",
+          "      - Faraday bag(s) for device(s)",
+          "      - Unique, strong passwords for everything",
+          "            - Password manager set up",
+          "            - No reused passwords",
+          "      - 2FA enabled for all key logins",
+          "      - Device encryption always on",
+          "            - Phone, laptop, external drives",
+          "      - Regular device/software updates",
+          "      - Minimal attack surface. Only install what you actually use",
+          "            - Disable unnecessary features (Bluetooth, location, cloud backup if not essential)",
+          "      - Network defense",
+          "            - Home router: change admin password, disable remote management, update firmware",
+          "            - Wi-Fi: strong unique password, hide SSID (if useful), separate guest network if sharing",
+          "      - Basic firewall on computers",
+          "            - Default deny/ask for incoming connections unless you explicitly run a server",
+          "      - Phishing/impersonation awareness",
+          "            - Never enter passwords or keys into links from emails/texts without careful check",
+          "            - Always check URLs, sender emails, etc. for subtle typos",
+          "      - Secure backup of keys and passwords",
+          "            - Not just on devices: offline, physical backup",
+          "      - Remote wipe/lock set up",
+          "            - If phone/laptop stolen, you can attempt to wipe it",
+          "- Basic Privacy (see Privacy Stack for more)",
+          "      - Elminate (or minimize) data sharing",
+          "      - Browser hygiene",
+          "            - Main browser locked down: privacy extensions (uBlock, HTTPS Everywhere, etc.), clear cookies, use privacy search",
+          "            - Separate browser or profile for financial/logins",
+          "      - Avoid sharing location in real time",
+          "- Adversarial Planning",
+          "      - Threat model: review your unique risks",
+          "            - Who might want to target you? (Random thieves, nosy landlord, ex-partner, online scammers, government, etc.)",
+          "      - Red team yourself quarterly",
+          "            - Imagine how someone could break in, scam, steal, or coerce you",
+          "      - Emergency “signal cut” protocol",
+          "            - If you must disappear: know what you’d turn off, shut down, delete, or leave behind first",
+          "      - Incident log",
+          "            - If something strange happens (break-in attempt, phishing, scam), write it down. Use to improve future defense",
+
+        ].join("\n")
+      },
+
+
+      "L0_D10": {
+        title: "Individual → Compute/Data",
+        description: [
+          "L0 COMPUTE/DATA STACK:",
+          "- Main Laptop",
+          "      - Encryption turned on",
+          "      - Local user account with strong password",
+          "      - Reccomended device: INSURGO PRIVACYBEAST X230/NITROPAD X230/T430, PURISM LIBREM 14, NOVACUSTOM V54/V56 (DASHARO/HEADS), SYSTEM76 LEMUR/ORYX PRO, THINKPAD T480/T480S, STAR LABS, STARBOOK (COREBOOK/LIBREBOOT), THINKPAD T440P (COREBOOT), MNT REFORM",
+          "      - Reccomended OS:QUEBES OS, NIXOS, OPENBSD, FREEBSD, GUIX SYSTEM, FEDORA SILVERBLUE",
+          "- Pixel phone w/GrapheneOS",
+          "- Secondary / “clean” device",
+          "      - Used for sensitive operations only",
+          "- Password manager",
+          "      - One master password written down in a secure offline spot",
+          "      - All other logins stored in the manager",
+          "      - Reccomended: KEEPASSXC, GOPASS/PASS, BITWARDEN+VAULTWARDEN, PASSBOLT CE, PSONO CE, KEEWEB, PROTONPASS",
+          "- 2FA",
+          "      - Reccomended: NITROKEY 3, SOLOKEYS SOLO 2",
+          "- Backups",
+          "      -3-2-1 rule",
+          "            - 3 copies of important data",
+          "            - 2 different types of storage (e.g. internal drive + external + cloud)",
+          "            - 1 copy stored offsite (friend’s house, safe deposit, etc.)",
+          "      - Decide what is “important”",
+          "            - Documents, codex, keys, critical notes",
+          "      - Schedule backups",
+          "            - Automatic if possible, or a recurring reminder (weekly/monthly)",
+          "      - AI",
+          "      - You need to work on getting a local LLM set up (several GPUs, etc.)",
+          "      - For now you should at least not be using chatGPT, Gemini, Claude, etc.",
+          "            - Get set up on Routstr, PPQ.ai, or MapleAI",
+          "            - You may want to keep chatGPT or Gemini for its features (Agents, NotebookLM, DeepResearch, etc.). Minimize your use. Figure out how to get those same features locally",
+        ].join("\n")
+      },
+
+      "L0_D11": {
+        title: "Individual → Helath/Medicine",
+        description: [
+          "L0 HEALTH/MEDICINE STACK:",
+          "- Basic medical kit at home",
+          "      - Bandages, disinfectant, pain relief, thermometer, etc",
+          "- Know your key health numbers",
+          "      - Rough weight, blood pressure, any critical conditions/meds",
+          "      - Store this in a simple doc you can access if you’re stressed",
+          "- Exercise",
+          "      - At the very least: lots of walking and sitting for no more than 45-90 min at a time. Everyday",
+          "      - Recommended: Resistance training, hiking, VO2 training, outdoors preferred, yoga, mobility, sports",
+          "            - >=3-4 times a week",
+          "            - Train hard",
+          "- Sadhana/Spirituality",
+          "      - For the hyper-rationalists: basic stress relief practice",
+          "      - Meditation, breathwork, yoga (real yoga. Study.)",
+          "- Other recommended practices",
+          "      - Heat/cold: sauna/steam/hot tubs + cold showers/ice baths",
+          "      - Eliminate shit ingredients, seed oils, plastics (plastics are everywhere, find and eliminate), sitting for too long, looking down at your phone, poor posture",
+          "      - Get barefoot shoes, unless you have a serious condition where its not advisable",
+          "      - Get tested (blood, biomarkers, hormones, vitamin D, microbiome, etc.)",
+          "            - Optimize your diet (this will take time and research)",
+          "      - Turn of blue lights at night. Get blue blockers and install red lights",
+          "      - Get NIR lights (cheap and easy: chicken lights)",
+          "      - TAKE CARE OF YOUR SLEEP. You better be getting 7+ hours a night",
+          "      - Figure out if you need supplements",
+          "      - Touch grass",
+          "      - Get outside as soon as you wake up, get sunlight, move",
+          "      - Learn enough about health to take care of yourself as much as possible wihtout doctors (including in emergencies)",
+          "            - Build a strong community so that when emergencies come you shouldn't have to rely on yourself, or be forced to pay ridiculous amounts of money",
+        ].join("\n")
+      },
+
+      "L0_D12": {
+        title: "Individual → Trade",
+        description: [
+          "L0 TRADE STACK:",
+          "- Define your main way(s) to earn",
+          "      - Make your (decoy wallet) address easy to find",
+          "- Identify a few people you can sell to or help",
+          "      - Locally or online",
+          "      - Start with one small real transaction, even if symbolic",
+          "- P2P buying/selling channels",
+          "      - Where you buy non-KYC BTC",
+          "            - Recommended: Bisq, HodlHodl, Mostro, Robosats, Peach",
+          "      - Where you can trade goods/services for BTC or cash",
+          "- “Inventory” list",
+          "      - Skills, tools, or physical items you can trade quickly if needed",
+        ].join("\n")
+      },
+
+      "L0_D13": {
+        title: "Individual → Mobility",
+        description: [
+          "L0 MOBILITY STACK:",
+          "- Valid Passport. At least 6 months before expiry",
+          "      - Stored somewhere accessible but safe",
+          "      - Back up: high-res scan saved encrypted (not cloud-exposed), plus printout in a secure folder",
+          "- Secondary IDs (license, local ID, residency permit, etc.)",
+          "      - If available: non-primary citizenship, second passport, alternative residency proofs",
+          "- Physical and digital backup of critical docs",
+          "      - USB stick, SD card, or paper copies (encrypted as needed)",
+          "      - Documents: birth cert, IDs, insurance, vaccination, medical, key contracts, critical codex entries",
+          "- Go bag (see SHELTER)",
+          "- Map out at exit routes",
+          "- Know your nearest safe zones",
+          "      - Friend’s house, hostel, embassy, “third place” in another city",
+          "- Know your public transit systems",
+          "- Get a bike",
+          "- Know customs rules in your region",
+          "- Travel story & minimal digital footprint",
+          "      - Devices cleared of sensitive data or with a clean “travel persona” profile",
+          "      - Practice simple plausible explanations for travel, especially in authoritarian or high-risk regions",
+        ].join("\n")
+      },
+
+      "L0_D14": {
+        title: "Individual → Death/Legacy",
+        description: [
+          "L0 DEATH/LEGACY STACK:",
+          "- Simple note to future trusted person(s)",
+          "      - Clear but not overly detailed: “There is BTC; here’s how you access it if I’m gone.”",
+          "      - Store it where they can find it if needed",
+          "- Instructions for accessing cold storage",
+          "      - Enough info that a non-expert (or a future helper) could eventually recover it",
+          "      - Don’t put exact balances; just the “how.”",
+          "- (Necssary) legal doc. Prefer no state invovlvement",
+          "      - Depending on jurisdiction, a will or similar, even in simple form",
+          "- Update inheritance instructions when your setup changes",
+          "      - New wallets, new devices, new methods",
+        ].join("\n")
+      },
+
+      "L0_D15": {
+        title: "Individual → Knowledge/Education",
+        description: [
+          "L0 KNOWLEDGE/EDUCATION STACK:",
+          "- Knowledge Archive",
+          "      - Personal knowledge base",
+          "            - Digital notes (Logseq, plain markdown, encrypted vault)",
+          "            - At minimum, one organized folder of key docs (guides, manuals, step-by-steps)",
+          "- Backup physical/print library",
+          "      - Print out or write down irreplaceable knowledge (wallet setup, key rituals, contacts, emergency instructions)",
+          "      - Hardcopy: 1–2 essential guides/manuals that would matter offline",
+          "- Encrypted digital backup",
+          "      - Important notes/documents backed up locally and offsite",
+          "      - Sync at least quarterly",
+
+          "- Core Curriculum (Never Outsource)",
+          "      - How to run and restore your SovStack",
+          "      - Basic survival & resilience",
+          "      - Critical thinking and self-education",
+          "      - Communication and privacy",
+          "      - Skills mapping",
+          "      - Hardcopy: 1–2 essential guides/manuals that would matter offline",
+          "- Encrypted digital backup",
+          "      - Important notes/documents backed up locally and offsite",
+          "      - Sync at least quarterly",
+        ].join("\n")
+      },
+
+
+
+      "L1_D1": {
+        title: "Family/Household → Money",
+        description: [
+          "L1 MONEY STACK:",
+          "- 2-of-3 multisig household vault.",
+          "- 3–6 month BTC-denominated runway.",
+          "- Shared budget + emergency protocol."
+        ].join("\n")
+      }
+
+      // Add more as needed, e.g.:
+      // "L2_D4": { title: "Neighborhood → Food/Water", description: "…" },
+    };
+
+    function makeDefaultCell(layerId, domainId) {
+      const layer = layers.find(l => l.id === layerId);
+      const domain = domains.find(d => d.id === domainId);
+      const layerName = layer ? layer.name : layerId;
+      const domainName = domain ? domain.name : domainId;
+      return {
+        title: `${layerName} → ${domainName}`,
+        description:
+          `Placeholder for ${layerName} / ${domainName}.\n` +
+          `Define this cell as nodeData["${layerId}_${domainId}"] in the script.`
+      };
+    }
+
+    // -----------------------------
+    // SVG HELPERS
+    // -----------------------------
+
+    function createSVGElement(tag, attrs) {
+      const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+      for (const [k, v] of Object.entries(attrs)) {
+        el.setAttribute(k, v);
+      }
+      return el;
+    }
+
+    // -----------------------------
+    // INFO PANEL HELPERS
+    // -----------------------------
+
+    function showInfo(title, description) {
+      const panel = document.getElementById('info-inner');
+      const titleEl = document.getElementById('info-title');
+      const contentEl = document.getElementById('info-content');
+      titleEl.textContent = title;
+      contentEl.textContent = description;
+      panel.style.display = 'block';
+    }
+
+    function hideInfo() {
+      const panel = document.getElementById('info-inner');
+      panel.style.display = 'none';
+    }
+
+    // -----------------------------
+    // MAIN BUILD FUNCTION
+    // -----------------------------
+
+    function buildSchematic() {
+      const svg        = document.getElementById('schematic');
+      const legendList = document.getElementById('legend-list');
+      const layerList  = document.getElementById('layer-list');
+      const infoClose  = document.getElementById('info-close');
+
+      if (!svg) return;
+
+      const width  = 1000;
+      const height = 1000;
+      const cx = width / 2;
+      const cy = height / 2;
+
+      svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+      svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+
+      const ringSpacing = 70;
+      const baseRadius  = 70;
+      const totalRadius = baseRadius + ringSpacing * (layers.length - 1);
+      const wedgeAngle  = (Math.PI * 2) / domains.length;
+
+      // BACKGROUND RINGS
+      layers.forEach((layer, i) => {
+        const r = baseRadius + ringSpacing * i;
+
+        const bg = createSVGElement('circle', {
+          cx, cy, r,
+          fill: layerColors[i] || 'transparent',
+          'fill-opacity': 0.25,
+          stroke: 'none'
+        });
+        svg.appendChild(bg);
+
+        const ring = createSVGElement('circle', {
+          cx, cy, r,
+          fill: 'none',
+          stroke: '#1f2937',
+          'stroke-width': 1
+        });
+        svg.appendChild(ring);
+      });
+
+      // RADIAL LINES (DOMAIN SEPARATORS)
+      domains.forEach((domain, j) => {
+        const angle = j * wedgeAngle;
+        const x1 = cx + baseRadius * Math.cos(angle);
+        const y1 = cy + baseRadius * Math.sin(angle);
+        const x2 = cx + totalRadius * Math.cos(angle);
+        const y2 = cy + totalRadius * Math.sin(angle);
+
+        const line = createSVGElement('line', {
+          x1, y1, x2, y2,
+          stroke: '#111827',
+          'stroke-width': 1
+        });
+        svg.appendChild(line);
+      });
+
+      // NODES
+      layers.forEach((layer, layerIndex) => {
+        const r = baseRadius + ringSpacing * layerIndex;
+
+        domains.forEach((domain, domainIndex) => {
+          const angle = (domainIndex + 0.5) * wedgeAngle;
+          const x = cx + r * Math.cos(angle);
+          const y = cy + r * Math.sin(angle);
+
+          const circle = createSVGElement('circle', {
+            cx: x,
+            cy: y,
+            r: 12,
+            'data-layer': layer.id,
+            'data-domain': domain.id,
+            class: 'node-circle'
+          });
+
+          circle.style.fill = layerColors[layerIndex] || '#ffffff';
+          circle.style.stroke = '#020617';
+          circle.style.strokeWidth = '1.5px';
+
+          circle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            // clear previous selections
+            svg.querySelectorAll('.node-circle').forEach(c => c.classList.remove('selected'));
+
+            circle.classList.add('selected');
+
+            const layerId = circle.getAttribute('data-layer');
+            const domainId = circle.getAttribute('data-domain');
+            const key = `${layerId}_${domainId}`;
+            const info = nodeData[key] || makeDefaultCell(layerId, domainId);
+            showInfo(info.title, info.description);
+          });
+
+          svg.appendChild(circle);
+        });
+      });
+
+      // DOMAIN LABELS
+      const labelRadius = totalRadius + 40;
+      domains.forEach((domain, domainIndex) => {
+        const angle = wedgeAngle * (domainIndex + 0.5);
+        const x = cx + labelRadius * Math.cos(angle);
+        const y = cy + labelRadius * Math.sin(angle);
+
+        const text = createSVGElement('text', {
+          x,
+          y,
+          'text-anchor': 'middle',
+          'dominant-baseline': 'middle',
+          'font-size': 10,
+          fill: '#9ca3af'
+        });
+
+        const parts = domain.name.split('/');
+        parts.forEach((part, idx) => {
+          const tspan = createSVGElement('tspan', {
+            x,
+            dy: idx === 0 ? '0' : '1.2em'
+          });
+          tspan.textContent = part;
+          text.appendChild(tspan);
+        });
+
+        svg.appendChild(text);
+      });
+
+      // DOMAIN LEGEND BUTTONS
+      if (legendList) {
+        legendList.innerHTML = '';
+        domains.forEach(domain => {
+          const btn = document.createElement('button');
+          btn.textContent = domain.name;
+          btn.type = 'button';
+          btn.addEventListener('click', () => {
+            // toggle active state on buttons
+            legendList.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // highlight all nodes of this domain
+            const circles = svg.querySelectorAll('.node-circle');
+            circles.forEach(c => {
+              if (c.getAttribute('data-domain') === domain.id) {
+                c.classList.add('selected');
+              } else {
+                c.classList.remove('selected');
+              }
+            });
+
+            hideInfo(); // domain view = no panel by default
+          });
+          legendList.appendChild(btn);
+        });
+      }
+
+      // LAYER LEGEND
+      if (layerList) {
+        layerList.innerHTML = '';
+        layers.forEach((layer, idx) => {
+          const row = document.createElement('div');
+          const dot = document.createElement('span');
+          dot.className = 'dot';
+          dot.style.backgroundColor = layerColors[idx] || '#6b7280';
+
+          const label = document.createElement('span');
+          label.textContent = layer.name;
+
+          row.appendChild(dot);
+          row.appendChild(label);
+          layerList.appendChild(row);
+        });
+      }
+
+      // CLOSE INFO PANEL
+      if (infoClose) {
+        infoClose.addEventListener('click', (e) => {
+          e.stopPropagation();
+          hideInfo();
+          svg.querySelectorAll('.node-circle').forEach(c => c.classList.remove('selected'));
+        });
+      }
+
+      // Clicking on empty SVG background clears selection + hides panel
+      svg.addEventListener('click', () => {
+        hideInfo();
+        svg.querySelectorAll('.node-circle').forEach(c => c.classList.remove('selected'));
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', buildSchematic);
+  </script>
+</body>
+</html>

@@ -1,0 +1,527 @@
+At a high level, the protocol is built around one idea:
+
+> You’re not trying to be a specialist, you’re trying to live permanently on the **Pareto frontier** of strength, size, speed, mobility, and conditioning.
+
+From that, everything else follows.
+
+### 1. Frontier, not fantasy
+
+Biologically you can’t sit at the absolute world-record max of each trait at the same time. So the target is the **zone** where all five are *very* high, and any gain in one would only buy you a tiny improvement at the cost of a meaningful loss in another.
+
+The protocol is designed to keep you in that zone:
+
+* Strong enough to handle heavy barbell work.
+* Big enough to look clearly trained.
+* Fast and powerful enough to sprint and jump hard.
+* Conditioned enough that hard intervals don’t phase you.
+* Mobile and durable enough to keep doing this for decades.
+
+### 2. Constraint-based concurrent training
+
+Instead of blindly “doing everything,” it treats concurrent training as a **constraint satisfaction problem**:
+
+* **Volume caps** per muscle and per session (no junk sets).
+* **Limits on HIIT and sprint doses** per week (no interference spiral).
+* **Mode selection**: a lot of conditioning on bike/row to protect legs and strength.
+* **Ordering**: speed → strength → conditioning to preserve power.
+
+Inside those constraints, you get as much adaptation as possible without the traits sabotaging each other.
+
+### 3. Always-on, rotating emphasis
+
+You never turn any quality “off.” Instead, the macro-cycle rotates emphasis:
+
+* Strength-tilt → Hypertrophy-tilt → Engine/Speed-tilt.
+
+In each block, one dial goes up slightly while the others are held at a strong maintenance level. That lets you keep all systems online while pushing one edge a bit further, then rotating.
+
+### 4. Durability as a first-class goal
+
+Most “do everything” programs die from:
+
+* Joint/tendon breakdown
+* CNS burnout
+* Sneaky accumulation of fatigue from sprints + heavy legs + HIIT
+
+So the protocol bakes in:
+
+* On-ramp phases
+* Hard limits on max-velocity sprint frequency
+* One full rest day and one low-stress day
+* Daily-ish mobility / loaded stretching / isometrics
+
+The goal is not just performance **now**, but the ability to repeat this template for years.
+
+### 5. Quality over volume
+
+Finally, it assumes:
+
+* You’re advanced enough that more volume isn’t automatically better.
+* Progress comes from **high-quality sets at appropriate RPE**, not endless junk.
+
+So every part of the week is there to move a clear lever (strength, size, speed, engine, or mobility) and nothing is filler.
+
+In short: it’s a lifelong, constraint-respecting way to stay brutally capable across all physical qualities simultaneously, without letting the pursuit of one ruin the others.
+
+
+## 1. Global rules (non-negotiable architecture)
+
+**Volume (per muscle group)**
+
+* Default: **8–14 hard sets/week** per big muscle group (quads, hams/glutes, chest, back, shoulders).
+* Peaks (hypertrophy blocks): up to **16–18 sets/week** for 1–2 chosen muscles.
+* Per-session cap: **≤6–8 direct sets per muscle**.
+
+**Intensity & RPE**
+
+* Heavy strength work: **RPE 7–9**, 3–6 reps.
+* Hypertrophy work: **RPE 7–10**, 6–15 reps.
+* No regular grinders to true failure on heavy barbell compounds.
+
+**Conditioning**
+
+* **2 hard conditioning exposures per week** (sprints/HIIT).
+* At least one of them on **bike/row/assault**, not both as hard running.
+* Optional 1×/week **easy Zone 2** (30–45 min, conversational pace).
+
+**Speed**
+
+* **1×/week true max-velocity sprint session**.
+* Optional 2nd lighter session = tempos or submax accelerations/bike sprints.
+
+**Ordering inside a day**
+
+1. Speed / plyos
+2. Strength
+3. Conditioning
+
+If you split sessions: speed/strength in the morning, conditioning later.
+
+**Recovery**
+
+* 1 full rest day/week.
+* Sleep: 7–9 hours.
+* Food: maintenance or slight surplus most of the time; not chronically low-carb.
+
+---
+
+## 2. Weekly structure (5+1)
+
+**Day 1 – Lower Strength + Low-Volume Plyo**
+**Day 2 – Upper Strength + Hypertrophy**
+**Day 3 – Speed + Hard Conditioning**
+**Day 4 – Lower Hypertrophy + Assistance**
+**Day 5 – Upper Hypertrophy + Power**
+**Day 6 – Optional Easy Conditioning + Long Mobility**
+**Day 7 – Full Rest (light walk + easy mobility only)**
+
+You can run it as **5 days** (drop Day 6) or **5+1** if recovery is solid.
+
+---
+
+## 3. Day-by-day protocol
+
+### Day 1 – Lower Strength + Plyo
+
+**A. Plyo primer (low contacts)**
+
+* Box jump or broad jump – 3×3–5
+* Rest 60–90 s between sets
+* Quality: crisp, no fatigue
+
+**B. Main strength**
+
+1. **Back Squat (or Front/SSB)**
+
+   * 4×3–5 @ RPE 7–9
+   * Rest 2–4 min
+
+2. **Hip Hinge – Deadlift or Trap-Bar Deadlift**
+
+   * 3×3–5 @ RPE 7–8
+   * If conventional deadlifts beat you up, use trap bar or clean pulls.
+
+**C. Assistance (moderate)**
+
+3. **Split Squat / Bulgarian Split Squat**
+
+   * 2–3×6–8 per leg @ RPE 7–8
+
+4. **Calves** (standing or seated)
+
+   * 3×8–12
+
+**D. Mobility / Tissue (10–15 min)**
+
+* Hip CARs: 1–2 sets each side
+* Ankle dorsiflexion mobilization
+* 2×30–45 s isometric mid-range hold for quads (wall sit) or Achilles (isometric calf raise)
+
+**Weekly volume impact (approx.)**
+
+* Quads: 4 (squat) + 2–3 (split) ≈ 6–7 sets
+* Hams/glutes: 3 (hinge) + some from split squat
+* Calves: 3 sets
+
+---
+
+### Day 2 – Upper Strength + Hypertrophy
+
+**A. Heavy push**
+
+1. **Bench Press (flat or slight incline)**
+
+   * 4×3–5 @ RPE 7–9
+
+**B. Heavy pull**
+
+2. **Weighted Pull-Up / Chin-Up**
+
+   * 4×3–5 @ RPE 7–9
+
+**C. Secondary strength / strength-hypertrophy**
+
+3. **Overhead Press (barbell or DB)**
+
+   * 3×4–6 @ RPE 7–8
+
+4. **Row (Pendlay, chest-supported, or machine)**
+
+   * 3×6–8 @ RPE 7–8
+
+**D. Hypertrophy finisher (short)**
+
+5. **Chest/Triceps**
+
+   * Close-grip bench *or* dips: 2×6–10 @ RPE 8–9
+
+6. **Biceps**
+
+   * EZ-bar or DB curls: 2×8–12
+
+**Mobility (5–10 min)**
+
+* Shoulder CARs
+* Thoracic extension over a foam roller
+* Light band pull-aparts
+
+**Weekly impact so far**
+
+* Push: 4 (bench) + 3 (OHP) + 2 (CGBP/dip) = 9 sets
+* Pull: 4 (pull-up) + 3 (row) = 7 sets
+
+Day 5 will top these up into the 10–14 range.
+
+---
+
+### Day 3 – Speed + Hard Conditioning
+
+This is one of the two **hard engine** days.
+
+**A. Warm-up (10–15 min)**
+
+* 5–10 min easy jog/bike
+* Dynamic drills (leg swings, lunges, A-skips/B-skips, etc.)
+
+**B. True speed (max-ish velocity)**
+
+* 5–8 × 20–40 m sprints
+
+  * Full rest: 60–120 s
+  * First 2–3 runs at 80–90%, then 90–95%; not every rep has to be suicide pace
+  * Cut the set if technique degrades
+
+**C. Conditioning – HIIT (non-running preferred)**
+
+Choose **one**:
+
+1. **Bike/Row HIIT**
+
+   * 8–10 × 30 s hard / 90 s easy
+   * Hard = ~8–9/10 effort
+
+or
+
+2. **Running intervals** (if joints/tissue are solid)
+
+   * 6–8 × 15–20 s very hard / 60–90 s easy
+
+**D. Mobility / Tissue (10–15 min)**
+
+* Long-stride split squat holds (loaded or bodyweight): 2×30–45 s/side
+* Hamstring isometric (e.g., heel digs, 2×30–45 s)
+* Hip and ankle CARs
+
+---
+
+### Day 4 – Lower Hypertrophy + Assistance
+
+Goal: fill out hypertrophy volume without CNS destruction.
+
+**A. Main hypertrophy lift – squat pattern**
+
+1. **Front Squat / High-Bar / Hack Squat**
+
+   * 3×6–10 @ RPE 7–9
+
+**B. Posterior chain hypertrophy**
+
+2. **Romanian Deadlift or Good Morning**
+
+   * 3×8–10 @ RPE 7–9
+
+**C. Single-leg / frontal plane**
+
+3. **Step-Up / Lateral Lunge / Reverse Lunge**
+
+   * 2–3×8–12 per leg
+
+**D. Glute / Ham isolation**
+
+4. **Leg Curl (lying/seated) or Hip Thrust**
+
+   * 2–3×10–15
+
+**E. Core**
+
+5. **Anti-extension or anti-rotation**
+
+   * Ab wheel, dead bug, Pallof press: 3×8–12
+
+**Mobility (5–10 min)**
+
+* Jefferson curls *light* (2×8–10, slow)
+* Cossack squats (2×6–8/side, controlled)
+
+**Weekly lower volume**
+
+* Quads:
+
+  * Day 1: 6–7 sets
+  * Day 4: 3 (front squat) + 2–3 (step/lunge) ≈ 5–6
+    → Total ≈ **11–13 sets**
+
+* Hams/glutes:
+
+  * Day 1: 3 (hinge) + split overload
+  * Day 4: 3 (RDL/GM) + 2–3 (curl/hip thrust)
+    → ~10–12 sets
+
+Firmly inside the 8–14 sweet spot, with room to push to 16–18 in hypertrophy emphasis.
+
+---
+
+### Day 5 – Upper Hypertrophy + Power
+
+**A. Power**
+
+1. **Med-Ball Chest Pass or Rotational Throw**
+
+   * 3×3–5 (each side for rotational)
+   * Full intent, low fatigue
+
+**B. Horizontal push**
+
+2. **DB Bench Press (flat or incline)**
+
+   * 3×8–12 @ RPE 7–9
+
+**C. Horizontal pull**
+
+3. **Row (different from Day 2)**
+
+   * e.g., one-arm DB row, cable row
+   * 3×8–12 @ RPE 7–9
+
+**D. Vertical push**
+
+4. **DB Overhead Press**
+
+   * 2–3×8–10 @ RPE 7–9
+
+**E. Vertical pull**
+
+5. **Lat Pulldown / Chin-Up Volume**
+
+   * 2–3×8–10 @ RPE 7–9
+
+**F. Isolation (optional/short)**
+
+6. **Lateral Raises** – 2–3×12–20
+7. **Curls + Triceps** – 1–2×10–15 each
+
+**Mobility (5–10 min)**
+
+* Shoulder CARs
+* Scapular wall slides
+* T-spine rotations
+
+**Weekly upper volume summary**
+
+* Push:
+
+  * Day 2: 4 (bench) + 3 (OHP) + 2 (CGBP/dip) = 9
+  * Day 5: 3 (DB bench) + 2–3 (DB OHP) = 5–6
+    → ~**14–15 sets** (high but fine for growth; in non-hypertrophy blocks you can remove 2–3 sets).
+
+* Pull:
+
+  * Day 2: 4 (pull-up) + 3 (row) = 7
+  * Day 5: 3 (row) + 2–3 (pulldown) = 5–6
+    → ~**12–13 sets**
+
+In “default” mode, you can trim 2–4 sets (e.g., drop 1 push and 1 pull exercise set each) to land at 10–12. In hypertrophy emphasis you keep the full 14–15.
+
+---
+
+### Day 6 – Optional Easy Conditioning + Long Mobility
+
+Only if recovery is solid. Otherwise it’s just rest + light walking.
+
+**A. Conditioning – Easy / moderate**
+
+Pick ONE:
+
+1. **Zone 2 steady**
+
+   * 30–45 min bike, brisk walk, light jog
+   * Conversational pace (you can speak in full sentences)
+
+or
+
+2. **Tempo / “cruise” intervals (submax)**
+
+   * 6–8 × 100–200 m @ ~70–80% sprint speed
+   * Walk back to start as recovery
+
+**B. Long mobility / tissue (20–30 min)**
+
+* Jefferson curls 2–3×8–10 (light load)
+* Cossack squats 3×6–8/side
+* Deep static hip flexor + quad stretch 2×30–60 s/side
+* Shoulder & hip CARs
+* 2×30–45 s isometrics for knee (wall sit) and Achilles (isometric calf raise)
+
+---
+
+### Day 7 – Rest
+
+* Walks only.
+* Optional 5–10 min very light mobility.
+* No “secret workout”.
+
+---
+
+## 4. 18-week macro-cycle (S → H → E, each 6 weeks)
+
+All qualities stay online, but you tilt emphasis and adjust volume/intensity.
+
+### Block 1 – Strength-tilt (Weeks 1–6)
+
+* Main lifts (squat, deadlift, bench, OHP, heavy row):
+
+  * 4–5×3–5 @ RPE 7–9.
+* Hypertrophy volume:
+
+  * Keep at lower band: **8–12 sets/week** per muscle.
+  * Drop a couple of accessory sets from Days 4 and 5.
+* Conditioning:
+
+  * Keep exactly as written (2×/week), but keep HIIT “hard” not “obliterate yourself”.
+
+### Block 2 – Hypertrophy-tilt (Weeks 7–12)
+
+* Main lifts:
+
+  * 3×3–5 @ RPE 7–8 (strength maintenance).
+* Hypertrophy:
+
+  * Increase per-muscle volume for 1–2 priority areas up to **14–18 sets/week** (add 1–2 sets to 2–3 exercises).
+  * Keep others at 10–14.
+* Conditioning:
+
+  * Maintain but don’t add volume; keep HIIT at slightly more moderate intensity (7–8/10) if recovery dips.
+
+### Block 3 – Engine/Speed-tilt (Weeks 13–18)
+
+* Sprints:
+
+  * Slightly increase total contacts (e.g., +1 sprint rep) on Day 3.
+* Conditioning:
+
+  * Optionally add 1–2 intervals per HIIT session or keep intensity high but duration the same.
+* Strength:
+
+  * Main lifts 2–3×3–5 @ RPE 7–8 (maintenance).
+* Hypertrophy:
+
+  * Keep volume around **8–12 sets/week** per muscle.
+
+### Deloads
+
+Every **4th or 7th week** (choose a rhythm and stick to it):
+
+* Cut total sets by ~40–50%.
+* Keep movement patterns, but:
+
+  * No sets above RPE 7.
+  * Drop sprint count by ~50%.
+  * Make HIIT more like brisk intervals (6–7/10).
+
+---
+
+## 5. On-ramp (first 4–6 weeks if coming from lower load)
+
+If you’re not already used to all of this:
+
+* **Halve sprint volume**:
+
+  * 3–4 sprints (20–30 m) on Day 3 instead of 5–8.
+* **Dial back HIIT intensity**:
+
+  * 6–8 rounds at 7–8/10 effort instead of 8–10 at 9/10.
+* **Use the low end of volume bands**:
+
+  * 2–3 sets instead of 3–4 on many lifts.
+* **No grinder sets at all**:
+
+  * Cap at RPE 7–8 during on-ramp.
+
+Once joints/tendons feel good and mornings feel normal, ramp toward the full scheme.
+
+---
+
+## 6. Progression rules
+
+**Heavy lifts (strength)**
+
+* Start with a load you can confidently hit for the target reps at **RPE 7**.
+* Each week:
+
+  * If final set ≤RPE 8 and bar speed is good → add **2.5–5 kg** (upper) or **2.5–10 kg** (lower) next week.
+  * If you hit RPE 9–10 → repeat weight or drop 2.5–5 kg and build again.
+
+**Hypertrophy lifts**
+
+* Double progression:
+
+  * Choose a rep range (e.g., 8–12).
+  * Stay at same weight until you hit the top of the range on all sets at ≤RPE 9.
+  * Then bump weight up 2.5–5 kg and restart at the low end of the rep range.
+
+**Sprints**
+
+* Do **not** chase maximal intensity increases weekly.
+* Move from:
+
+  * 3–4 reps → 5–6 → 6–8 across weeks.
+* Once you’re at 6–8 high-quality sprints, progression is **better quality (mechanics, relaxation)**, not more volume.
+
+**HIIT**
+
+* Fix **interval structure** (e.g., 30s hard / 90s easy, 8 rounds).
+* Progression is:
+
+  * Better power during the work bout (higher speed/watts) at the same structure.
+  * Not more and more intervals forever.
+

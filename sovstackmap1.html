@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    
+        <script>
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        </script>
+    
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_0d5405662d6b7b4115ff9f729e5833aa {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+            </style>
+        
+</head>
+<body>
+    
+    
+<div style="position: fixed; bottom: 24px; left: 24px; z-index: 9999;
+            background: rgba(255,255,255,0.94); padding: 10px 12px; border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Inter, Helvetica, Arial;
+            font-size: 13px; line-height: 1.4;">
+  <div style="font-weight: 600; margin-bottom: 6px;">Sovereignty Score Gradient</div>
+  <div style="display:flex; align-items:center; gap:8px;">
+    <div style="width:18px; height:12px; background:#F7931A; border:1px solid #00000022;"></div>
+    <div>Min: <b>38</b></div>
+    <div style="width:120px; height:10px; background:linear-gradient(90deg, #F7931A, #00C853); border:1px solid #00000022;"></div>
+    <div>Max: <b>84</b></div>
+    <div style="width:18px; height:12px; background:#00C853; border:1px solid #00000022;"></div>
+  </div>
+  <div style="margin-top:6px; color:#333;"></div>
+</div>
+    
+<div style="position: fixed; top: 10px; left: 50%; transform: translateX(-50%);
+            z-index: 9999; background: rgba(255,255,255,0.94); padding: 8px 12px;
+            border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Inter, Helvetica, Arial;
+            font-size: 16px; font-weight: 600;">
+  Cypherpunk Sovereignty Map v1
+</div>
+    
+            <div class="folium-map" id="map_0d5405662d6b7b4115ff9f729e5833aa" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_0d5405662d6b7b4115ff9f729e5833aa = L.map(
+                "map_0d5405662d6b7b4115ff9f729e5833aa",
+                {
+                    center: [20.0, 0.0],
+                    crs: L.CRS.EPSG3857,
+                    zoom: 2,
+                    zoomControl: true,
+                    preferCanvas: false,
+                }
+            );
+            L.control.scale().addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+
+            
+
+        
+    
+            var tile_layer_252d0d4313a3f9065459d22816c7ae7e = L.tileLayer(
+                "https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png",
+                {"attribution": "\u0026copy; \u003ca href=\"http://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors \u0026copy; \u003ca href=\"http://cartodb.com/attributions\"\u003eCartoDB\u003c/a\u003e, CartoDB \u003ca href =\"http://cartodb.com/attributions\"\u003eattributions\u003c/a\u003e", "detectRetina": false, "maxNativeZoom": 18, "maxZoom": 18, "minZoom": 0, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+            var circle_marker_48ae90f2a67a1a69301e6b72344dce96 = L.circleMarker(
+                [43.07597, -107.290283],
+                {"bubblingMouseEvents": true, "color": "#00C853", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#00C853", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 14.0, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_29246ba4648cceae941953a08d32e794 = L.popup({"maxWidth": 280});
+
+        
+            var html_0baefbad1a5cfb8433e78981c31154c8 = $(`<div id="html_0baefbad1a5cfb8433e78981c31154c8" style="width: 100.0%; height: 100.0%;"><b>Wyoming (USA)</b><br/>Score: <b>84</b></div>`)[0];
+            popup_29246ba4648cceae941953a08d32e794.setContent(html_0baefbad1a5cfb8433e78981c31154c8);
+        
+
+        circle_marker_48ae90f2a67a1a69301e6b72344dce96.bindPopup(popup_29246ba4648cceae941953a08d32e794)
+        ;
+
+        
+    
+    
+            circle_marker_48ae90f2a67a1a69301e6b72344dce96.bindTooltip(
+                `<div>
+                     Wyoming (USA) — 84
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_0e652ade61cb74c2bd27d899a26351ff = L.circleMarker(
+                [44.5, -100.0],
+                {"bubblingMouseEvents": true, "color": "#15C34E", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#15C34E", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 13.608695652173914, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_3b98b12ef0bed62f5a9d6dbcbc89d362 = L.popup({"maxWidth": 280});
+
+        
+            var html_7fbeb65d98efa25e13710be0ad9b545b = $(`<div id="html_7fbeb65d98efa25e13710be0ad9b545b" style="width: 100.0%; height: 100.0%;"><b>South Dakota (USA)</b><br/>Score: <b>82</b></div>`)[0];
+            popup_3b98b12ef0bed62f5a9d6dbcbc89d362.setContent(html_7fbeb65d98efa25e13710be0ad9b545b);
+        
+
+        circle_marker_0e652ade61cb74c2bd27d899a26351ff.bindPopup(popup_3b98b12ef0bed62f5a9d6dbcbc89d362)
+        ;
+
+        
+    
+    
+            circle_marker_0e652ade61cb74c2bd27d899a26351ff.bindTooltip(
+                `<div>
+                     South Dakota (USA) — 82
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_520a2b9d08ad5a7b789b0ec52e7b0540 = L.circleMarker(
+                [43.8, -71.6],
+                {"bubblingMouseEvents": true, "color": "#15C34E", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#15C34E", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 13.608695652173914, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_82303f50d1a18d544df37a3bad02db79 = L.popup({"maxWidth": 280});
+
+        
+            var html_636c8bc25c2d1133b37046ee49ca2064 = $(`<div id="html_636c8bc25c2d1133b37046ee49ca2064" style="width: 100.0%; height: 100.0%;"><b>New Hampshire (USA)</b><br/>Score: <b>82</b></div>`)[0];
+            popup_82303f50d1a18d544df37a3bad02db79.setContent(html_636c8bc25c2d1133b37046ee49ca2064);
+        
+
+        circle_marker_520a2b9d08ad5a7b789b0ec52e7b0540.bindPopup(popup_82303f50d1a18d544df37a3bad02db79)
+        ;
+
+        
+    
+    
+            circle_marker_520a2b9d08ad5a7b789b0ec52e7b0540.bindTooltip(
+                `<div>
+                     New Hampshire (USA) — 82
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_c93093d2d0beebbd6c4e1704c33be23b = L.circleMarker(
+                [44.1, -114.7],
+                {"bubblingMouseEvents": true, "color": "#1FC14B", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#1FC14B", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 13.41304347826087, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_22961a36d5391477765452aff9a9f776 = L.popup({"maxWidth": 280});
+
+        
+            var html_30b6ecc6d323b260868e0fc7261fa591 = $(`<div id="html_30b6ecc6d323b260868e0fc7261fa591" style="width: 100.0%; height: 100.0%;"><b>Idaho (USA)</b><br/>Score: <b>81</b></div>`)[0];
+            popup_22961a36d5391477765452aff9a9f776.setContent(html_30b6ecc6d323b260868e0fc7261fa591);
+        
+
+        circle_marker_c93093d2d0beebbd6c4e1704c33be23b.bindPopup(popup_22961a36d5391477765452aff9a9f776)
+        ;
+
+        
+    
+    
+            circle_marker_c93093d2d0beebbd6c4e1704c33be23b.bindTooltip(
+                `<div>
+                     Idaho (USA) — 81
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_1db2fe93125132aa0a1fb5c627b1ed24 = L.circleMarker(
+                [46.8797, -110.3626],
+                {"bubblingMouseEvents": true, "color": "#29BF49", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#29BF49", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 13.217391304347826, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_c32b90102896ece0dbe51debe978fee0 = L.popup({"maxWidth": 280});
+
+        
+            var html_e3f11728531bd5237bc93976549b5a06 = $(`<div id="html_e3f11728531bd5237bc93976549b5a06" style="width: 100.0%; height: 100.0%;"><b>Montana (USA)</b><br/>Score: <b>80</b></div>`)[0];
+            popup_c32b90102896ece0dbe51debe978fee0.setContent(html_e3f11728531bd5237bc93976549b5a06);
+        
+
+        circle_marker_1db2fe93125132aa0a1fb5c627b1ed24.bindPopup(popup_c32b90102896ece0dbe51debe978fee0)
+        ;
+
+        
+    
+    
+            circle_marker_1db2fe93125132aa0a1fb5c627b1ed24.bindTooltip(
+                `<div>
+                     Montana (USA) — 80
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_0a75220623f24241cf64f2503bc347b7 = L.circleMarker(
+                [64.2008, -149.4937],
+                {"bubblingMouseEvents": true, "color": "#32BD47", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#32BD47", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 13.021739130434781, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_8a392e04f37bd6091cbb11dce7329772 = L.popup({"maxWidth": 280});
+
+        
+            var html_a8d5138bd3caa5b7000ab74e20467031 = $(`<div id="html_a8d5138bd3caa5b7000ab74e20467031" style="width: 100.0%; height: 100.0%;"><b>Alaska (USA)</b><br/>Score: <b>79</b></div>`)[0];
+            popup_8a392e04f37bd6091cbb11dce7329772.setContent(html_a8d5138bd3caa5b7000ab74e20467031);
+        
+
+        circle_marker_0a75220623f24241cf64f2503bc347b7.bindPopup(popup_8a392e04f37bd6091cbb11dce7329772)
+        ;
+
+        
+    
+    
+            circle_marker_0a75220623f24241cf64f2503bc347b7.bindTooltip(
+                `<div>
+                     Alaska (USA) — 79
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_4f34d32a265871470925e972e62c0fd8 = L.circleMarker(
+                [31.0, -100.0],
+                {"bubblingMouseEvents": true, "color": "#3CBB45", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#3CBB45", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 12.826086956521738, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_e74bb0cc876df0e179e9dddd5edd981b = L.popup({"maxWidth": 280});
+
+        
+            var html_f8e06c8fb1168a36d3e2278e53f7183c = $(`<div id="html_f8e06c8fb1168a36d3e2278e53f7183c" style="width: 100.0%; height: 100.0%;"><b>Texas (USA)</b><br/>Score: <b>78</b></div>`)[0];
+            popup_e74bb0cc876df0e179e9dddd5edd981b.setContent(html_f8e06c8fb1168a36d3e2278e53f7183c);
+        
+
+        circle_marker_4f34d32a265871470925e972e62c0fd8.bindPopup(popup_e74bb0cc876df0e179e9dddd5edd981b)
+        ;
+
+        
+    
+    
+            circle_marker_4f34d32a265871470925e972e62c0fd8.bindTooltip(
+                `<div>
+                     Texas (USA) — 78
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_5e73adff5539e17e84029c39c224db8a = L.circleMarker(
+                [-32.5228, -55.7658],
+                {"bubblingMouseEvents": true, "color": "#3CBB45", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#3CBB45", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 12.826086956521738, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_2dd4f3d789b22c9f7e6f939689817538 = L.popup({"maxWidth": 280});
+
+        
+            var html_557cec577778cac1e0b70554f4d17682 = $(`<div id="html_557cec577778cac1e0b70554f4d17682" style="width: 100.0%; height: 100.0%;"><b>Uruguay</b><br/>Score: <b>78</b></div>`)[0];
+            popup_2dd4f3d789b22c9f7e6f939689817538.setContent(html_557cec577778cac1e0b70554f4d17682);
+        
+
+        circle_marker_5e73adff5539e17e84029c39c224db8a.bindPopup(popup_2dd4f3d789b22c9f7e6f939689817538)
+        ;
+
+        
+    
+    
+            circle_marker_5e73adff5539e17e84029c39c224db8a.bindTooltip(
+                `<div>
+                     Uruguay — 78
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_e43677eb808033b77ba893d2963440a8 = L.circleMarker(
+                [8.538, -80.7821],
+                {"bubblingMouseEvents": true, "color": "#4EB740", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#4EB740", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 12.434782608695652, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_716f6580d577080e4c182e426bd88d1f = L.popup({"maxWidth": 280});
+
+        
+            var html_9463a0e545f79924a85b59a99fc01b94 = $(`<div id="html_9463a0e545f79924a85b59a99fc01b94" style="width: 100.0%; height: 100.0%;"><b>Panama</b><br/>Score: <b>76</b></div>`)[0];
+            popup_716f6580d577080e4c182e426bd88d1f.setContent(html_9463a0e545f79924a85b59a99fc01b94);
+        
+
+        circle_marker_e43677eb808033b77ba893d2963440a8.bindPopup(popup_716f6580d577080e4c182e426bd88d1f)
+        ;
+
+        
+    
+    
+            circle_marker_e43677eb808033b77ba893d2963440a8.bindTooltip(
+                `<div>
+                     Panama — 76
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_1cc47397674e45d62e7ff00be7358f8a = L.circleMarker(
+                [35.8, -86.4],
+                {"bubblingMouseEvents": true, "color": "#4EB740", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#4EB740", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 12.434782608695652, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_3f380dd8173a6947b68d9848f8da557e = L.popup({"maxWidth": 280});
+
+        
+            var html_90fec069c8241edc11e38b72b3bfc609 = $(`<div id="html_90fec069c8241edc11e38b72b3bfc609" style="width: 100.0%; height: 100.0%;"><b>Tennessee (USA)</b><br/>Score: <b>76</b></div>`)[0];
+            popup_3f380dd8173a6947b68d9848f8da557e.setContent(html_90fec069c8241edc11e38b72b3bfc609);
+        
+
+        circle_marker_1cc47397674e45d62e7ff00be7358f8a.bindPopup(popup_3f380dd8173a6947b68d9848f8da557e)
+        ;
+
+        
+    
+    
+            circle_marker_1cc47397674e45d62e7ff00be7358f8a.bindTooltip(
+                `<div>
+                     Tennessee (USA) — 76
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_4bddbb6002184be5bc9d421c9a6653b1 = L.circleMarker(
+                [-23.4425, -58.4438],
+                {"bubblingMouseEvents": true, "color": "#57B53E", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#57B53E", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 12.23913043478261, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_f4139c797c6adfac7479270e0d47f5dc = L.popup({"maxWidth": 280});
+
+        
+            var html_f90043019902e38fa8896fb3805a5ce5 = $(`<div id="html_f90043019902e38fa8896fb3805a5ce5" style="width: 100.0%; height: 100.0%;"><b>Paraguay</b><br/>Score: <b>75</b></div>`)[0];
+            popup_f4139c797c6adfac7479270e0d47f5dc.setContent(html_f90043019902e38fa8896fb3805a5ce5);
+        
+
+        circle_marker_4bddbb6002184be5bc9d421c9a6653b1.bindPopup(popup_f4139c797c6adfac7479270e0d47f5dc)
+        ;
+
+        
+    
+    
+            circle_marker_4bddbb6002184be5bc9d421c9a6653b1.bindTooltip(
+                `<div>
+                     Paraguay — 75
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_07cf87cb42b087e97d9c44944f9f44cf = L.circleMarker(
+                [42.5, 1.5],
+                {"bubblingMouseEvents": true, "color": "#68B13A", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#68B13A", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 11.847826086956523, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_a3caaeeac9ea52b59afc226612000226 = L.popup({"maxWidth": 280});
+
+        
+            var html_f7b42e79f9ff0098dc085acbd5b6a18b = $(`<div id="html_f7b42e79f9ff0098dc085acbd5b6a18b" style="width: 100.0%; height: 100.0%;"><b>Andorra</b><br/>Score: <b>73</b></div>`)[0];
+            popup_a3caaeeac9ea52b59afc226612000226.setContent(html_f7b42e79f9ff0098dc085acbd5b6a18b);
+        
+
+        circle_marker_07cf87cb42b087e97d9c44944f9f44cf.bindPopup(popup_a3caaeeac9ea52b59afc226612000226)
+        ;
+
+        
+    
+    
+            circle_marker_07cf87cb42b087e97d9c44944f9f44cf.bindTooltip(
+                `<div>
+                     Andorra — 73
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_c8d1e36dce25fda34dab9c2cd659fe34 = L.circleMarker(
+                [46.8182, 8.2275],
+                {"bubblingMouseEvents": true, "color": "#68B13A", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#68B13A", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 11.847826086956523, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_3f934b0114ad0b5d4309ec7fad7722e9 = L.popup({"maxWidth": 280});
+
+        
+            var html_b97d05bc4eed9ab8a0ed600fd73b00d8 = $(`<div id="html_b97d05bc4eed9ab8a0ed600fd73b00d8" style="width: 100.0%; height: 100.0%;"><b>Switzerland</b><br/>Score: <b>73</b></div>`)[0];
+            popup_3f934b0114ad0b5d4309ec7fad7722e9.setContent(html_b97d05bc4eed9ab8a0ed600fd73b00d8);
+        
+
+        circle_marker_c8d1e36dce25fda34dab9c2cd659fe34.bindPopup(popup_3f934b0114ad0b5d4309ec7fad7722e9)
+        ;
+
+        
+    
+    
+            circle_marker_c8d1e36dce25fda34dab9c2cd659fe34.bindTooltip(
+                `<div>
+                     Switzerland — 73
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_c8bdc0aa91714355e04636c5e7156de1 = L.circleMarker(
+                [47.166, 9.555],
+                {"bubblingMouseEvents": true, "color": "#70AF39", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#70AF39", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 11.652173913043477, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_b2af800e539134b71d94d40fc5c1f5e6 = L.popup({"maxWidth": 280});
+
+        
+            var html_bc0fb2803d3b9c19ca799aa7bc9afab2 = $(`<div id="html_bc0fb2803d3b9c19ca799aa7bc9afab2" style="width: 100.0%; height: 100.0%;"><b>Liechtenstein</b><br/>Score: <b>72</b></div>`)[0];
+            popup_b2af800e539134b71d94d40fc5c1f5e6.setContent(html_bc0fb2803d3b9c19ca799aa7bc9afab2);
+        
+
+        circle_marker_c8bdc0aa91714355e04636c5e7156de1.bindPopup(popup_b2af800e539134b71d94d40fc5c1f5e6)
+        ;
+
+        
+    
+    
+            circle_marker_c8bdc0aa91714355e04636c5e7156de1.bindTooltip(
+                `<div>
+                     Liechtenstein — 72
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_78daa6c0901dab69e6f5af21c19c7113 = L.circleMarker(
+                [12.1696, -68.99],
+                {"bubblingMouseEvents": true, "color": "#7FAC35", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#7FAC35", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 11.26086956521739, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_107aae9bf4f513bd7d39b30186f0fe9c = L.popup({"maxWidth": 280});
+
+        
+            var html_7c8d65c5479285300e2d903e648f2685 = $(`<div id="html_7c8d65c5479285300e2d903e648f2685" style="width: 100.0%; height: 100.0%;"><b>Curaçao</b><br/>Score: <b>70</b></div>`)[0];
+            popup_107aae9bf4f513bd7d39b30186f0fe9c.setContent(html_7c8d65c5479285300e2d903e648f2685);
+        
+
+        circle_marker_78daa6c0901dab69e6f5af21c19c7113.bindPopup(popup_107aae9bf4f513bd7d39b30186f0fe9c)
+        ;
+
+        
+    
+    
+            circle_marker_78daa6c0901dab69e6f5af21c19c7113.bindTooltip(
+                `<div>
+                     Curaçao — 70
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_b520cf88e23a01ba1a443dbf3929e671 = L.circleMarker(
+                [9.7489, -83.7534],
+                {"bubblingMouseEvents": true, "color": "#7FAC35", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#7FAC35", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 11.26086956521739, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_f2cdf5ff4b0138256f9d6a9429196b8a = L.popup({"maxWidth": 280});
+
+        
+            var html_010c7aacfb7ab562b24fab286fa7614b = $(`<div id="html_010c7aacfb7ab562b24fab286fa7614b" style="width: 100.0%; height: 100.0%;"><b>Costa Rica</b><br/>Score: <b>70</b></div>`)[0];
+            popup_f2cdf5ff4b0138256f9d6a9429196b8a.setContent(html_010c7aacfb7ab562b24fab286fa7614b);
+        
+
+        circle_marker_b520cf88e23a01ba1a443dbf3929e671.bindPopup(popup_f2cdf5ff4b0138256f9d6a9429196b8a)
+        ;
+
+        
+    
+    
+            circle_marker_b520cf88e23a01ba1a443dbf3929e671.bindTooltip(
+                `<div>
+                     Costa Rica — 70
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_238297fa7c53b3d4214237c1eaf017d3 = L.circleMarker(
+                [44.0165, 21.0059],
+                {"bubblingMouseEvents": true, "color": "#86AB33", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#86AB33", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 11.065217391304348, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_fc871474026bb04ecac715aae4e99850 = L.popup({"maxWidth": 280});
+
+        
+            var html_d8977ddecc3eac3d4fb261cdd4e5ec90 = $(`<div id="html_d8977ddecc3eac3d4fb261cdd4e5ec90" style="width: 100.0%; height: 100.0%;"><b>Serbia</b><br/>Score: <b>69</b></div>`)[0];
+            popup_fc871474026bb04ecac715aae4e99850.setContent(html_d8977ddecc3eac3d4fb261cdd4e5ec90);
+        
+
+        circle_marker_238297fa7c53b3d4214237c1eaf017d3.bindPopup(popup_fc871474026bb04ecac715aae4e99850)
+        ;
+
+        
+    
+    
+            circle_marker_238297fa7c53b3d4214237c1eaf017d3.bindTooltip(
+                `<div>
+                     Serbia — 69
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_327cb202b96a56e94f5581c75e63c1ae = L.circleMarker(
+                [19.3133, -81.2546],
+                {"bubblingMouseEvents": true, "color": "#86AB33", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#86AB33", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 11.065217391304348, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_5b2e83fe1602f2b3ac229924cc48a1bb = L.popup({"maxWidth": 280});
+
+        
+            var html_f382ccebf11b016dd4af1cb40d673e8e = $(`<div id="html_f382ccebf11b016dd4af1cb40d673e8e" style="width: 100.0%; height: 100.0%;"><b>Cayman Islands</b><br/>Score: <b>69</b></div>`)[0];
+            popup_5b2e83fe1602f2b3ac229924cc48a1bb.setContent(html_f382ccebf11b016dd4af1cb40d673e8e);
+        
+
+        circle_marker_327cb202b96a56e94f5581c75e63c1ae.bindPopup(popup_5b2e83fe1602f2b3ac229924cc48a1bb)
+        ;
+
+        
+    
+    
+            circle_marker_327cb202b96a56e94f5581c75e63c1ae.bindTooltip(
+                `<div>
+                     Cayman Islands — 69
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_3b11bb91f97ed11a2d9a46320475408b = L.circleMarker(
+                [64.9631, -19.0208],
+                {"bubblingMouseEvents": true, "color": "#8DA932", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#8DA932", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10.869565217391305, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_bb9fd7508d9dd3cc84816767f8a64b6d = L.popup({"maxWidth": 280});
+
+        
+            var html_94446c091f832b113d43cdb4280ec888 = $(`<div id="html_94446c091f832b113d43cdb4280ec888" style="width: 100.0%; height: 100.0%;"><b>Iceland</b><br/>Score: <b>68</b></div>`)[0];
+            popup_bb9fd7508d9dd3cc84816767f8a64b6d.setContent(html_94446c091f832b113d43cdb4280ec888);
+        
+
+        circle_marker_3b11bb91f97ed11a2d9a46320475408b.bindPopup(popup_bb9fd7508d9dd3cc84816767f8a64b6d)
+        ;
+
+        
+    
+    
+            circle_marker_3b11bb91f97ed11a2d9a46320475408b.bindTooltip(
+                `<div>
+                     Iceland — 68
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_420e5a1f3ef2cf0bdf6fa9151f7939cb = L.circleMarker(
+                [18.4207, -64.64],
+                {"bubblingMouseEvents": true, "color": "#94A830", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#94A830", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10.673913043478262, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_e6c58e0534925a2bbafd89904d7c0a6c = L.popup({"maxWidth": 280});
+
+        
+            var html_58b502c764c5ebc250a3492ef80b88d8 = $(`<div id="html_58b502c764c5ebc250a3492ef80b88d8" style="width: 100.0%; height: 100.0%;"><b>British Virgin Islands</b><br/>Score: <b>67</b></div>`)[0];
+            popup_e6c58e0534925a2bbafd89904d7c0a6c.setContent(html_58b502c764c5ebc250a3492ef80b88d8);
+        
+
+        circle_marker_420e5a1f3ef2cf0bdf6fa9151f7939cb.bindPopup(popup_e6c58e0534925a2bbafd89904d7c0a6c)
+        ;
+
+        
+    
+    
+            circle_marker_420e5a1f3ef2cf0bdf6fa9151f7939cb.bindTooltip(
+                `<div>
+                     British Virgin Islands — 67
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_ea739233b11436cd82efddc5992c7a01 = L.circleMarker(
+                [54.2361, -4.5481],
+                {"bubblingMouseEvents": true, "color": "#94A830", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#94A830", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10.673913043478262, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_214d98f08525384245d7892946d2c8d9 = L.popup({"maxWidth": 280});
+
+        
+            var html_0d27b922098e51979474794f9a681fcd = $(`<div id="html_0d27b922098e51979474794f9a681fcd" style="width: 100.0%; height: 100.0%;"><b>Crown Dependencies (IoM/Jersey/Guernsey)</b><br/>Score: <b>67</b></div>`)[0];
+            popup_214d98f08525384245d7892946d2c8d9.setContent(html_0d27b922098e51979474794f9a681fcd);
+        
+
+        circle_marker_ea739233b11436cd82efddc5992c7a01.bindPopup(popup_214d98f08525384245d7892946d2c8d9)
+        ;
+
+        
+    
+    
+            circle_marker_ea739233b11436cd82efddc5992c7a01.bindTooltip(
+                `<div>
+                     Crown Dependencies (IoM/Jersey/Guernsey) — 67
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_d53b4a503b2e2a255fbbc1eba33f3827 = L.circleMarker(
+                [18.2208, -66.5901],
+                {"bubblingMouseEvents": true, "color": "#94A830", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#94A830", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10.673913043478262, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_500e85d2d18099434e0068f4fe4e2949 = L.popup({"maxWidth": 280});
+
+        
+            var html_d408bf5bca64ad0fe85e29e17605dd34 = $(`<div id="html_d408bf5bca64ad0fe85e29e17605dd34" style="width: 100.0%; height: 100.0%;"><b>Puerto Rico (US territory)</b><br/>Score: <b>67</b></div>`)[0];
+            popup_500e85d2d18099434e0068f4fe4e2949.setContent(html_d408bf5bca64ad0fe85e29e17605dd34);
+        
+
+        circle_marker_d53b4a503b2e2a255fbbc1eba33f3827.bindPopup(popup_500e85d2d18099434e0068f4fe4e2949)
+        ;
+
+        
+    
+    
+            circle_marker_d53b4a503b2e2a255fbbc1eba33f3827.bindTooltip(
+                `<div>
+                     Puerto Rico (US territory) — 67
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_306d42cebd8142765b8cff0a71961359 = L.circleMarker(
+                [42.7087, 19.3744],
+                {"bubblingMouseEvents": true, "color": "#A1A52D", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#A1A52D", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10.282608695652176, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_639a33fdf2dcd8c552c0a5c7b7fe587c = L.popup({"maxWidth": 280});
+
+        
+            var html_4b7c744ded03fbde6d4e97f47ca82d66 = $(`<div id="html_4b7c744ded03fbde6d4e97f47ca82d66" style="width: 100.0%; height: 100.0%;"><b>Montenegro</b><br/>Score: <b>65</b></div>`)[0];
+            popup_639a33fdf2dcd8c552c0a5c7b7fe587c.setContent(html_4b7c744ded03fbde6d4e97f47ca82d66);
+        
+
+        circle_marker_306d42cebd8142765b8cff0a71961359.bindPopup(popup_639a33fdf2dcd8c552c0a5c7b7fe587c)
+        ;
+
+        
+    
+    
+            circle_marker_306d42cebd8142765b8cff0a71961359.bindTooltip(
+                `<div>
+                     Montenegro — 65
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_a17432ba95959a27f62df20d0e2457fd = L.circleMarker(
+                [13.7942, -88.8965],
+                {"bubblingMouseEvents": true, "color": "#A1A52D", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#A1A52D", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10.282608695652176, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_92570b668ceec8e1c647ae5731c1b0b7 = L.popup({"maxWidth": 280});
+
+        
+            var html_5b7405ce6e72dfaae83741492129708d = $(`<div id="html_5b7405ce6e72dfaae83741492129708d" style="width: 100.0%; height: 100.0%;"><b>El Salvador</b><br/>Score: <b>65</b></div>`)[0];
+            popup_92570b668ceec8e1c647ae5731c1b0b7.setContent(html_5b7405ce6e72dfaae83741492129708d);
+        
+
+        circle_marker_a17432ba95959a27f62df20d0e2457fd.bindPopup(popup_92570b668ceec8e1c647ae5731c1b0b7)
+        ;
+
+        
+    
+    
+            circle_marker_a17432ba95959a27f62df20d0e2457fd.bindTooltip(
+                `<div>
+                     El Salvador — 65
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_c19d14c6b3e2d466867c6620c4f130a8 = L.circleMarker(
+                [32.3078, -64.7505],
+                {"bubblingMouseEvents": true, "color": "#A1A52D", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#A1A52D", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10.282608695652176, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_9c73c16ca2229e58dd468350bebfd6bd = L.popup({"maxWidth": 280});
+
+        
+            var html_1adc833ab37627508073c5db53450b08 = $(`<div id="html_1adc833ab37627508073c5db53450b08" style="width: 100.0%; height: 100.0%;"><b>Bermuda</b><br/>Score: <b>65</b></div>`)[0];
+            popup_9c73c16ca2229e58dd468350bebfd6bd.setContent(html_1adc833ab37627508073c5db53450b08);
+        
+
+        circle_marker_c19d14c6b3e2d466867c6620c4f130a8.bindPopup(popup_9c73c16ca2229e58dd468350bebfd6bd)
+        ;
+
+        
+    
+    
+            circle_marker_c19d14c6b3e2d466867c6620c4f130a8.bindTooltip(
+                `<div>
+                     Bermuda — 65
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_9b082f346575971656477b2a96c1de59 = L.circleMarker(
+                [-35.6751, -71.543],
+                {"bubblingMouseEvents": true, "color": "#A8A32C", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#A8A32C", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10.086956521739129, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_e39a31a51d929f83c1ef25313f89f1b1 = L.popup({"maxWidth": 280});
+
+        
+            var html_be72103342144c5782440ec718d8e956 = $(`<div id="html_be72103342144c5782440ec718d8e956" style="width: 100.0%; height: 100.0%;"><b>Chile</b><br/>Score: <b>64</b></div>`)[0];
+            popup_e39a31a51d929f83c1ef25313f89f1b1.setContent(html_be72103342144c5782440ec718d8e956);
+        
+
+        circle_marker_9b082f346575971656477b2a96c1de59.bindPopup(popup_e39a31a51d929f83c1ef25313f89f1b1)
+        ;
+
+        
+    
+    
+            circle_marker_9b082f346575971656477b2a96c1de59.bindTooltip(
+                `<div>
+                     Chile — 64
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_555fc9fa02e47b3f41e6b743191a3ec2 = L.circleMarker(
+                [-4.6796, 55.492],
+                {"bubblingMouseEvents": true, "color": "#A8A32C", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#A8A32C", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10.086956521739129, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_420ac281fe3d8bc050d7571c264f6e71 = L.popup({"maxWidth": 280});
+
+        
+            var html_2d49be33b41c8fe7a9316dfdfc603198 = $(`<div id="html_2d49be33b41c8fe7a9316dfdfc603198" style="width: 100.0%; height: 100.0%;"><b>Seychelles</b><br/>Score: <b>64</b></div>`)[0];
+            popup_420ac281fe3d8bc050d7571c264f6e71.setContent(html_2d49be33b41c8fe7a9316dfdfc603198);
+        
+
+        circle_marker_555fc9fa02e47b3f41e6b743191a3ec2.bindPopup(popup_420ac281fe3d8bc050d7571c264f6e71)
+        ;
+
+        
+    
+    
+            circle_marker_555fc9fa02e47b3f41e6b743191a3ec2.bindTooltip(
+                `<div>
+                     Seychelles — 64
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_b9d78344436b80ee7d890f8e4c35eb70 = L.circleMarker(
+                [38.6, -80.6],
+                {"bubblingMouseEvents": true, "color": "#AEA22A", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#AEA22A", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9.891304347826086, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_09c34c4b82f79bb3d5ba8c88abf16ae6 = L.popup({"maxWidth": 280});
+
+        
+            var html_c734bdb4a78033f6a733877e7811deed = $(`<div id="html_c734bdb4a78033f6a733877e7811deed" style="width: 100.0%; height: 100.0%;"><b>West Virginia (USA)</b><br/>Score: <b>63</b></div>`)[0];
+            popup_09c34c4b82f79bb3d5ba8c88abf16ae6.setContent(html_c734bdb4a78033f6a733877e7811deed);
+        
+
+        circle_marker_b9d78344436b80ee7d890f8e4c35eb70.bindPopup(popup_09c34c4b82f79bb3d5ba8c88abf16ae6)
+        ;
+
+        
+    
+    
+            circle_marker_b9d78344436b80ee7d890f8e4c35eb70.bindTooltip(
+                `<div>
+                     West Virginia (USA) — 63
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_abed2b41060b02638eac2501d1e20697 = L.circleMarker(
+                [36.1408, -5.3536],
+                {"bubblingMouseEvents": true, "color": "#AEA22A", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#AEA22A", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9.891304347826086, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_dc251172a81286027bef753263a386dd = L.popup({"maxWidth": 280});
+
+        
+            var html_b25c56e9b9de4f6d73ebe42d6f97012b = $(`<div id="html_b25c56e9b9de4f6d73ebe42d6f97012b" style="width: 100.0%; height: 100.0%;"><b>Gibraltar</b><br/>Score: <b>63</b></div>`)[0];
+            popup_dc251172a81286027bef753263a386dd.setContent(html_b25c56e9b9de4f6d73ebe42d6f97012b);
+        
+
+        circle_marker_abed2b41060b02638eac2501d1e20697.bindPopup(popup_dc251172a81286027bef753263a386dd)
+        ;
+
+        
+    
+    
+            circle_marker_abed2b41060b02638eac2501d1e20697.bindTooltip(
+                `<div>
+                     Gibraltar — 63
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_3d97a503cc5e83086a079c967371af30 = L.circleMarker(
+                [40.0691, 45.0382],
+                {"bubblingMouseEvents": true, "color": "#B3A129", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#B3A129", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9.695652173913043, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_f808ecadb7e04e18d4910afd28addf7d = L.popup({"maxWidth": 280});
+
+        
+            var html_912182de40e1fafa06ceabb081a3ebe5 = $(`<div id="html_912182de40e1fafa06ceabb081a3ebe5" style="width: 100.0%; height: 100.0%;"><b>Armenia</b><br/>Score: <b>62</b></div>`)[0];
+            popup_f808ecadb7e04e18d4910afd28addf7d.setContent(html_912182de40e1fafa06ceabb081a3ebe5);
+        
+
+        circle_marker_3d97a503cc5e83086a079c967371af30.bindPopup(popup_f808ecadb7e04e18d4910afd28addf7d)
+        ;
+
+        
+    
+    
+            circle_marker_3d97a503cc5e83086a079c967371af30.bindTooltip(
+                `<div>
+                     Armenia — 62
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_02d196105a3d00e9a9581e1a1ab54f33 = L.circleMarker(
+                [7.515, 134.5825],
+                {"bubblingMouseEvents": true, "color": "#B3A129", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#B3A129", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9.695652173913043, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_665db416b4defdd1e4ca831837673778 = L.popup({"maxWidth": 280});
+
+        
+            var html_4e9b5c538164ad8f1e0997e7cc535d84 = $(`<div id="html_4e9b5c538164ad8f1e0997e7cc535d84" style="width: 100.0%; height: 100.0%;"><b>Palau</b><br/>Score: <b>62</b></div>`)[0];
+            popup_665db416b4defdd1e4ca831837673778.setContent(html_4e9b5c538164ad8f1e0997e7cc535d84);
+        
+
+        circle_marker_02d196105a3d00e9a9581e1a1ab54f33.bindPopup(popup_665db416b4defdd1e4ca831837673778)
+        ;
+
+        
+    
+    
+            circle_marker_02d196105a3d00e9a9581e1a1ab54f33.bindTooltip(
+                `<div>
+                     Palau — 62
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_868ddc6326abeae7314b4cc37a2fff54 = L.circleMarker(
+                [42.3154, 43.3569],
+                {"bubblingMouseEvents": true, "color": "#BE9F27", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#BE9F27", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9.304347826086957, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_9846ae5300af4c928aec3c033fc7efee = L.popup({"maxWidth": 280});
+
+        
+            var html_8c528ca39089a1ca181c1b6f9a44cd53 = $(`<div id="html_8c528ca39089a1ca181c1b6f9a44cd53" style="width: 100.0%; height: 100.0%;"><b>Georgia (country)</b><br/>Score: <b>60</b></div>`)[0];
+            popup_9846ae5300af4c928aec3c033fc7efee.setContent(html_8c528ca39089a1ca181c1b6f9a44cd53);
+        
+
+        circle_marker_868ddc6326abeae7314b4cc37a2fff54.bindPopup(popup_9846ae5300af4c928aec3c033fc7efee)
+        ;
+
+        
+    
+    
+            circle_marker_868ddc6326abeae7314b4cc37a2fff54.bindTooltip(
+                `<div>
+                     Georgia (country) — 60
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_96afa5ae0e42210de6942a14446fa728 = L.circleMarker(
+                [-15.3767, 166.9592],
+                {"bubblingMouseEvents": true, "color": "#BE9F27", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#BE9F27", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9.304347826086957, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_8ba102c1b705b9f46fc9146d074e36cb = L.popup({"maxWidth": 280});
+
+        
+            var html_1379860f57954129cd2374f0feafbc43 = $(`<div id="html_1379860f57954129cd2374f0feafbc43" style="width: 100.0%; height: 100.0%;"><b>Vanuatu</b><br/>Score: <b>60</b></div>`)[0];
+            popup_8ba102c1b705b9f46fc9146d074e36cb.setContent(html_1379860f57954129cd2374f0feafbc43);
+        
+
+        circle_marker_96afa5ae0e42210de6942a14446fa728.bindPopup(popup_8ba102c1b705b9f46fc9146d074e36cb)
+        ;
+
+        
+    
+    
+            circle_marker_96afa5ae0e42210de6942a14446fa728.bindTooltip(
+                `<div>
+                     Vanuatu — 60
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_0a45b0fcb7d4d1539c8dbcdb4cb7262a = L.circleMarker(
+                [-20.3484, 57.5522],
+                {"bubblingMouseEvents": true, "color": "#BE9F27", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#BE9F27", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9.304347826086957, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_80e74635c5861e9123695b0c54a115de = L.popup({"maxWidth": 280});
+
+        
+            var html_1fb4b156b1d7be01e74d06be59ae533c = $(`<div id="html_1fb4b156b1d7be01e74d06be59ae533c" style="width: 100.0%; height: 100.0%;"><b>Mauritius</b><br/>Score: <b>60</b></div>`)[0];
+            popup_80e74635c5861e9123695b0c54a115de.setContent(html_1fb4b156b1d7be01e74d06be59ae533c);
+        
+
+        circle_marker_0a45b0fcb7d4d1539c8dbcdb4cb7262a.bindPopup(popup_80e74635c5861e9123695b0c54a115de)
+        ;
+
+        
+    
+    
+            circle_marker_0a45b0fcb7d4d1539c8dbcdb4cb7262a.bindTooltip(
+                `<div>
+                     Mauritius — 60
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_570ba8494006b1f019a50b084f859745 = L.circleMarker(
+                [46.8625, 103.8467],
+                {"bubblingMouseEvents": true, "color": "#C39E25", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#C39E25", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9.108695652173914, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_42d5f782a34073ab22e56dd375241353 = L.popup({"maxWidth": 280});
+
+        
+            var html_25f0bbdedf4d8ce12ff26b2da7dc0ccf = $(`<div id="html_25f0bbdedf4d8ce12ff26b2da7dc0ccf" style="width: 100.0%; height: 100.0%;"><b>Mongolia</b><br/>Score: <b>59</b></div>`)[0];
+            popup_42d5f782a34073ab22e56dd375241353.setContent(html_25f0bbdedf4d8ce12ff26b2da7dc0ccf);
+        
+
+        circle_marker_570ba8494006b1f019a50b084f859745.bindPopup(popup_42d5f782a34073ab22e56dd375241353)
+        ;
+
+        
+    
+    
+            circle_marker_570ba8494006b1f019a50b084f859745.bindTooltip(
+                `<div>
+                     Mongolia — 59
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_965d067cef51b329377f5c607e9565e6 = L.circleMarker(
+                [43.263, -2.935],
+                {"bubblingMouseEvents": true, "color": "#C89D24", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#C89D24", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8.91304347826087, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_b7206f96f575b1ed54033934269f63f5 = L.popup({"maxWidth": 280});
+
+        
+            var html_668bf08af0f6bbabef1c3c8b40036055 = $(`<div id="html_668bf08af0f6bbabef1c3c8b40036055" style="width: 100.0%; height: 100.0%;"><b>Basque Country (Spain)</b><br/>Score: <b>58</b></div>`)[0];
+            popup_b7206f96f575b1ed54033934269f63f5.setContent(html_668bf08af0f6bbabef1c3c8b40036055);
+        
+
+        circle_marker_965d067cef51b329377f5c607e9565e6.bindPopup(popup_b7206f96f575b1ed54033934269f63f5)
+        ;
+
+        
+    
+    
+            circle_marker_965d067cef51b329377f5c607e9565e6.bindTooltip(
+                `<div>
+                     Basque Country (Spain) — 58
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_a802087f3a8692ac438b6b699ebf348b = L.circleMarker(
+                [56.4907, -4.2026],
+                {"bubblingMouseEvents": true, "color": "#C89D24", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#C89D24", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8.91304347826087, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_a85df26a525060464d56fc70f4fb2caa = L.popup({"maxWidth": 280});
+
+        
+            var html_3a6083dc0e53f93959942bc5dd7ca208 = $(`<div id="html_3a6083dc0e53f93959942bc5dd7ca208" style="width: 100.0%; height: 100.0%;"><b>Scotland (UK)</b><br/>Score: <b>58</b></div>`)[0];
+            popup_a85df26a525060464d56fc70f4fb2caa.setContent(html_3a6083dc0e53f93959942bc5dd7ca208);
+        
+
+        circle_marker_a802087f3a8692ac438b6b699ebf348b.bindPopup(popup_a85df26a525060464d56fc70f4fb2caa)
+        ;
+
+        
+    
+    
+            circle_marker_a802087f3a8692ac438b6b699ebf348b.bindTooltip(
+                `<div>
+                     Scotland (UK) — 58
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_a58adccb8069e901f94b8d3a599436fb = L.circleMarker(
+                [32.7607, -16.9595],
+                {"bubblingMouseEvents": true, "color": "#CC9C23", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#CC9C23", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8.717391304347826, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_5353d2ce4ac2899c12e015acdbedef3c = L.popup({"maxWidth": 280});
+
+        
+            var html_7f5a90f69cbee2adbae524cf5c28c8d7 = $(`<div id="html_7f5a90f69cbee2adbae524cf5c28c8d7" style="width: 100.0%; height: 100.0%;"><b>Madeira (Portugal)</b><br/>Score: <b>57</b></div>`)[0];
+            popup_5353d2ce4ac2899c12e015acdbedef3c.setContent(html_7f5a90f69cbee2adbae524cf5c28c8d7);
+        
+
+        circle_marker_a58adccb8069e901f94b8d3a599436fb.bindPopup(popup_5353d2ce4ac2899c12e015acdbedef3c)
+        ;
+
+        
+    
+    
+            circle_marker_a58adccb8069e901f94b8d3a599436fb.bindTooltip(
+                `<div>
+                     Madeira (Portugal) — 57
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_9cd767374415ec9015f6b6ea2e2e28c9 = L.circleMarker(
+                [-22.3285, 24.6849],
+                {"bubblingMouseEvents": true, "color": "#D19B22", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#D19B22", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8.521739130434783, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_ec214211b8214465444eb831028c2c36 = L.popup({"maxWidth": 280});
+
+        
+            var html_66b9f60c1a1b50e0802cc5a75dacfe54 = $(`<div id="html_66b9f60c1a1b50e0802cc5a75dacfe54" style="width: 100.0%; height: 100.0%;"><b>Botswana</b><br/>Score: <b>56</b></div>`)[0];
+            popup_ec214211b8214465444eb831028c2c36.setContent(html_66b9f60c1a1b50e0802cc5a75dacfe54);
+        
+
+        circle_marker_9cd767374415ec9015f6b6ea2e2e28c9.bindPopup(popup_ec214211b8214465444eb831028c2c36)
+        ;
+
+        
+    
+    
+            circle_marker_9cd767374415ec9015f6b6ea2e2e28c9.bindTooltip(
+                `<div>
+                     Botswana — 56
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_04a138e4f7862cd2313e081b71d5bc93 = L.circleMarker(
+                [41.5912, 1.5209],
+                {"bubblingMouseEvents": true, "color": "#D19B22", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#D19B22", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8.521739130434783, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_3e67f315103b0b4a3781ca39ae5bd1c4 = L.popup({"maxWidth": 280});
+
+        
+            var html_989f69b436ec82cfbc35cbc6e5f133b2 = $(`<div id="html_989f69b436ec82cfbc35cbc6e5f133b2" style="width: 100.0%; height: 100.0%;"><b>Catalonia (Spain)</b><br/>Score: <b>56</b></div>`)[0];
+            popup_3e67f315103b0b4a3781ca39ae5bd1c4.setContent(html_989f69b436ec82cfbc35cbc6e5f133b2);
+        
+
+        circle_marker_04a138e4f7862cd2313e081b71d5bc93.bindPopup(popup_3e67f315103b0b4a3781ca39ae5bd1c4)
+        ;
+
+        
+    
+    
+            circle_marker_04a138e4f7862cd2313e081b71d5bc93.bindTooltip(
+                `<div>
+                     Catalonia (Spain) — 56
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_cc95a14f91d53d8d6d73d523a4ca2e6e = L.circleMarker(
+                [-22.9576, 18.4904],
+                {"bubblingMouseEvents": true, "color": "#D59A21", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#D59A21", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8.326086956521738, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_ba4202c1286a1e326b8fbc2af1126023 = L.popup({"maxWidth": 280});
+
+        
+            var html_d959f0334e6f630bf56dc543b4eaf1e4 = $(`<div id="html_d959f0334e6f630bf56dc543b4eaf1e4" style="width: 100.0%; height: 100.0%;"><b>Namibia</b><br/>Score: <b>55</b></div>`)[0];
+            popup_ba4202c1286a1e326b8fbc2af1126023.setContent(html_d959f0334e6f630bf56dc543b4eaf1e4);
+        
+
+        circle_marker_cc95a14f91d53d8d6d73d523a4ca2e6e.bindPopup(popup_ba4202c1286a1e326b8fbc2af1126023)
+        ;
+
+        
+    
+    
+            circle_marker_cc95a14f91d53d8d6d73d523a4ca2e6e.bindTooltip(
+                `<div>
+                     Namibia — 55
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_6e650609df4695c87bdf70d8277cae15 = L.circleMarker(
+                [23.6345, -102.5528],
+                {"bubblingMouseEvents": true, "color": "#E0971F", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#E0971F", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7.739130434782609, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_6b19c2af8c2d331d310924b693448144 = L.popup({"maxWidth": 280});
+
+        
+            var html_e81a5baafde2378b42cf2ec1a879da4b = $(`<div id="html_e81a5baafde2378b42cf2ec1a879da4b" style="width: 100.0%; height: 100.0%;"><b>Mexico</b><br/>Score: <b>52</b></div>`)[0];
+            popup_6b19c2af8c2d331d310924b693448144.setContent(html_e81a5baafde2378b42cf2ec1a879da4b);
+        
+
+        circle_marker_6e650609df4695c87bdf70d8277cae15.bindPopup(popup_6b19c2af8c2d331d310924b693448144)
+        ;
+
+        
+    
+    
+            circle_marker_6e650609df4695c87bdf70d8277cae15.bindTooltip(
+                `<div>
+                     Mexico — 52
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_6ecd6fe5a7372088bd1ad3d3ec71434d = L.circleMarker(
+                [4.5709, -74.2973],
+                {"bubblingMouseEvents": true, "color": "#E6961D", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#E6961D", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7.3478260869565215, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_08f99dbcc7959c44b79be44743389f0c = L.popup({"maxWidth": 280});
+
+        
+            var html_1829bbd1dc50614365e5ffdee133aa33 = $(`<div id="html_1829bbd1dc50614365e5ffdee133aa33" style="width: 100.0%; height: 100.0%;"><b>Colombia</b><br/>Score: <b>50</b></div>`)[0];
+            popup_08f99dbcc7959c44b79be44743389f0c.setContent(html_1829bbd1dc50614365e5ffdee133aa33);
+        
+
+        circle_marker_6ecd6fe5a7372088bd1ad3d3ec71434d.bindPopup(popup_08f99dbcc7959c44b79be44743389f0c)
+        ;
+
+        
+    
+    
+            circle_marker_6ecd6fe5a7372088bd1ad3d3ec71434d.bindTooltip(
+                `<div>
+                     Colombia — 50
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_02da9b3d1f4be4a2ee1e461ce0474b40 = L.circleMarker(
+                [-6.314993, 143.95555],
+                {"bubblingMouseEvents": true, "color": "#ED951C", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ED951C", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6.760869565217392, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_70b6b51df6bdc3a73eb99a793bcabe5c = L.popup({"maxWidth": 280});
+
+        
+            var html_209662287433d374e0c012203422e8e9 = $(`<div id="html_209662287433d374e0c012203422e8e9" style="width: 100.0%; height: 100.0%;"><b>Papua New Guinea</b><br/>Score: <b>47</b></div>`)[0];
+            popup_70b6b51df6bdc3a73eb99a793bcabe5c.setContent(html_209662287433d374e0c012203422e8e9);
+        
+
+        circle_marker_02da9b3d1f4be4a2ee1e461ce0474b40.bindPopup(popup_70b6b51df6bdc3a73eb99a793bcabe5c)
+        ;
+
+        
+    
+    
+            circle_marker_02da9b3d1f4be4a2ee1e461ce0474b40.bindTooltip(
+                `<div>
+                     Papua New Guinea — 47
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_7047755c53a1d3d8b850455bb38f0548 = L.circleMarker(
+                [7.9465, -1.0232],
+                {"bubblingMouseEvents": true, "color": "#F1941B", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#F1941B", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6.369565217391305, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_c6611576e7c731db60690886de27fb00 = L.popup({"maxWidth": 280});
+
+        
+            var html_670d0498ab046a65e402c722910d7262 = $(`<div id="html_670d0498ab046a65e402c722910d7262" style="width: 100.0%; height: 100.0%;"><b>Ghana</b><br/>Score: <b>45</b></div>`)[0];
+            popup_c6611576e7c731db60690886de27fb00.setContent(html_670d0498ab046a65e402c722910d7262);
+        
+
+        circle_marker_7047755c53a1d3d8b850455bb38f0548.bindPopup(popup_c6611576e7c731db60690886de27fb00)
+        ;
+
+        
+    
+    
+            circle_marker_7047755c53a1d3d8b850455bb38f0548.bindTooltip(
+                `<div>
+                     Ghana — 45
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_94a0945f7e811bd1965c0769a184c5cf = L.circleMarker(
+                [4.2105, 101.9758],
+                {"bubblingMouseEvents": true, "color": "#F2931A", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#F2931A", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6.173913043478261, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_3e875a358b3499fc16b3fac216af261a = L.popup({"maxWidth": 280});
+
+        
+            var html_ed7b3f78488d5ba3c1968b7fb291443b = $(`<div id="html_ed7b3f78488d5ba3c1968b7fb291443b" style="width: 100.0%; height: 100.0%;"><b>Malaysia</b><br/>Score: <b>44</b></div>`)[0];
+            popup_3e875a358b3499fc16b3fac216af261a.setContent(html_ed7b3f78488d5ba3c1968b7fb291443b);
+        
+
+        circle_marker_94a0945f7e811bd1965c0769a184c5cf.bindPopup(popup_3e875a358b3499fc16b3fac216af261a)
+        ;
+
+        
+    
+    
+            circle_marker_94a0945f7e811bd1965c0769a184c5cf.bindTooltip(
+                `<div>
+                     Malaysia — 44
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_90cfc2169253ad7721d6fc6bb2eab5a8 = L.circleMarker(
+                [12.8797, 121.774],
+                {"bubblingMouseEvents": true, "color": "#F5931A", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#F5931A", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 5.782608695652174, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_6482a9009d257252b1ed04beb2571ca2 = L.popup({"maxWidth": 280});
+
+        
+            var html_8693c4dae40097372ae3b187a1f8f06b = $(`<div id="html_8693c4dae40097372ae3b187a1f8f06b" style="width: 100.0%; height: 100.0%;"><b>Philippines</b><br/>Score: <b>42</b></div>`)[0];
+            popup_6482a9009d257252b1ed04beb2571ca2.setContent(html_8693c4dae40097372ae3b187a1f8f06b);
+        
+
+        circle_marker_90cfc2169253ad7721d6fc6bb2eab5a8.bindPopup(popup_6482a9009d257252b1ed04beb2571ca2)
+        ;
+
+        
+    
+    
+            circle_marker_90cfc2169253ad7721d6fc6bb2eab5a8.bindTooltip(
+                `<div>
+                     Philippines — 42
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_8ca719b6ed839b4e0016d073558bbc98 = L.circleMarker(
+                [-0.7893, 113.9213],
+                {"bubblingMouseEvents": true, "color": "#F6931A", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#F6931A", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 5.391304347826087, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_3ce23c2d4c330c5f0b54243fe9425687 = L.popup({"maxWidth": 280});
+
+        
+            var html_3cea999666e57f54e3fe8face1d45d48 = $(`<div id="html_3cea999666e57f54e3fe8face1d45d48" style="width: 100.0%; height: 100.0%;"><b>Indonesia</b><br/>Score: <b>40</b></div>`)[0];
+            popup_3ce23c2d4c330c5f0b54243fe9425687.setContent(html_3cea999666e57f54e3fe8face1d45d48);
+        
+
+        circle_marker_8ca719b6ed839b4e0016d073558bbc98.bindPopup(popup_3ce23c2d4c330c5f0b54243fe9425687)
+        ;
+
+        
+    
+    
+            circle_marker_8ca719b6ed839b4e0016d073558bbc98.bindTooltip(
+                `<div>
+                     Indonesia — 40
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var circle_marker_440475e579d7d37d50e4de04459394d3 = L.circleMarker(
+                [15.87, 100.9925],
+                {"bubblingMouseEvents": true, "color": "#F7931A", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#F7931A", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 5.0, "stroke": true, "weight": 2}
+            ).addTo(map_0d5405662d6b7b4115ff9f729e5833aa);
+        
+    
+        var popup_b9a9d2b762831751780c6d5392a32b40 = L.popup({"maxWidth": 280});
+
+        
+            var html_d6cf4a7a3cffd30c13250a866366c7fc = $(`<div id="html_d6cf4a7a3cffd30c13250a866366c7fc" style="width: 100.0%; height: 100.0%;"><b>Thailand</b><br/>Score: <b>38</b></div>`)[0];
+            popup_b9a9d2b762831751780c6d5392a32b40.setContent(html_d6cf4a7a3cffd30c13250a866366c7fc);
+        
+
+        circle_marker_440475e579d7d37d50e4de04459394d3.bindPopup(popup_b9a9d2b762831751780c6d5392a32b40)
+        ;
+
+        
+    
+    
+            circle_marker_440475e579d7d37d50e4de04459394d3.bindTooltip(
+                `<div>
+                     Thailand — 38
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            map_0d5405662d6b7b4115ff9f729e5833aa.fitBounds(
+                [[-35.6751, -149.4937], [64.9631, 166.9592]],
+                {"padding": [20, 20]}
+            );
+        
+</script>
+</html>

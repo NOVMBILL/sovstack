@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sov Stack Labs — Limits & Disclaimer</title>
+  <style>
+    :root {
+      /* Neutral, high-contrast dark theme (AA+ friendly) */
+      --bg: #050814;          /* charcoal with slight blue-violet */
+      --bg-elevated: #070b18; /* cards / sections */
+      --bg-soft: #0b1220;     /* subtle contrast */
+
+      --border-subtle: #1f2933;
+      --border-strong: #374151;
+
+      --text: #f9fafb;        /* almost pure white */
+      --muted: #9ca3af;       /* slate gray, AA on dark */
+
+      --accent-btc: #f7931a;    /* Bitcoin orange */
+      --accent-cypher: #22c55e; /* terminal-ish green */
+      --accent-nostr: #a855f7;  /* Nostr purple */
+
+      --radius-lg: 14px;
+      --radius-pill: 999px;
+      --container-width: 960px;
+
+      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", sans-serif;
+      --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background:
+        radial-gradient(circle at top, rgba(168, 85, 247, 0.12), transparent 55%),
+        radial-gradient(circle at bottom, rgba(34, 197, 94, 0.08), transparent 55%),
+        var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    .shell {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* NAVIGATION */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(5, 8, 20, 0.96);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .nav-inner {
+      max-width: var(--container-width);
+      margin: 0 auto;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-mark {
+      width: 26px;
+      height: 26px;
+      border-radius: 9px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-family: var(--mono);
+      background: #020617;
+      color: var(--accent-btc);
+      border: 1px solid var(--border-strong);
+    }
+
+    .brand-text-main {
+      font-family: var(--mono);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+    }
+
+    .brand-text-sub {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--muted);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .nav-links a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 7px 14px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border-subtle);
+      font-size: 11px;
+      font-family: var(--mono);
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+      background: #020617;
+      transition: background 0.16s ease-out, border-color 0.16s ease-out, color 0.16s ease-out, transform 0.1s ease-out;
+    }
+
+    .nav-links a:hover,
+    .nav-links a:focus-visible {
+      color: var(--text);
+      border-color: var(--accent-btc);
+      background: #030712;
+      transform: translateY(-1px);
+      outline: none;
+    }
+
+    .nav-links a.primary {
+      border-color: var(--accent-btc);
+      color: var(--accent-btc);
+    }
+
+    .nav-links a.primary:hover,
+    .nav-links a.primary:focus-visible {
+      color: #111827;
+      background: var(--accent-btc);
+    }
+
+    /* PAGE LAYOUT */
+    .page {
+      flex: 1;
+    }
+
+    .container {
+      max-width: var(--container-width);
+      margin: 0 auto;
+      padding: 24px 16px 40px;
+    }
+
+    /* HERO */
+    .hero {
+      padding: 18px 18px 20px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-elevated);
+      margin-bottom: 24px;
+    }
+
+    .hero-kicker {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .hero-title {
+      font-size: clamp(2rem, 3vw, 2.4rem);
+      line-height: 1.1;
+      margin: 0 0 10px;
+    }
+
+    .hero-title span.accent {
+      color: var(--accent-btc);
+    }
+
+    .hero-body {
+      max-width: 720px;
+      font-size: 0.97rem;
+      line-height: 1.7;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .hero-note {
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-family: var(--mono);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    /* SECTIONS */
+    .section {
+      margin-top: 28px;
+    }
+
+    .section-header {
+      margin-bottom: 10px;
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .section-heading {
+      font-size: 1.1rem;
+      margin: 0 0 4px;
+    }
+
+    .section-body {
+      max-width: 720px;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    /* PROSE */
+    .prose {
+      margin-top: 10px;
+      font-size: 0.9rem;
+      line-height: 1.7;
+      color: var(--muted);
+      max-width: 760px;
+    }
+
+    .prose p {
+      margin: 0 0 10px;
+    }
+
+    .prose p:last-child {
+      margin-bottom: 0;
+    }
+
+    .prose strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .prose ul {
+      padding-left: 18px;
+      margin: 0 0 10px;
+    }
+
+    .prose li {
+      margin-bottom: 4px;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+      margin-bottom: 4px;
+    }
+
+    .pill {
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border-subtle);
+      font-size: 0.75rem;
+      font-family: var(--mono);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      background: var(--bg-soft);
+    }
+
+    .pill.critical {
+      border-color: var(--accent-btc);
+      color: var(--accent-btc);
+    }
+
+    /* FOOTER */
+    .footer {
+      border-top: 1px solid var(--border-subtle);
+      background: #020617;
+      margin-top: 30px;
+    }
+
+    .footer-inner {
+      max-width: var(--container-width);
+      margin: 0 auto;
+      padding: 16px 16px 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .footer-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .footer-left span.label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .footer-right {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .footer-link {
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-decoration: none;
+      border-bottom: 1px dashed transparent;
+    }
+
+    .footer-link:hover,
+    .footer-link:focus-visible {
+      color: var(--accent-btc);
+      border-bottom-color: var(--accent-btc);
+      outline: none;
+    }
+
+    .footer-pill {
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border-subtle);
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--accent-nostr);
+      background: #030712;
+    }
+
+    @media (max-width: 768px) {
+      .nav-inner {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .nav-links {
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .hero {
+        padding: 14px 12px 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="nav">
+      <div class="nav-inner">
+        <div class="brand">
+          <span class="brand-mark">₿</span>
+          <div>
+            <div class="brand-text-main">Sov Stack Labs</div>
+            <div class="brand-text-sub">Bitcoin · Sovereign Infra · Nostr</div>
+          </div>
+        </div>
+        <nav class="nav-links" aria-label="Main navigation">
+          <a href="index.html#overview">Home</a>
+          <a href="stacks.html">Stacks</a>
+          <a href="mission.html">Mission</a>
+          <a href="privacy.html">Privacy</a>
+          <a href="offerings.html">Offerings</a>
+          <a href="species-unreal.html">Treatise</a>
+          <a href="contact.html">Contact</a>
+          <a href="limits.html" class="primary">Limits</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page">
+      <div class="container">
+        <section class="hero" aria-label="Limits and disclaimer">
+          <div class="hero-kicker">/ limits · threat models · disclaimers /</div>
+          <h1 class="hero-title">
+            <span class="accent">Sov Stack Labs</span> — Limits & Disclaimer
+          </h1>
+          <p class="hero-body">
+            We do not sell invincibility, legal magic, or perfect privacy. Everything here is experimental, fallible, and bounded by law, physics, economics, and your own discipline. This page states, in plain language, what we are and are not doing, which adversaries we model, what our tools cannot protect you from, and where responsibility actually sits.
+          </p>
+          <p class="hero-note">
+            Read this as part of the operating kernel. If you ignore it, nothing else on this site means anything.
+          </p>
+        </section>
+
+        <!-- 1. WHAT THIS IS / ISN'T -->
+        <section class="section" id="scope">
+          <header class="section-header">
+            <div class="section-label">/ 01 · scope /</div>
+            <h2 class="section-heading">What Sov Stack Labs is (and is not)</h2>
+          </header>
+          <div class="prose">
+            <p>
+              Sov Stack Labs is an attempt to design and deploy <strong>parallel, Bitcoin-native, sovereignty-oriented systems</strong> — nodes, cells, markets, and patterns that reduce dependence on centralized infrastructure over time.
+            </p>
+            <p>
+              Sov Stack Labs is <strong>not</strong>:
+            </p>
+            <ul>
+              <li>a guarantee of safety, privacy, profit, or legal immunity</li>
+              <li>a militia, political party, or revolutionary organization</li>
+              <li>a replacement for your own legal, financial, medical, or security counsel</li>
+              <li>a source of “secret knowledge” or magic shortcuts</li>
+            </ul>
+            <p>
+              All patterns, diagrams, and essays are <strong>descriptive and aspirational</strong>. They are not promises of outcome. Any real-world deployment must be adapted to your context, jurisdiction, and risk tolerance.
+            </p>
+          </div>
+        </section>
+
+        <!-- 2. NO ADVICE / NO GUARANTEES -->
+        <section class="section" id="advice">
+          <header class="section-header">
+            <div class="section-label">/ 02 · no advice · no guarantees /</div>
+            <h2 class="section-heading">Not legal, financial, medical, or investment advice</h2>
+          </header>
+          <div class="prose">
+            <p>
+              Nothing on this site — including essays, diagrams, checklists, examples, and any 1:1 engagement — should be treated as:
+            </p>
+            <ul>
+              <li>legal advice or a substitute for qualified local counsel</li>
+              <li>financial, tax, or investment advice</li>
+              <li>medical advice or a substitute for a licensed clinician</li>
+              <li>security guarantees or certification</li>
+            </ul>
+            <p>
+              You are solely responsible for consulting appropriate professionals, complying with applicable law, paying taxes, and understanding the risks you take.
+            </p>
+            <p>
+              We make <strong>no warranties</strong>, express or implied, about:
+            </p>
+            <ul>
+              <li>the correctness, completeness, or timeliness of any information</li>
+              <li>the security, reliability, or availability of any tool or pattern</li>
+              <li>the suitability of anything described here for your particular use case</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- 3. ADVERSARY MODEL -->
+        <section class="section" id="adversaries">
+          <header class="section-header">
+            <div class="section-label">/ 03 · adversaries /</div>
+            <h2 class="section-heading">Who we do and do not model</h2>
+          </header>
+          <div class="prose">
+            <p>
+              Any sovereignty or privacy claim is meaningless without an adversary model. Very roughly, the patterns and ideas discussed here <strong>aim</strong> to reduce exposure to:
+            </p>
+            <ul>
+              <li><strong>Opportunistic criminals</strong> (theft, basic fraud, low-grade hacking)</li>
+              <li><strong>Commercial surveillance</strong> (data brokers, ad-tech, heuristic profiling)</li>
+              <li><strong>Social graph threats</strong> (doxxing, casual stalking, reputational spillover)</li>
+              <li><strong>Local institutional fragility</strong> (bank outages, local political turbulence, supply crunches)</li>
+            </ul>
+            <p>
+              We <strong>do not claim</strong> to reliably protect you from:
+            </p>
+            <ul>
+              <li>determined, well-funded, state-level intelligence agencies</li>
+              <li>zero-day exploits or hardware backdoors in your devices</li>
+              <li>abusive family members, employers, or partners with physical access to you or your hardware</li>
+              <li>illicit decisions you knowingly make against local law</li>
+            </ul>
+            <p>
+              We take these adversaries seriously and design to <strong>raise cost and create friction</strong>, but we do not promise immunity. A powerful adversary with enough time, budget, and legal reach can still compromise you.
+            </p>
+          </div>
+        </section>
+
+        <!-- 4. SYN DEPENDENCE -->
+        <section class="section" id="syn">
+          <header class="section-header">
+            <div class="section-label">/ 04 · synthetic dependencies /</div>
+            <h2 class="section-heading">Use of SYN rails and unavoidable dependencies</h2>
+          </header>
+          <div class="prose">
+            <p>
+              The language of “Sovereign Stack vs Synthetic Stack” is descriptive, not magical. In practice, many deployments will still depend on:
+            </p>
+            <ul>
+              <li>commercial ISPs and mobile carriers</li>
+              <li>closed-source hardware and firmware</li>
+              <li>jurisdictional legal frameworks and courts</li>
+              <li>fiat rails during transition periods</li>
+              <li>cloud or hosting providers for some workloads</li>
+            </ul>
+            <p>
+              We treat these as <strong>temporary bridges and attack surfaces</strong>, not as neutral ground. Designs aim to quarantine, minimize, and progressively shed such dependencies, but they <strong>cannot be removed instantly</strong>.
+            </p>
+            <p>
+              If your operational or legal reality is deeply embedded in SYN systems (corporate role, regulated business, hostile jurisdiction), no pattern here can give you “pure” SOV. It can only reduce blast radius and improve exit options.
+            </p>
+          </div>
+        </section>
+
+        <!-- 5. BITCOIN / LIGHTNING / NOSTR LIMITS -->
+        <section class="section" id="protocols">
+          <header class="section-header">
+            <div class="section-label">/ 05 · protocol limits /</div>
+            <h2 class="section-heading">Limits of Bitcoin, Lightning, and Nostr</h2>
+          </header>
+          <div class="prose">
+            <p>
+              We treat Bitcoin, Lightning, and Nostr as core tools. None of them grant you automatic privacy or sovereignty.
+            </p>
+            <div class="pill-row">
+              <span class="pill critical">Bitcoin</span>
+              <span class="pill">transparent ledger</span>
+              <span class="pill">telemetry risk</span>
+            </div>
+            <p>
+              Bitcoin’s ledger is <strong>public and permanent</strong>. Without careful use of UTXOs, CoinJoins/CoinSwaps, eCash, and layered flows, you create a precise behavioral record. We do not claim Bitcoin alone makes you private or untouchable.
+            </p>
+
+            <div class="pill-row">
+              <span class="pill critical">Lightning</span>
+              <span class="pill">routing leakage</span>
+              <span class="pill">liquidity ops</span>
+            </div>
+            <p>
+              Lightning improves some surfaces but has its own privacy and reliability issues: routing analysis, channel graph exposure, liquidity failures, and centralization around large nodes. Any Lightning pattern we suggest has tradeoffs and failure modes.
+            </p>
+
+            <div class="pill-row">
+              <span class="pill critical">Nostr</span>
+              <span class="pill">metadata</span>
+              <span class="pill">relay trust</span>
+            </div>
+            <p>
+              Nostr is decentralized, <strong>not automatically private</strong>. Relays see metadata; social graphs can be reconstructed; keys can be doxxed through careless use. We treat Nostr as a flexible coordination layer, not a stealth channel.
+            </p>
+            <p>
+              All protocol use must be matched with <strong>disciplined operational habits</strong>. Tools do not save you from poor choices.
+            </p>
+          </div>
+        </section>
+
+        <!-- 6. LEGAL / REGULATORY -->
+        <section class="section" id="legal">
+          <header class="section-header">
+            <div class="section-label">/ 06 · legal boundaries /</div>
+            <h2 class="section-heading">Legal, regulatory, and jurisdictional limits</h2>
+          </header>
+          <div class="prose">
+            <p>
+              Sovereign design does not mean ignoring law. It means understanding constraints and building within, around, or away from them as appropriate.
+            </p>
+            <p>
+              We do <strong>not</strong>:
+            </p>
+            <ul>
+              <li>advise or encourage evasion of tax laws or financial reporting obligations</li>
+              <li>help you launder money or hide proceeds of crime</li>
+              <li>provide services for sanctioned entities or prohibited activities</li>
+              <li>guarantee that any pattern is “compliant” in your jurisdiction</li>
+            </ul>
+            <p>
+              It is your responsibility to:
+            </p>
+            <ul>
+              <li>know and comply with laws where you live and operate</li>
+              <li>obtain qualified legal advice for complex arrangements</li>
+              <li>understand that regulations and interpretations change over time</li>
+            </ul>
+            <p>
+              “Voluntary law” and private arbitration are <strong>supplements</strong>, not shields. States can still intervene, seize assets, and punish. Designs aim to reduce unjust exposure, not to make you invisible to power.
+            </p>
+          </div>
+        </section>
+
+        <!-- 7. PHYSICAL / INFRASTRUCTURE LIMITS -->
+        <section class="section" id="physical">
+          <header class="section-header">
+            <div class="section-label">/ 07 · physical limits /</div>
+            <h2 class="section-heading">Physical reality, infrastructure, and failure</h2>
+          </header>
+          <div class="prose">
+            <p>
+              Sovereign cells, homesteads, and infra stacks live in the physical world. That world has its own non-negotiables:
+            </p>
+            <ul>
+              <li>weather, climate, and natural hazards</li>
+              <li>water rights, zoning, permits, and inspections</li>
+              <li>maintenance cycles for hardware, roofs, batteries, inverters, and vehicles</li>
+              <li>human limits: skill, time, attention, money, health</li>
+            </ul>
+            <p>
+              Any “resilient” design can still fail due to:
+            </p>
+            <ul>
+              <li>poor installation, maintenance, or training</li>
+              <li>misconfigured systems, neglected backups, or missing spare parts</li>
+              <li>interpersonal breakdown inside a small group</li>
+              <li>external force: seizure, fire, flood, or conflict</li>
+            </ul>
+            <p>
+              We cannot guarantee continuity of power, water, food, or security anywhere. Designs and suggestions should always be treated as <strong>starting points</strong> for serious local engineering and planning, not turnkey survival kits.
+            </p>
+          </div>
+        </section>
+
+        <!-- 8. PRIVACY & DATA HANDLING -->
+        <section class="section" id="privacy-data">
+          <header class="section-header">
+            <div class="section-label">/ 08 · privacy & data /</div>
+            <h2 class="section-heading">Privacy posture and information you share</h2>
+          </header>
+          <div class="prose">
+            <p>
+              We aim to practice what we preach: <strong>data minimization and compartmentalization</strong>.
+            </p>
+            <p>
+              In general:
+            </p>
+            <ul>
+              <li>We prefer pseudonymous contact (Nostr, PGP, minimal email metadata).</li>
+              <li>We do not ask for more information about you than is needed to complete a specific engagement.</li>
+              <li>We expect you to avoid sending sensitive data over clear channels.</li>
+            </ul>
+            <p>
+              We cannot control:
+            </p>
+            <ul>
+              <li>the security of your device, network, or email provider</li>
+              <li>logging or scanning by your ISP, cloud provider, or OS vendor</li>
+              <li>what you choose to publish about yourself on other platforms</li>
+            </ul>
+            <p>
+              Any communication can be intercepted, logged, or compelled by legal order, depending on jurisdiction and counterparty. Do not share information you are unwilling to see compromised, misused, or exposed.
+            </p>
+          </div>
+        </section>
+
+        <!-- 9. EXPERIMENTAL STATUS & AUDITS -->
+        <section class="section" id="experimental">
+          <header class="section-header">
+            <div class="section-label">/ 09 · experimental /</div>
+            <h2 class="section-heading">Experimental status, fallibility, and audits</h2>
+          </header>
+          <div class="prose">
+            <p>
+              All frameworks, terms, and patterns on this site are <strong>versioned experiments</strong>. They are subject to change, contradiction, and deprecation as facts change, attacks appear, or better designs emerge.
+            </p>
+            <p>
+              We expect to be:
+            </p>
+            <ul>
+              <li>wrong about some assumptions</li>
+              <li>blind to some capture vectors</li>
+              <li>late to some threats</li>
+            </ul>
+            <p>
+              You should treat everything here as <strong>proposals to be attacked and stress-tested</strong>, not as settled doctrine. External critique, red-teaming, and adversarial review are welcome and necessary.
+            </p>
+            <p>
+              No audit, even if performed, can make a complex system “safe.” It can only surface some problems at some point in time.
+            </p>
+          </div>
+        </section>
+
+        <!-- 10. YOUR RESPONSIBILITY -->
+        <section class="section" id="responsibility">
+          <header class="section-header">
+            <div class="section-label">/ 10 · responsibility /</div>
+            <h2 class="section-heading">Your responsibility and final word</h2>
+          </header>
+          <div class="prose">
+            <p>
+              Sovereignty cannot be outsourced. At best, Sov Stack Labs can offer:
+            </p>
+            <ul>
+              <li>conceptual maps</li>
+              <li>design patterns and checklists</li>
+              <li>implementation help and honest constraints</li>
+            </ul>
+            <p>
+              You remain responsible for:
+            </p>
+            <ul>
+              <li>the risks you take and the tradeoffs you accept</li>
+              <li>understanding your own threat model and limits</li>
+              <li>maintaining your systems, practices, and relationships over time</li>
+              <li>the legality and ethics of how you apply any idea here</li>
+            </ul>
+            <p>
+              If you require guarantees, immunity, or certainty, no design on this site can provide that. The only promise we aim to keep is clarity: about what we are doing, what we are not doing, and where reality still has the last word.
+            </p>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer id="footer" class="footer" aria-label="Footer">
+      <div class="footer-inner">
+        <div class="footer-left">
+          <span class="label">/ sov stack labs</span>
+          <span>&copy; Sov Stack Labs. All patterns experimental, no guarantees. Read the limits.</span>
+        </div>
+        <div class="footer-right">
+          <a href="#scope" class="footer-link">Back to top</a>
+          <a href="index.html#overview" class="footer-link">Home</a>
+          <span class="footer-pill">Bitcoin orange · terminal green · nostr violet</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

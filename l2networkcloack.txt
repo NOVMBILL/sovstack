@@ -1,0 +1,497 @@
+Below is the **L2 “Network Cloak” Protocol** – only this layer, nothing else.
+It **sits on top of L1** (CLEAN LAPTOP + CLEAN PHONE already exist).
+
+Two levels:
+
+* **BASIC (MVS)** – everyone must do this
+* **ADVANCED** – extra armor (Tor modes, travel, public Wi-Fi patterns)
+
+---
+
+# 0. What You’re Building at L2
+
+You are building **three things**:
+
+1. **One Home Pipe**
+   → Home Wi-Fi → VPN → Internet
+
+2. **Two Cloaked Devices**
+   → CLEAN LAPTOP → always through VPN
+   → CLEAN PHONE → always through VPN
+
+3. **One Ghost Mode**
+   → Tor Browser on CLEAN LAPTOP for high-anonymity sessions
+
+Everything else (DIRTY devices, public Wi-Fi without VPN) = synthetic / untrusted.
+
+---
+
+# 1. Prerequisites
+
+You already have from L0/L1:
+
+* ✅ `my-secrets.kdbx` (L0 vault) working on CLEAN LAPTOP + CLEAN PHONE
+* ✅ CLEAN LAPTOP (Debian with full-disk encryption)
+* ✅ CLEAN PHONE (GrapheneOS Pixel or TEMP CLEAN phone)
+* ✅ DIRTY devices labeled
+
+For L2, you need:
+
+* 📝 Paper + ✍️ Pen
+* 💻 CLEAN LAPTOP connected to home Wi-Fi
+* 📱 CLEAN PHONE
+* 🌐 One VPN account number or username:
+
+  * **Mullvad** (account number, no email) **or**
+  * **IVPN** (account/alias)
+
+Write on paper:
+
+> `VPN PROVIDER: ___________`
+> `VPN ACCOUNT / NUMBER: ___________`
+
+Keep this with your L0/L1 notes (not next to the router).
+
+---
+
+# 2. Name Your Networks (Mental Map)
+
+On paper, draw:
+
+> `NETWORK MAP`
+>
+> 1. `HOME PRIVATE NET` – your home Wi-Fi name
+> 2. `PHONE HOTSPOT` – mobile hotspot from CLEAN PHONE (optional)
+> 3. `PUBLIC NETS` – cafés, hotels, airports, work Wi-Fi
+
+Underneath, write:
+
+> **RULE:**
+> CLEAN LAPTOP + CLEAN PHONE only talk to internet **through VPN**.
+> `PUBLIC NETS` are allowed **only with VPN ON**.
+
+Tick:
+
+* [ ] HOME PRIVATE NET written
+* [ ] PUBLIC NETS written
+* [ ] RULE written
+
+---
+
+# 3. BASIC – Install VPN on CLEAN LAPTOP (Debian)
+
+## 3.1 Download VPN client
+
+On **CLEAN LAPTOP**:
+
+1. Open browser.
+
+2. Go to your provider’s official site:
+
+   * Mullvad: type `mullvad vpn` and pick the official `.net` domain.
+   * IVPN: type `ivpn` and pick the official `.net` / `.com` domain.
+
+3. Find **Linux / Debian** download:
+
+   * Either a `.deb` package **or**
+   * A repo install instruction (copy/paste command)
+
+4. Download and install:
+
+   * If `.deb`: double-click → Software Installer → Install
+   * Or follow the simple Linux instructions on their site (usually 1–2 copy/paste commands)
+
+Tick:
+
+* [ ] VPN Linux client downloaded from official site
+* [ ] VPN installed on CLEAN LAPTOP
+
+---
+
+## 3.2 Log in to VPN app
+
+1. Open the VPN app on CLEAN LAPTOP.
+
+2. Click **Log in / Use account number**.
+
+3. Enter:
+
+   * Mullvad: account number
+   * IVPN: username / account ID
+
+4. It should now show **your account is active**.
+
+Tick:
+
+* [ ] VPN app shows you are logged in / account valid
+
+---
+
+## 3.3 Enable AUTO-CONNECT + KILL SWITCH
+
+In VPN settings (CLEAN LAPTOP):
+
+1. Turn ON:
+
+   * `Start on system boot` or `Launch on login`
+   * `Auto-connect` to a server (can choose “Best” or a nearby country)
+2. Turn ON:
+
+   * `Kill switch` or `Block internet when not connected`
+3. Turn ON:
+
+   * `Use VPN DNS` or `Block DNS leaks`
+4. If there is an option:
+
+   * `Block IPv6` → ON (for simplicity)
+
+Tick:
+
+* [ ] Auto-connect enabled
+* [ ] Kill switch enabled
+* [ ] VPN DNS enabled
+* [ ] IPv6 blocked (if available)
+
+---
+
+## 3.4 Test the VPN
+
+Still on CLEAN LAPTOP:
+
+1. Make sure VPN is connected (green / active state).
+
+2. Open browser.
+
+3. Search `what is my ip` or use provider’s “Check” page (e.g. Mullvad’s check page).
+
+4. Confirm:
+
+   * IP location **is not** your real city / ISP
+   * It shows VPN provider location
+
+5. Disconnect VPN.
+
+6. Try to load a website (any).
+
+   * If kill switch is working, page **should not** load.
+
+7. Reconnect VPN; try again.
+
+   * Page should now load.
+
+Tick:
+
+* [ ] IP shows VPN location, not ISP
+* [ ] Internet is blocked when VPN is off (kill switch works)
+* [ ] Internet works again when VPN is on
+
+---
+
+# 4. BASIC – Install VPN on CLEAN PHONE
+
+### 4.1 For GrapheneOS / Android CLEAN PHONE
+
+On **CLEAN PHONE**:
+
+1. Open browser or app store you trust (GrapheneOS “Apps”, F-Droid, or provider’s site).
+
+2. Search for your VPN:
+
+   * Mullvad → “Mullvad VPN”
+   * IVPN → “IVPN”
+
+3. Install official app.
+
+Open the VPN app:
+
+1. Log in with account number / username.
+2. Connect to any server.
+
+Open the phone’s system **Network / VPN** settings:
+
+1. Find `Always-on VPN` → select your VPN app.
+2. Enable **“Block connections without VPN”** (kill switch).
+
+Tick:
+
+* [ ] VPN app installed on CLEAN PHONE
+* [ ] Logged in and can connect
+* [ ] Always-on VPN set
+* [ ] “Block connections without VPN” enabled
+
+### 4.2 For TEMP CLEAN (stock Android / iOS)
+
+* Do the **same steps**: install official VPN app from store.
+* For Android: set **Always-on VPN** + **Block connections without VPN**.
+* For iOS: set VPN to connect automatically where possible (no perfect kill switch – note below).
+
+Write on paper:
+
+> `TEMP CLEAN PHONE LIMIT:`
+> iOS has weaker kill switch.
+> Treat cellular + Wi-Fi as **more leaky** than GrapheneOS.
+
+Tick:
+
+* [ ] TEMP CLEAN caveat written
+
+---
+
+# 5. BASIC – Simple Use Modes (Traffic Lights)
+
+Make a small table on paper and tape near CLEAN LAPTOP:
+
+> `NETWORK MODES`
+>
+> 🟢 **PRIVATE MODE**
+> → VPN ON, normal browser
+> → For: basic browsing, email, non-KYC Bitcoin use, messaging
+>
+> 🟥 **GHOST MODE**
+> → VPN ON, **Tor Browser** only
+> → For: sensitive research, controversial reading, high-risk posts
+>
+> ⚫ **NO-GO MODE**
+> → VPN OFF on CLEAN devices
+> → Not allowed (except maintenance you **explicitly** decide)
+
+Rule:
+
+* CLEAN LAPTOP + CLEAN PHONE operate only in **PRIVATE** or **GHOST** mode.
+* DIRTY devices can be used without VPN if needed (bank, KYC, streaming).
+
+Tick:
+
+* [ ] Modes written and placed near CLEAN LAPTOP
+
+---
+
+# 6. ADVANCED – Install Tor Browser on CLEAN LAPTOP
+
+On **CLEAN LAPTOP**:
+
+1. Open browser (with VPN ON).
+2. Search `Tor Browser Linux download`.
+3. Go to official Tor Project site (`torproject.org`).
+4. Download Tor Browser for Linux.
+5. Follow the simple install steps (usually: extract and run `start-tor-browser`).
+
+First run:
+
+1. Start Tor Browser.
+2. Choose `Connect` (no special bridges unless you need them).
+3. Wait until Tor says you are connected.
+
+Tick:
+
+* [ ] Tor Browser downloaded from `torproject.org`
+* [ ] Tor Browser connects successfully
+
+---
+
+## 6.1 GHOST MODE rules (Tor usage)
+
+Write on paper:
+
+> `GHOST MODE RULES`
+>
+> 1. VPN must be ON before starting Tor Browser.
+> 2. Do **not** log into any real-name accounts in Tor.
+> 3. Do **not** open KYC sites or banks in Tor.
+> 4. Use Tor Browser for: reading, posting, research, onion sites.
+> 5. Close Tor Browser when done.
+
+Tick:
+
+* [ ] GHOST MODE rules written near CLEAN LAPTOP
+
+---
+
+# 7. Wi-Fi and Travel Protocols
+
+## 7.1 At Home (HOME PRIVATE NET)
+
+For CLEAN LAPTOP:
+
+1. Boot laptop.
+2. Unlock disk and log in.
+3. Connect to HOME PRIVATE NET Wi-Fi.
+4. Wait for VPN to auto-connect (check icon).
+5. Only then open browser, wallet, or chat.
+
+For CLEAN PHONE:
+
+1. Unlock phone.
+2. Confirm VPN key icon is visible (always-on).
+3. Use apps normally.
+
+Tick:
+
+* [ ] Home workflow written and understood
+
+---
+
+## 7.2 On Public Wi-Fi (café, hotel, airport)
+
+For CLEAN LAPTOP:
+
+1. Connect to `PUBLIC NET` Wi-Fi.
+2. Immediately open VPN app if not auto-connected.
+3. Check VPN is connected.
+4. Only then open browser / apps.
+
+For CLEAN PHONE:
+
+1. Connect to `PUBLIC NET` Wi-Fi.
+2. Confirm VPN key icon is on.
+3. Only then use apps.
+
+**If VPN will not connect** on that network:
+
+* Do **not** use CLEAN devices on that Wi-Fi.
+* Option 1: Use CLEAN PHONE’s **mobile data** (no Wi-Fi) with VPN.
+* Option 2: Use CLEAN PHONE as **hotspot**:
+
+  1. CLEAN PHONE: Hotspot ON (VPN ON).
+  2. CLEAN LAPTOP: connect to phone hotspot.
+  3. VPN on laptop ON as well (double cloak but fine).
+
+Write:
+
+> `PUBLIC NET RULE:`
+> No VPN = no traffic from CLEAN devices.
+
+Tick:
+
+* [ ] Public Wi-Fi rule written
+
+---
+
+# 8. DNS – Simple Setting
+
+On CLEAN LAPTOP VPN app:
+
+* Ensure `Use VPN DNS` is ON.
+* If there is “Prevent DNS leaks” → ON.
+
+On CLEAN PHONE VPN app:
+
+* Same: use the app’s DNS settings (if visible) or accept defaults
+  (Mullvad/IVPN already route DNS correctly when VPN is ON).
+
+Do **not** change DNS in system settings on CLEAN devices unless you know exactly why. Let VPN handle it.
+
+Tick:
+
+* [ ] VPN DNS enabled on laptop
+* [ ] VPN DNS enabled on phone
+
+---
+
+# 9. What NEVER to Do on L2 (Hard Rules)
+
+Write a new heading:
+
+> `L2 NEVER DO LIST`
+
+Under it:
+
+1. Never open CLEAN LAPTOP or CLEAN PHONE browser **with VPN OFF** (except for rare, explicitly chosen maintenance tasks).
+2. Never log into **bank/KYC exchange** from CLEAN devices. Use DIRTY device.
+3. Never install random “free VPN” apps on any device.
+4. Never use public Wi-Fi for CLEAN devices without VPN successfully connected.
+5. Never log into real-name accounts inside Tor Browser.
+
+Tick:
+
+* [ ] L2 NEVER DO LIST written and visible
+
+---
+
+# 10. Weekly & Monthly L2 Checklists
+
+## Weekly (5–10 minutes)
+
+On CLEAN LAPTOP:
+
+* [ ] Reboot once. Confirm VPN auto-connect works.
+* [ ] Confirm kill switch blocks traffic when you manually disconnect VPN.
+* [ ] Open Tor Browser (if installed) and ensure it still connects.
+
+On CLEAN PHONE:
+
+* [ ] Confirm the VPN key icon is always present.
+* [ ] Turn Airplane Mode ON and OFF → confirm VPN reconnects.
+
+## Monthly (15–20 minutes)
+
+* [ ] Check VPN subscription still valid (days left).
+* [ ] Check home router Wi-Fi password is still non-default and not shared widely.
+* [ ] Try connecting CLEAN LAPTOP to a `PUBLIC NET` (café, library) and confirm:
+
+  * VPN connects
+  * No traffic before VPN
+
+---
+
+# 11. Edge Cases and Emergency Branches
+
+### Case 1 – A site blocks your VPN
+
+* If it’s **bank / KYC / government / streaming**:
+
+  * Use a **DIRTY device** for that site (with or without its own VPN).
+  * Do **not** disable VPN on CLEAN LAPTOP or CLEAN PHONE just to reach it.
+
+### Case 2 – VPN Provider Goes Down or Becomes Suspicious
+
+* Temporarily:
+
+  * Do **not** browse from CLEAN devices until you:
+
+    * Switch to backup provider, **or**
+    * Use CLEAN PHONE hotspot + second VPN, etc.
+
+* Long term:
+
+  * Get a second VPN provider (IVPN if using Mullvad, or vice versa).
+  * Configure it as backup profile on CLEAN LAPTOP and CLEAN PHONE.
+
+### Case 3 – You Accidentally Used CLEAN DEVICE Without VPN
+
+* If you briefly browsed with VPN OFF:
+
+  * Turn VPN back ON immediately.
+  * Do not panic; note which sites were opened.
+
+* If you logged into social media, KYC exchange, or bank:
+
+  * That CLEAN device is now **contaminated**:
+
+    * Option A: Accept new role = DIRTY, get a new CLEAN device.
+    * Option B: Fully wipe and rebuild OS, re-apply L1 + L2 protocol from scratch.
+
+Write:
+
+> `DEVICE CONTAMINATION RULE:`
+> If CLEAN device does KYC/social, it becomes DIRTY until wiped.
+
+Tick:
+
+* [ ] Contamination rule written
+
+---
+
+# 12. Final Micro-Checklist (Caveman Version)
+
+To verify L2 “Network Cloak” is in place:
+
+1. [ ] CLEAN LAPTOP has VPN app installed, set to auto-connect, kill switch ON, DNS via VPN.
+2. [ ] CLEAN PHONE has VPN app installed, always-on VPN + block-without-VPN (or nearest equivalent).
+3. [ ] At home, CLEAN devices never browse before VPN is connected.
+4. [ ] On public Wi-Fi, CLEAN devices only send traffic with VPN ON, or use phone hotspot instead.
+5. [ ] Tor Browser exists on CLEAN LAPTOP for GHOST MODE and is used only with VPN ON and no real-name logins.
+6. [ ] L2 NEVER DO LIST is taped near CLEAN LAPTOP.
+7. [ ] Weekly + monthly L2 checks are done.
+
+If all 7 are true, **L2 Network Cloak** is wrapped around your **L1 Device Shell** and **L0 Secret Box** and all traffic from CLEAN devices now passes through a predictable, controlled privacy pipeline.

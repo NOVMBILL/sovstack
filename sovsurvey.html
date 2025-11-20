@@ -1,0 +1,1084 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SIA v0.3 — Sovereign Integrity Audit</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --w: 980px;
+    --fg:#111;
+    --bg:#fff;
+    --muted:#666;
+    --line:#ddd;
+    --hi:#0057e7;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin:0;
+    font:16px/1.45 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    color:var(--fg);
+    background:var(--bg);
+  }
+  header, main, footer {
+    max-width: var(--w);
+    margin: 0 auto;
+    padding: 16px;
+  }
+  header {
+    border-bottom:1px solid var(--line);
+  }
+  h1 { font-size: 22px; margin: 8px 0 4px; }
+  h2 { font-size: 18px; margin: 24px 0 12px; }
+  h3 { font-size: 16px; margin: 16px 0 8px; }
+  .muted { color:var(--muted); }
+  .small { font-size:13px; }
+  .controls {
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin:16px 0;
+  }
+  button, input[type="file"]::file-selector-button {
+    cursor:pointer;
+    border:1px solid var(--line);
+    background:#f7f7f7;
+    padding:8px 12px;
+    border-radius:6px;
+    font:inherit;
+  }
+  button.primary {
+    background:var(--hi);
+    color:#fff;
+    border-color:var(--hi);
+  }
+  label.pill {
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    border:1px solid var(--line);
+    padding:4px 10px;
+    border-radius:999px;
+    font-size:13px;
+  }
+  label.pill input[type="file"] {
+    font-size:12px;
+  }
+  .section {
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:12px;
+    margin:12px 0;
+  }
+  .q {
+    padding:10px 8px;
+    border-top:1px dashed var(--line);
+  }
+  .q:first-child { border-top:0; }
+  .qlab {
+    font-weight:600;
+  }
+  .help {
+    color:var(--muted);
+    font-size: 13px;
+    margin-top:4px;
+  }
+  .options {
+    margin-top:8px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px 22px;
+  }
+  .options.vertical { flex-direction:column; gap:6px; }
+  .req {
+    color:#b40000;
+    font-weight:600;
+    margin-left:6px;
+    font-size:13px;
+  }
+  .hidden { display:none !important; }
+  .result {
+    border:2px solid #222;
+    border-radius:12px;
+    padding:16px;
+    margin:16px 0;
+  }
+  .grid2 {
+    display:grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap:16px;
+  }
+  @media (max-width: 760px) {
+    .grid2 { grid-template-columns:1fr; }
+  }
+  .metric-row {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:4px 0;
+    border-bottom:1px dashed var(--line);
+  }
+  .metric-row:last-child { border-bottom:0; }
+  progress {
+    width:120px;
+    height:10px;
+    vertical-align:middle;
+  }
+  .badge {
+    display:inline-block;
+    background:#eee;
+    padding:2px 6px;
+    border-radius:4px;
+    font-size:12px;
+    margin:2px 4px 0 0;
+  }
+  .warn { color:#8a0000; font-weight:600; }
+  .ok { color:#006400; font-weight:600; }
+  ul.tight { margin:4px 0 8px 20px; padding:0; }
+  ul.tight li { margin-bottom:4px; }
+  code { font-family:Menlo,Consolas,monospace; font-size:12px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>SIA v0.3 — Sovereign Integrity Audit</h1>
+  <p class="muted small">
+    Offline, single-file. Measures material, epistemic, operational, and symbolic sovereignty — plus self-deception. 
+    Responses stay in your browser unless you export them.
+  </p>
+</header>
+
+<main>
+  <div class="controls">
+    <button id="btnCalc" class="primary">Calculate Sovereign Profile</button>
+    <button id="btnExport">Export Responses (JSON)</button>
+    <label class="pill">Import <input id="fileImport" type="file" accept="application/json"></label>
+    <button id="btnClear">Clear All</button>
+  </div>
+
+  <div id="survey"></div>
+
+  <div id="results" class="hidden">
+    <h2>Results</h2>
+    <div class="result">
+      <div class="grid2">
+        <div>
+          <h3>Core Integrity</h3>
+          <div class="metric-row">
+            <div><strong>SIS — Sovereign Integrity Score</strong></div>
+            <div><span id="sis"></span> / 100</div>
+          </div>
+          <div class="metric-row">
+            <div>MAI — Material Autonomy</div>
+            <div><span id="mai"></span></div>
+          </div>
+          <div class="metric-row">
+            <div>EAI — Epistemic Autonomy</div>
+            <div><span id="eai"></span></div>
+          </div>
+          <div class="metric-row">
+            <div>ORI — Operational Resilience</div>
+            <div><span id="ori"></span></div>
+          </div>
+          <div class="metric-row">
+            <div>SCI — Symbolic Coherence</div>
+            <div><span id="sci"></span></div>
+          </div>
+          <div class="metric-row">
+            <div>SDI — Self-Deception Index</div>
+            <div><span id="sdi"></span></div>
+          </div>
+        </div>
+        <div>
+          <h3>Archetype</h3>
+          <p><strong id="arch"></strong></p>
+          <p class="small muted" id="archDesc"></p>
+          <h3 style="margin-top:16px;">Focus & Strengths</h3>
+          <div class="small">
+            <strong>Top Focus Areas (lowest domains)</strong>
+            <ul id="focusAreas" class="tight"></ul>
+            <strong>Key Strengths (highest domains)</strong>
+            <ul id="strengths" class="tight"></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div>
+        <h3>Domain Scores</h3>
+        <div id="domainScores"></div>
+      </div>
+      <div>
+        <h3>Cluster Notes (Self-Deception)</h3>
+        <div id="clusterNotes" class="small"></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="small muted">
+  <p>
+    Scoring: Likert left→right = 0..4. Single-choice scaled to 0..4. 
+    Risk-direction items are inverted. Domain scores are weighted percentages. 
+    Indices = means of relevant domains. SIS is adjusted downward by SDI.
+  </p>
+</footer>
+
+<script>
+/*** ---------------------------------------------
+  SIA v0.3 — Data definition
+------------------------------------------------ */
+
+const Likert5 = ["Strongly disagree","Disagree","Neutral","Agree","Strongly agree"];
+
+// Domain → friendly label
+const DOMAINS_FRIENDLY = {
+  ONT:"Ontology & Epistemic Discipline",
+  ECON:"Economic & Legal Architecture",
+  TECH:"Tech / Privacy / Infra",
+  NARR:"Narrative & Attention Sovereignty",
+  SOMA:"Somatic & Psychological Sovereignty",
+  COMM:"Community & Parallel Institutions",
+  GOV:"Governance & Power Use",
+  REL:"Relational & Intimate Sovereignty",
+  TIME:"Time, Tradeoffs & Praxis",
+  COLLAPSE:"Collapse Protocols & Inheritance",
+  CORR:"Corrigibility & Course Correction",
+  MYTH:"Myth, Telos & Identity"
+};
+
+// Indices → domains
+const INDEX_DOMAINS = {
+  MAI:["ECON","TECH","SOMA","COLLAPSE"],
+  EAI:["ONT","NARR","MYTH"],
+  ORI:["TECH","COMM","COLLAPSE","TIME","SOMA"],
+  SCI_BASE:["GOV","REL","TIME","CORR","MYTH"]
+};
+
+// Clusters used for SDI
+const CLUSTER_NAMES = [
+  "Principle_vs_Praxis",
+  "Power_vs_Service",
+  "AI_vs_Primary",
+  "Doom_vs_Action",
+  "SelfImage_vs_Feedback"
+];
+
+const SURVEY = [
+  /* --------------- A. ONT --------------- */
+  {id:"Q1", section:"A. Ontology & Epistemic Discipline", domain:"ONT",
+   type:"likert_5", options:Likert5, weight:3, direction:"pro",
+   question:"In the last 12 months, I have significantly changed my view on at least one major issue because better evidence or arguments appeared.",
+   cluster:"Update_vs_Dogma"},
+  {id:"Q2", section:"A. Ontology & Epistemic Discipline", domain:"ONT",
+   type:"likert_5", options:Likert5, weight:2, direction:"pro",
+   question:"When a topic matters to me, I usually read at least one primary source (e.g. law, whitepaper, raw data, transcript) instead of relying only on summaries."},
+  {id:"Q3", section:"A. Ontology & Epistemic Discipline", domain:"ONT",
+   type:"likert_5", options:Likert5, weight:2, direction:"pro",
+   question:"I can identify the dominant narrative-makers in my field (institutions, funders, platforms) and describe what they want people to believe."},
+  {id:"Q4", section:"A. Ontology & Epistemic Discipline", domain:"ONT",
+   type:"likert_5", options:Likert5, weight:2, direction:"pro",
+   question:"At least quarterly, I deliberately read or listen to sources that consider my own views dangerous, naive, or wrong."},
+  {id:"Q5", section:"A. Ontology & Epistemic Discipline", domain:"ONT",
+   type:"likert_5", options:Likert5, weight:2, direction:"risk",
+   question:"For high-impact topics, I am comfortable letting AI tools tell me “the gist” without checking any sources myself.",
+   cluster:"AI_vs_Primary"},
+  {id:"Q6", section:"A. Ontology & Epistemic Discipline", domain:"ONT",
+   type:"likert_5", options:Likert5, weight:2, direction:"risk",
+   question:"For controversial but important topics, I mostly trust the consensus of leading institutions in my field; if they align, that is usually enough for me."},
+  {id:"Q7", section:"A. Ontology & Epistemic Discipline", domain:"ONT",
+   type:"likert_5", options:Likert5, weight:1, direction:"pro",
+   question:"I consciously distinguish between “I don’t know yet” and “this is probably true,” and I make that distinction clear when I talk to others."},
+
+  /* --------------- B. ECON --------------- */
+  {id:"Q8", section:"B. Economic & Legal Architecture", domain:"ECON",
+   type:"likert_5", options:Likert5, weight:3, direction:"pro",
+   question:"If my main bank and payment processor froze my accounts tomorrow, I could still access money, move value, and pay essential bills within 72 hours."},
+  {id:"Q9", section:"B. Economic & Legal Architecture", domain:"ECON",
+   type:"likert_5", options:Likert5, weight:3, direction:"pro",
+   question:"I hold a meaningful portion of my savings in forms that do not depend on a single institution’s permission (e.g. self-custodied Bitcoin, cash, physical assets)."},
+  {id:"Q10", section:"B. Economic & Legal Architecture", domain:"ECON",
+   type:"likert_5", options:Likert5, weight:2, direction:"pro",
+   question:"My main work or business activity could keep operating if my government or a large platform falsely associated me with wrongdoing."},
+  {id:"Q11", section:"B. Economic & Legal Architecture", domain:"ECON",
+   type:"likert_5", options:Likert5, weight:2, direction:"pro",
+   question:"I use at least one legal or contractual structure primarily to limit my exposure to arbitrary decisions by platforms or states (e.g. company, trust, multi-jurisdiction setup)."},
+  {id:"Q12", section:"B. Economic & Legal Architecture", domain:"ECON",
+   type:"likert_5", options:Likert5, weight:2, direction:"risk",
+   question:"In the last 12 months, I have taken no concrete steps to reduce the risk of account freezes, confiscation, or fines affecting my core livelihood.",
+   cluster:"Principle_vs_Praxis"},
+  {id:"Q13", section:"B. Economic & Legal Architecture", domain:"ECON",
+   type:"likert_5", options:Likert5, weight:2, direction:"risk",
+   question:"My cross-border payments and savings outside my home country rely mainly on regulated banks or stablecoins that could be easily restricted or frozen."},
+  {id:"Q14", section:"B. Economic & Legal Architecture", domain:"ECON",
+   type:"likert_5", options:Likert5, weight:2, direction:"pro",
+   question:"I can receive value directly from people in other countries without going through banks, big fintech apps, or stablecoins."},
+
+  /* --------------- C. TECH --------------- */
+  {id:"Q15", section:"C. Tech / Privacy / Infra", domain:"TECH",
+   type:"likert_5", options:Likert5, weight:3, direction:"pro",
+   question:"I personally control at least one essential service (e.g. Bitcoin node/wallet, email, file sync, password manager, VPN, or website) instead of relying only on big platforms."},
+  {id:"Q16", section:"C. Tech / Privacy / Infra", domain:"TECH",
+   type:"likert_5", options:Likert5, weight:2, direction:"pro",
+   question:"I have local or offline backups such that losing access to my main devices and cloud accounts would not destroy critical data or keys."},
+  {id:"Q17", section:"C. Tech / Privacy / Infra", domain:"TECH",
+   type:"likert_5", options:Likert5, weight:2, direction:"risk",
+   question:"If my main phone and primary cloud account disappeared today, I would be unable to regain access to many important accounts within a week."},
+  {id:"Q18", section:"C. Tech / Privacy / Infra", domain:"TECH",
+   type:"likert_5", options:Likert5, weight:2, direction:"pro",
+   question:"I have deliberately hardened at least one of my main devices (e.g. OS choice, de-Googling, separate profiles, minimized app permissions)."},
+  {id:"Q19", section:"C. Tech / Privacy / Infra", domain:"TECH",
+   type:"likert_5", options:Likert5, weight:1, direction:"pro",
+   question:"I know exactly which systems or services are my single points of failure and have a plan to remove or mitigate them within the next 12 months.",
+   cluster:"SPoF"},
+  {id:"Q20", section:"C. Tech / Privacy / Infra", domain:"TECH",
+   type:"likert_5", options:Likert5, weight:2, direction:"pro",
+   question:"For at least one critical function, I use open-source tools that I could, in principle, self-host or migrate without permission from a vendor."},
+
+  /* --------------- D. NARR --------------- */
+  {id:"Q21", section:"D. Narrative & Attention Sovereignty", domain:"NARR",
+   type:"likert_5", options:Likert5, weight:2, direction:"risk",
+   question:"Most of what I watch, read, or listen to is chosen by platform feeds, recommendations, or trends rather than by me."},
+  {id:"Q22", section:"D. Narrative & Attention Sovereignty", domain:"NARR",
+   type:"likert_5", options:Likert5, weight:2, direction:"pro",
+   question:"I maintain at least a few direct channels to information (e.g. websites, newsletters, RSS, print, local contacts) that are not controlled by major platforms."},
+  {id:"Q23", section:"D. Narrative & Attention Sovereignty", domain:"NARR",
+   type:"likert_5", options:Likert5, weight:2, direction:"risk",
+   question:"I assume that if something truly important happens, it will show up in my feeds or via AI summarization anyway."},
+  {id:"Q24", section:"D. Narrative & Attention Sovereignty", domain:"NARR",
+   type:"single_choice",
+   options:[
+     "Accept AI/mainstream synthesis and move on",
+     "Compare multiple headlines and pick the middle view",
+     "Go to the primary source or long-form analysis"
+   ],
+   weight:3, direction:"pro",
+   question:"A mainstream outlet, an AI summarizer, and an independent primary source all disagree on a high-impact topic. Your first move is usually to:"},
+  {id:"Q25", section:"D. Narrative & Attention Sovereignty", domain:"NARR",
+   type:"likert_5", options:Likert5, weight:1, direction:"pro",
+   question:"I can explain, in plain language, how algorithms and recommender systems in my main apps shape what I see and how I feel."},
+  {id:"Q26", section:"D. Narrative & Attention Sovereignty", domain:"NARR",
+   type:"likert_5", options:Likert5, weight:2, direction:"risk",
+   question:"I regularly rely on AI tools to tell me what matters most in the news or in my field, and I rarely cross-check them against independent sources.",
+   cluster:"AI_vs_Primary"},
+
+  /* --------------- E. SOMA --------------- */
+  {id:"Q27", section:"E. Somatic & Psychological Sovereignty", domain:"SOMA",
+   type:"likert_5", options:Likert5, weight:3, direction:"pro",
+   question:"I have a basic, repeatable routine for sleep, movement, and food that I can maintain even if my schedule or environment changes."},
+  {id:"Q28", section:"E. Somatic & Psychological Sovereignty", domain:"SOMA",
+   type:"likert_5", options:Likert5, weight:2, direction:"pro",
+   question:"If my health, mood, or focus degraded for several months, I would be willing to reduce income, status, or obligations to rebuild my foundation."},
+  {id:"Q29", section:"E. Somatic & Psychological Sovereignty", domain:"SOMA",
+   type:"likert_5", options:Likert5, weight:2, direction:"risk",
+   question:"I rely heavily on ongoing stimulants, sedatives, or digital distraction just to feel basically functional."},
+  {id:"Q30", section:"E. Somatic & Psychological Sovereignty", domain:"SOMA",
+   type:"likert_5", options:Likert5, weight:2, direction:"pro",
+   question:"My awareness of systemic risks (political, financial, technological) has made me more capable and focused in action, not just more anxious."},
+  {id:"Q31", section:"E. Somatic & Psychological Sovereignty", domain:"SOMA",
+   type:"likert_5", options:Likert5, weight:2, direction:"pro",
+   question:"I could remain psychologically stable and practically functional through at least a week of serious disruption (e.g. outages, restrictions), even if uncomfortable."},
+  {id:"Q32", section:"E. Somatic & Psychological Sovereignty", domain:"SOMA",
+   type:"likert_5", options:Likert5, weight:2, direction:"risk",
+   question:"My research into systemic risks has, at times, made it hard for me to function normally or maintain relationships.",
+   cluster:"Doom_vs_Action"},
+  {id:"Q33", section:"E. Somatic & Psychological Sovereignty", domain:"SOMA",
+   type:"likert_5", options:Likert5, weight:2, direction:"pro",
+   question:"When I notice that exposure to “doom” information is degrading my function, I deliberately reduce it and refocus on concrete action.",
+   cluster:"Doom_vs_Action"},
+
+  /* --------------- F. COMM --------------- */
+  {id:"Q34", section:"F. Community & Parallel Institutions", domain:"COMM",
+   type:"likert_5", options:Likert5, weight:3, direction:"pro",
+   question:"There are at least three people within reasonable distance or access with whom I have explicit mutual-aid understanding for crises or disruptions."},
+  {id:"Q35", section:"F. Community & Parallel Institutions", domain:"COMM",
+   type:"likert_5", options:Likert5, weight:2, direction:"pro",
+   question:"I participate in at least one group, project, or community that is explicitly trying to build alternatives to mainstream systems (e.g. payments, health, education, media)."},
+  {id:"Q36", section:"F. Community & Parallel Institutions", domain:"COMM",
+   type:"likert_5", options:Likert5, weight:2, direction:"pro",
+   question:"Leaving any group or project I belong to is practically and socially possible for me, even if uncomfortable."},
+  {id:"Q37", section:"F. Community & Parallel Institutions", domain:"COMM",
+   type:"likert_5", options:Likert5, weight:2, direction:"pro",
+   question:"When I help others prepare or become more independent, I aim to increase their options and agency, not tie them to my tools or ideology.",
+   cluster:"Power_vs_Service"},
+  {id:"Q38", section:"F. Community & Parallel Institutions", domain:"COMM",
+   type:"likert_5", options:Likert5, weight:1, direction:"risk",
+   question:"Most of my friendships and alliances are heavily dependent on staying within a specific platform, ideology, or group identity."},
+  {id:"Q39", section:"F. Community & Parallel Institutions", domain:"COMM",
+   type:"likert_5", options:Likert5, weight:2, direction:"pro",
+   question:"In at least one of my groups or communities, it is normal and safe to question the group’s own assumptions and leaders."},
+
+  /* --------------- G. GOV --------------- */
+  {id:"Q40", section:"G. Governance & Power Use", domain:"GOV",
+   type:"likert_5", options:Likert5, weight:3, direction:"pro",
+   question:"When I run a project, team, or community, I make the rules, risks, and decision-making structure explicit rather than informal or hidden."},
+  {id:"Q41", section:"G. Governance & Power Use", domain:"GOV",
+   type:"likert_5", options:Likert5, weight:2, direction:"pro",
+   question:"People involved in projects I control can say “no” or leave without being punished, smeared, or covertly sabotaged by me."},
+  {id:"Q42", section:"G. Governance & Power Use", domain:"GOV",
+   type:"likert_5", options:Likert5, weight:2, direction:"risk",
+   question:"When I have important information or leverage, I sometimes hide it or frame it selectively to get people to do what I think is best for them.",
+   cluster:"Power_vs_Service"},
+  {id:"Q43", section:"G. Governance & Power Use", domain:"GOV",
+   type:"likert_5", options:Likert5, weight:2, direction:"pro",
+   question:"I have stepped back from or shared control of something I built when that was better for the people or mission involved."},
+  {id:"Q44", section:"G. Governance & Power Use", domain:"GOV",
+   type:"likert_5", options:Likert5, weight:1, direction:"pro",
+   question:"I have at least one example where I refused to use a power I had (money, status, access, information) to coerce someone, even though it would have been effective.",
+   cluster:"Power_vs_Service"},
+  {id:"Q45", section:"G. Governance & Power Use", domain:"GOV",
+   type:"likert_5", options:Likert5, weight:2, direction:"risk",
+   question:"In projects I lead, major decisions often happen informally between a few insiders without being clearly communicated to everyone affected."},
+  {id:"Q46", section:"G. Governance & Power Use", domain:"GOV",
+   type:"likert_5", options:Likert5, weight:2, direction:"risk",
+   question:"I believe that some people are better off not knowing the full context; it is more efficient if I decide what they need to know.",
+   cluster:"Power_vs_Service"},
+
+  /* --------------- H. REL --------------- */
+  {id:"Q47", section:"H. Relational & Intimate Sovereignty", domain:"REL",
+   type:"likert_5", options:Likert5, weight:2, direction:"pro",
+   question:"In close relationships, I can say “no” to demands or expectations without collapsing into guilt or aggression."},
+  {id:"Q48", section:"H. Relational & Intimate Sovereignty", domain:"REL",
+   type:"likert_5", options:Likert5, weight:2, direction:"pro",
+   question:"I can stay in genuine connection with people who disagree with me on core worldviews, without needing to convert or dominate them."},
+  {id:"Q49", section:"H. Relational & Intimate Sovereignty", domain:"REL",
+   type:"likert_5", options:Likert5, weight:2, direction:"pro",
+   question:"When money, time, or living arrangements are shared, I aim for explicit agreements rather than unspoken assumptions."},
+  {id:"Q50", section:"H. Relational & Intimate Sovereignty", domain:"REL",
+   type:"likert_5", options:Likert5, weight:2, direction:"risk",
+   question:"If someone close to me refuses to follow what I see as the “right” path, I tend to withdraw affection, support, or access as a way to pressure them.",
+   cluster:"Power_vs_Service"},
+  {id:"Q51", section:"H. Relational & Intimate Sovereignty", domain:"REL",
+   type:"likert_5", options:Likert5, weight:1, direction:"pro",
+   question:"I have ended at least one relationship, partnership, or collaboration primarily because it consistently undermined my or their sovereignty."},
+  {id:"Q52", section:"H. Relational & Intimate Sovereignty", domain:"REL",
+   type:"likert_5", options:Likert5, weight:2, direction:"risk",
+   question:"I sometimes share private or sensitive information about people close to me to influence others’ views of them.",
+   cluster:"Power_vs_Service"},
+
+  /* --------------- I. TIME --------------- */
+  {id:"Q53", section:"I. Time, Tradeoffs & Praxis", domain:"TIME",
+   type:"likert_5", options:Likert5, weight:3, direction:"pro",
+   question:"I reliably have at least five hours per week that I control and can direct toward my own projects, learning, or sovereignty work."},
+  {id:"Q54", section:"I. Time, Tradeoffs & Praxis", domain:"TIME",
+   type:"likert_5", options:Likert5, weight:3, direction:"pro",
+   question:"In the last 12 months, I have made at least one concrete change that reduced convenience, income, or status in exchange for more control or independence.",
+   cluster:"Principle_vs_Praxis"},
+  {id:"Q55", section:"I. Time, Tradeoffs & Praxis", domain:"TIME",
+   type:"likert_5", options:Likert5, weight:2, direction:"risk",
+   question:"Most days I feel I am primarily reacting to urgent demands and notifications rather than following a plan I chose."},
+  {id:"Q56", section:"I. Time, Tradeoffs & Praxis", domain:"TIME",
+   type:"likert_5", options:Likert5, weight:2, direction:"pro",
+   question:"I can name at least one long-horizon (5+ year) move I’ve already executed (not just planned) that improves my sovereignty."},
+  {id:"Q57", section:"I. Time, Tradeoffs & Praxis", domain:"TIME",
+   type:"single_choice", weight:2, direction:"pro",
+   options:[
+     "Extra earning or status-building in existing systems",
+     "Learning or deploying self-controlled tools/infra",
+     "Building mutual-aid and real-world relationships",
+     "Rest and health recovery"
+   ],
+   question:"You get five extra hours per week for the next three months. What do you realistically put them into first?"},
+  {id:"Q58", section:"I. Time, Tradeoffs & Praxis", domain:"TIME",
+   type:"likert_5", options:Likert5, weight:2, direction:"risk",
+   question:"Sovereignty-related work is mostly something I think or talk about; very little of my calendar or budget is actually allocated to it.",
+   cluster:"Principle_vs_Praxis"},
+
+  /* --------------- J. COLLAPSE --------------- */
+  {id:"Q59", section:"J. Collapse Protocols & Inheritance", domain:"COLLAPSE",
+   type:"likert_5", options:Likert5, weight:3, direction:"pro",
+   question:"If I were incapacitated or died today, at least one trusted person could access essential assets and instructions within 72 hours, without relying on a single platform."},
+  {id:"Q60", section:"J. Collapse Protocols & Inheritance", domain:"COLLAPSE",
+   type:"likert_5", options:Likert5, weight:2, direction:"pro",
+   question:"I have a clear exit or downgrade plan if my country, employer, or core platforms cross a non-negotiable line for me."},
+  {id:"Q61", section:"J. Collapse Protocols & Inheritance", domain:"COLLAPSE",
+   type:"likert_5", options:Likert5, weight:2, direction:"pro",
+   question:"I have tested at least once what happens if power, internet, or payments fail for a few days, and I learned from that test."},
+  {id:"Q62", section:"J. Collapse Protocols & Inheritance", domain:"COLLAPSE",
+   type:"likert_5", options:Likert5, weight:2, direction:"risk",
+   question:"I assume that if something truly extreme happens (confiscations, blackouts, border closures), I will improvise in the moment rather than prepare now."},
+  {id:"Q63", section:"J. Collapse Protocols & Inheritance", domain:"COLLAPSE",
+   type:"likert_5", options:Likert5, weight:1, direction:"pro",
+   question:"I have written or recorded at least minimal guidance for my future self or heirs about how to handle shocks, and where to find what matters."},
+  {id:"Q64", section:"J. Collapse Protocols & Inheritance", domain:"COLLAPSE",
+   type:"likert_5", options:Likert5, weight:2, direction:"pro",
+   question:"I have at least once deliberately practiced living with significantly reduced convenience (tech, comfort, or consumption) to see how I and others respond."},
+
+  /* --------------- K. CORR --------------- */
+  {id:"Q65", section:"K. Corrigibility & Course Correction", domain:"CORR",
+   type:"likert_5", options:Likert5, weight:3, direction:"pro",
+   question:"In the last few years, I have publicly or clearly admitted being wrong about something important and adjusted my behavior.",
+   cluster:"SelfImage_vs_Feedback"},
+  {id:"Q66", section:"K. Corrigibility & Course Correction", domain:"CORR",
+   type:"likert_5", options:Likert5, weight:2, direction:"pro",
+   question:"I have ended at least one project, habit, alliance, or identity after realizing it was misaligned, even though it cost me time, money, or reputation."},
+  {id:"Q67", section:"K. Corrigibility & Course Correction", domain:"CORR",
+   type:"likert_5", options:Likert5, weight:2, direction:"risk",
+   question:"When new evidence challenges my worldview, my first reaction is usually to defend my current position rather than explore the possibility I might be wrong.",
+   cluster:"SelfImage_vs_Feedback"},
+  {id:"Q68", section:"K. Corrigibility & Course Correction", domain:"CORR",
+   type:"likert_5", options:Likert5, weight:2, direction:"pro",
+   question:"I maintain at least one person, group, or process that is allowed to give me hard feedback and challenge my blind spots.",
+   cluster:"SelfImage_vs_Feedback"},
+  {id:"Q69", section:"K. Corrigibility & Course Correction", domain:"CORR",
+   type:"likert_5", options:Likert5, weight:1, direction:"pro",
+   question:"I would rather correct a mistake that costs me prestige than preserve my image and continue on a misaligned path."},
+  {id:"Q70", section:"K. Corrigibility & Course Correction", domain:"CORR",
+   type:"likert_5", options:Likert5, weight:2, direction:"risk",
+   question:"People rarely challenge me directly; most of my circle either agrees with me or stays quiet.",
+   cluster:"SelfImage_vs_Feedback"},
+
+  /* --------------- L. MYTH --------------- */
+  {id:"Q71", section:"L. Myth, Telos & Identity", domain:"MYTH",
+   type:"single_choice", weight:0, direction:"pro",
+   options:[
+     "Toward centralized, technocratic control with limited real autonomy",
+     "Mixed, with pockets of high control and pockets of real sovereignty",
+     "Toward more decentralized and emergent autonomy overall",
+     "Too unpredictable to call"
+   ],
+   question:"Over the next 20 years, I expect the overall direction of the world to be mostly:"},
+  {id:"Q72", section:"L. Myth, Telos & Identity", domain:"MYTH",
+   type:"single_choice", weight:2, direction:"pro",
+   options:[
+     "Be safe, comfortable, and mostly irrelevant",
+     "Be moderately safe and moderately impactful",
+     "Be at higher risk and discomfort but deeply aligned with my principles and work"
+   ],
+   question:"If forced to choose, I would rather:",
+   cluster:"Principle_vs_Praxis"},
+  {id:"Q73", section:"L. Myth, Telos & Identity", domain:"MYTH",
+   type:"short_text", weight:0, direction:"pro",
+   question:"In one or two sentences, describe the role you believe you are here to play in this era."},
+  {id:"Q74", section:"L. Myth, Telos & Identity", domain:"MYTH",
+   type:"short_text", weight:0, direction:"pro",
+   question:"Name one thing you refuse to sacrifice, even if it would make your life more materially secure or comfortable."},
+  {id:"Q75", section:"L. Myth, Telos & Identity", domain:"MYTH",
+   type:"short_text", weight:0, direction:"pro",
+   question:"Name one change you already made in the last 12 months that brought your actual life closer to the role you just described."},
+  {id:"Q76", section:"L. Myth, Telos & Identity", domain:"MYTH",
+   type:"likert_5", options:Likert5, weight:2, direction:"risk",
+   question:"Deep down, I feel my perspective is ahead of most people’s; if they disagree strongly, it usually means they don’t see what I see.",
+   cluster:"SelfImage_vs_Feedback"}
+];
+
+/*** ---------------------------------------------
+  Rendering
+------------------------------------------------ */
+
+const surveyEl = document.getElementById('survey');
+
+function groupBySection(items) {
+  const map = new Map();
+  items.forEach(q => {
+    const sec = q.section || q.domain;
+    if (!map.has(sec)) map.set(sec, []);
+    map.get(sec).push(q);
+  });
+  return map;
+}
+
+function renderQuestion(q) {
+  const wrap = document.createElement('div');
+  wrap.className = 'q';
+  wrap.dataset.qid = q.id;
+
+  const label = document.createElement('div');
+  label.className = 'qlab';
+  label.textContent = q.question;
+  wrap.appendChild(label);
+
+  if (q.help) {
+    const help = document.createElement('div');
+    help.className = 'help';
+    help.textContent = q.help;
+    wrap.appendChild(help);
+  }
+
+  const opts = document.createElement('div');
+  opts.className = 'options';
+  if (q.type === 'short_text') opts.classList.add('vertical');
+  wrap.appendChild(opts);
+
+  const name = q.id;
+
+  if (q.type === 'likert_5' || q.type === 'single_choice') {
+    (q.options || []).forEach((opt, idx) => {
+      const id = `${name}_${idx}`;
+      const lab = document.createElement('label');
+      const radio = document.createElement('input');
+      radio.type = 'radio';
+      radio.name = name;
+      radio.id = id;
+      radio.value = String(idx);
+      lab.appendChild(radio);
+      lab.appendChild(document.createTextNode(' ' + opt));
+      opts.appendChild(lab);
+    });
+  } else if (q.type === 'short_text') {
+    const inp = document.createElement('input');
+    inp.type = 'text';
+    inp.name = name;
+    inp.style.width = '100%';
+    opts.appendChild(inp);
+  }
+
+  return wrap;
+}
+
+function renderSurvey() {
+  surveyEl.innerHTML = '';
+  const sections = groupBySection(SURVEY);
+  for (const [section, qs] of sections) {
+    const sec = document.createElement('section');
+    sec.className = 'section';
+    const h = document.createElement('h2');
+    h.textContent = section;
+    sec.appendChild(h);
+    qs.forEach(q => {
+      const el = renderQuestion(q);
+      sec.appendChild(el);
+    });
+    surveyEl.appendChild(sec);
+  }
+}
+
+/*** ---------------------------------------------
+  Helpers: get responses
+------------------------------------------------ */
+
+function getIndex(qid) {
+  const el = document.querySelector(`[name="${qid}"]:checked`);
+  if (!el) return null;
+  return Number(el.value);
+}
+
+function getText(qid) {
+  const el = document.querySelector(`[name="${qid}"]`);
+  if (!el) return '';
+  return el.value.trim();
+}
+
+function collectResponses() {
+  const out = {};
+  for (const q of SURVEY) {
+    if (q.type === 'short_text') {
+      out[q.id] = getText(q.id);
+    } else {
+      const idx = getIndex(q.id);
+      out[q.id] = (idx == null ? null : idx);
+    }
+  }
+  return out;
+}
+
+function loadResponses(data) {
+  for (const q of SURVEY) {
+    const v = data[q.id];
+    if (v == null) continue;
+    if (q.type === 'short_text') {
+      const el = document.querySelector(`[name="${q.id}"]`);
+      if (el) el.value = String(v);
+    } else {
+      const idx = Number(v);
+      const el = document.querySelector(`[name="${q.id}"][value="${idx}"]`);
+      if (el) el.checked = true;
+    }
+  }
+}
+
+/*** ---------------------------------------------
+  Scoring: items, domains, indices
+------------------------------------------------ */
+
+function scoreItem(q) {
+  if (!q.weight || q.weight <= 0) return null;
+  const idx = getIndex(q.id);
+  if (idx == null) return null;
+
+  let raw = 0;
+  if (q.type === 'likert_5') {
+    raw = idx; // 0..4
+  } else if (q.type === 'single_choice') {
+    const n = (q.options || []).length;
+    if (n <= 1) raw = 0;
+    else raw = idx * (4 / (n - 1)); // scale 0..4
+  } else {
+    return null;
+  }
+
+  let score = raw;
+  if (q.direction === 'risk') {
+    score = 4 - raw;
+  }
+  return {domain:q.domain, score, weight:q.weight};
+}
+
+function computeDomainScores() {
+  const acc = {};
+  for (const q of SURVEY) {
+    const r = scoreItem(q);
+    if (!r) continue;
+    if (!acc[r.domain]) {
+      acc[r.domain] = {sum:0, max:0};
+    }
+    acc[r.domain].sum += r.score * r.weight;
+    acc[r.domain].max += 4 * r.weight;
+  }
+  const out = {};
+  for (const d in acc) {
+    const a = acc[d];
+    if (a.max > 0) {
+      out[d] = +(100 * a.sum / a.max).toFixed(1);
+    }
+  }
+  return out;
+}
+
+function meanOfDomains(domainScores, domains) {
+  const vals = [];
+  for (const d of domains) {
+    if (domainScores[d] != null) vals.push(domainScores[d]);
+  }
+  if (!vals.length) return null;
+  const m = vals.reduce((a,b)=>a+b,0) / vals.length;
+  return +m.toFixed(1);
+}
+
+/*** ---------------------------------------------
+  SDI: Self-Deception via clusters
+------------------------------------------------ */
+
+function computeClusterStats() {
+  // For each cluster with both pro and risk items answered, compute proAvg & riskAvg
+  const stats = {};
+  for (const name of CLUSTER_NAMES) {
+    const qs = SURVEY.filter(q => q.cluster === name);
+    if (!qs.length) continue;
+    let proSum = 0, proN = 0;
+    let riskSum = 0, riskN = 0;
+    for (const q of qs) {
+      const idx = getIndex(q.id);
+      if (idx == null) continue;
+      let raw = idx;
+      if (q.type === 'single_choice') {
+        const n = (q.options || []).length;
+        if (n > 1) raw = idx * (4 / (n - 1));
+      }
+      if (q.direction === 'pro') {
+        proSum += raw;
+        proN++;
+      } else if (q.direction === 'risk') {
+        riskSum += raw;
+        riskN++;
+      }
+    }
+    if (proN === 0 && riskN === 0) continue;
+    const proAvg = proN ? proSum / proN : null;
+    const riskAvg = riskN ? riskSum / riskN : null;
+    stats[name] = {proAvg, riskAvg, nPro:proN, nRisk:riskN};
+  }
+  return stats;
+}
+
+function computeSDI(clusterStats) {
+  let penalty = 0;
+  let possible = 0;
+  const details = [];
+
+  for (const name of Object.keys(clusterStats)) {
+    const st = clusterStats[name];
+    // Only consider clusters with both directions represented
+    if (!st || !st.proAvg || !st.riskAvg) continue;
+    possible++;
+    const p = st.proAvg;
+    const r = st.riskAvg;
+    let note = '';
+    let isContradiction = false;
+
+    // Heuristic: strong endorsement of both "good" and "bad" patterns
+    if (p >= 2.8 && r >= 2.0) {
+      penalty += 1;
+      isContradiction = true;
+    }
+
+    if (name === "Principle_vs_Praxis") {
+      note = "Principle vs Praxis: values vs actual tradeoffs.";
+    } else if (name === "Power_vs_Service") {
+      note = "Power vs Service: using leverage to serve vs to control.";
+    } else if (name === "AI_vs_Primary") {
+      note = "AI vs Primary Sources: direct epistemic work vs delegation.";
+    } else if (name === "Doom_vs_Action") {
+      note = "Doom vs Action: awareness vs paralysis.";
+    } else if (name === "SelfImage_vs_Feedback") {
+      note = "Self-image vs Feedback: being 'ahead' vs being corrigible.";
+    }
+
+    details.push({
+      name,
+      proAvg:+(p).toFixed(2),
+      riskAvg:+(r).toFixed(2),
+      isContradiction,
+      note
+    });
+  }
+
+  const sdi = (possible > 0) ? +(100 * penalty / possible).toFixed(1) : 0;
+  return {sdi, details};
+}
+
+/*** ---------------------------------------------
+  SCI, indices, SIS, archetype
+------------------------------------------------ */
+
+function computeIndices(domainScores, sdi) {
+  const MAI = meanOfDomains(domainScores, INDEX_DOMAINS.MAI);
+  const EAI = meanOfDomains(domainScores, INDEX_DOMAINS.EAI);
+  const ORI = meanOfDomains(domainScores, INDEX_DOMAINS.ORI);
+
+  // SCI base is from selected domains
+  const SCI_base = meanOfDomains(domainScores, INDEX_DOMAINS.SCI_BASE);
+
+  let SCI = SCI_base;
+  if (SCI != null && sdi != null) {
+    // SDI pulls SCI down
+    SCI = SCI - 0.5 * sdi;
+    if (SCI < 0) SCI = 0;
+    SCI = +SCI.toFixed(1);
+  }
+
+  // SIS = average of MAI,EAI,ORI,SCI minus SDI factor
+  const parts = [];
+  if (MAI != null) parts.push(MAI);
+  if (EAI != null) parts.push(EAI);
+  if (ORI != null) parts.push(ORI);
+  if (SCI != null) parts.push(SCI);
+  let SIS = null;
+  if (parts.length) {
+    const base = parts.reduce((a,b)=>a+b,0) / parts.length;
+    SIS = base - 0.4 * sdi;
+    if (SIS < 0) SIS = 0;
+    if (SIS > 100) SIS = 100;
+    SIS = +SIS.toFixed(1);
+  }
+
+  return {MAI, EAI, ORI, SCI, SIS};
+}
+
+function classifyArchetype(indices, sdi, domainScores) {
+  const {MAI,EAI,ORI,SCI,SIS} = indices;
+  const COMM = domainScores.COMM ?? 0;
+  const GOV = domainScores.GOV ?? 0;
+  const REL = domainScores.REL ?? 0;
+  const CORR = domainScores.CORR ?? 0;
+  const SOMA = domainScores.SOMA ?? 0;
+
+  const hi = v => v != null && v >= 70;
+  const mid = v => v != null && v >= 50 && v < 70;
+  const lo = v => v != null && v < 50;
+
+  let name = "Resilience-Oriented Builder";
+  let desc = "Partial sovereignty across several domains, with clear room to deepen coherence, redundancy, and long-horizon moves.";
+
+  if (EAI != null && hi(EAI) && MAI != null && lo(MAI) && ORI != null && lo(ORI)) {
+    name = "Captured Wizard";
+    desc = "High cognitive and epistemic power, but still structurally embedded in centralized systems. A powerful mind in a fragile cage.";
+    return {name,desc};
+  }
+
+  if (SIS != null && SIS < 40 && sdi >= 40) {
+    name = "Sov-LARP Theorist";
+    desc = "High rhetoric or self-image around sovereignty, but low follow-through and strong internal contradictions between values and practice.";
+    return {name,desc};
+  }
+
+  if (MAI != null && hi(MAI) && ORI != null && hi(ORI) && lo(COMM) && lo(REL)) {
+    name = "Isolated Prepper";
+    desc = "Materially and operationally robust in isolation, but relational and community sovereignty are weak. Strong survivability, low networked influence.";
+    return {name,desc};
+  }
+
+  if (MAI != null && hi(MAI) && ORI != null && hi(ORI) && COMM >= 50 && (GOV < 50 || CORR < 50) && sdi >= 30) {
+    name = "Parallel Cult Builder";
+    desc = "You build real alternatives, but governance, feedback, and power-handling patterns risk recreating the same control architectures you resist.";
+    return {name,desc};
+  }
+
+  if (EAI != null && hi(EAI) && SOMA != null && lo(SOMA) && ORI != null && lo(ORI)) {
+    name = "Burned-Out Seer";
+    desc = "You see a lot and often ahead of others, but somatic/operational reserves are depleted. High signal, low residual capacity.";
+    return {name,desc};
+  }
+
+  if (SIS != null && SIS >= 70 && sdi < 25 && hi(MAI) && hi(EAI) && hi(ORI) && hi(SCI)) {
+    if (COMM >= 60 && GOV >= 60 && CORR >= 60) {
+      name = "Law-Core Architect";
+      desc = "You are building and living coherent, multi-layered sovereignty with healthy power-use, feedback, and interdependence. A node capable of seeding parallel institutions.";
+    } else {
+      name = "Emergent Fractal Node";
+      desc = "Strong, multi-domain sovereignty with growing coherence and redundancy. You are already operating as a meaningful sovereignty node.";
+    }
+    return {name,desc};
+  }
+
+  if (EAI != null && hi(EAI) && (MAI == null || lo(MAI))) {
+    name = "Centralized Expert";
+    desc = "Strong domain knowledge and epistemic capacity, but material and operational structures remain largely centralized.";
+    return {name,desc};
+  }
+
+  if (SIS != null && SIS >= 40 && SIS < 70) {
+    name = "Emergent Fractal Node";
+    desc = "You’ve made real moves toward sovereignty and are building coherence. Further work on bottleneck domains can compound quickly.";
+    return {name,desc};
+  }
+
+  return {name,desc};
+}
+
+/*** ---------------------------------------------
+  Results rendering
+------------------------------------------------ */
+
+function renderDomainScores(domainScores) {
+  const wrap = document.getElementById('domainScores');
+  wrap.innerHTML = '';
+  const entries = Object.entries(domainScores)
+    .sort((a,b)=> (DOMAINS_FRIENDLY[a[0]]||a[0]).localeCompare(DOMAINS_FRIENDLY[b[0]]||b[0]));
+  entries.forEach(([d,v]) => {
+    const row = document.createElement('div');
+    row.className = 'metric-row';
+    const left = document.createElement('div');
+    left.textContent = DOMAINS_FRIENDLY[d] || d;
+    const right = document.createElement('div');
+    right.innerHTML = `<progress max="100" value="${v}"></progress> ${v}`;
+    row.appendChild(left);
+    row.appendChild(right);
+    wrap.appendChild(row);
+  });
+}
+
+function renderFocusAndStrengths(domainScores) {
+  const entries = Object.entries(domainScores);
+  if (!entries.length) {
+    document.getElementById('focusAreas').innerHTML = '';
+    document.getElementById('strengths').innerHTML = '';
+    return;
+  }
+  const sorted = entries.slice().sort((a,b)=>a[1]-b[1]); // ascending
+  const focus = sorted.slice(0,3);
+  const strengths = sorted.slice(-3).reverse();
+
+  const focusEl = document.getElementById('focusAreas');
+  focusEl.innerHTML = '';
+  focus.forEach(([d,v])=>{
+    const li = document.createElement('li');
+    li.textContent = `${DOMAINS_FRIENDLY[d] || d} (${v})`;
+    focusEl.appendChild(li);
+  });
+
+  const strEl = document.getElementById('strengths');
+  strEl.innerHTML = '';
+  strengths.forEach(([d,v])=>{
+    const li = document.createElement('li');
+    li.textContent = `${DOMAINS_FRIENDLY[d] || d} (${v})`;
+    strEl.appendChild(li);
+  });
+}
+
+function renderClusterNotes(clusterStats, sdiDetail) {
+  const wrap = document.getElementById('clusterNotes');
+  wrap.innerHTML = '';
+
+  if (!sdiDetail.length) {
+    wrap.textContent = 'No self-deception clusters could be evaluated (not enough answers yet).';
+    return;
+  }
+
+  sdiDetail.forEach(c => {
+    const div = document.createElement('div');
+    const title = document.createElement('div');
+    title.innerHTML = `<strong>${c.name}</strong> — ${c.note || ''}`;
+    const body = document.createElement('div');
+    body.textContent = `Pro-pattern avg: ${c.proAvg}, Risk-pattern avg: ${c.riskAvg}` +
+      (c.isContradiction ? " — potential internal contradiction." : "");
+    div.appendChild(title);
+    div.appendChild(body);
+    wrap.appendChild(div);
+  });
+}
+
+/*** ---------------------------------------------
+  Events
+------------------------------------------------ */
+
+document.getElementById('btnCalc').addEventListener('click', () => {
+  const domainScores = computeDomainScores();
+  const clusterStats = computeClusterStats();
+  const {sdi, details} = computeSDI(clusterStats);
+  const indices = computeIndices(domainScores, sdi);
+  const arche = classifyArchetype(indices, sdi, domainScores);
+
+  // Fill core metrics
+  document.getElementById('sis').textContent = indices.SIS != null ? indices.SIS : '—';
+  document.getElementById('mai').textContent = indices.MAI != null ? indices.MAI : '—';
+  document.getElementById('eai').textContent = indices.EAI != null ? indices.EAI : '—';
+  document.getElementById('ori').textContent = indices.ORI != null ? indices.ORI : '—';
+  document.getElementById('sci').textContent = indices.SCI != null ? indices.SCI : '—';
+  document.getElementById('sdi').textContent = sdi != null ? sdi : '—';
+
+  document.getElementById('arch').textContent = arche.name;
+  document.getElementById('archDesc').textContent = arche.desc;
+
+  renderDomainScores(domainScores);
+  renderFocusAndStrengths(domainScores);
+  renderClusterNotes(clusterStats, details);
+
+  document.getElementById('results').classList.remove('hidden');
+  window.scrollTo({top: document.getElementById('results').offsetTop - 10, behavior:'smooth'});
+});
+
+document.getElementById('btnExport').addEventListener('click', () => {
+  const data = collectResponses();
+  const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'sia-v0.3-responses.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+document.getElementById('fileImport').addEventListener('change', (e) => {
+  const f = e.target.files[0];
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try {
+      const data = JSON.parse(r.result);
+      loadResponses(data);
+      alert("Responses imported.");
+    } catch(err) {
+      alert("Invalid JSON.");
+    }
+  };
+  r.readAsText(f);
+});
+
+document.getElementById('btnClear').addEventListener('click', () => {
+  if (!confirm("Clear all responses?")) return;
+  document.querySelectorAll('input').forEach(inp => {
+    if (inp.type === 'radio' || inp.type === 'checkbox') inp.checked = false;
+    else inp.value = '';
+  });
+  document.getElementById('results').classList.add('hidden');
+});
+
+/*** ---------------------------------------------
+  Init
+------------------------------------------------ */
+
+renderSurvey();
+</script>
+</body>
+</html>

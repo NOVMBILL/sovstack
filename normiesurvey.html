@@ -1,0 +1,2153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SRS-ES v1.4.1 — Sovereign Readiness & Synthetic Exposure Survey</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  :root { --w: 880px; --fg:#111; --bg:#fff; --muted:#666; --line:#ddd; --hi:#0057e7; }
+  * { box-sizing: border-box }
+  body { margin:0; font:16px/1.45 system-ui, -apple-system, Segoe UI, Roboto, Arial; color:var(--fg); background:var(--bg); }
+  header, main, footer { max-width: var(--w); margin: 0 auto; padding: 16px; }
+  header { border-bottom: 1px solid var(--line); }
+  h1 { font-size: 20px; margin: 8px 0 0 }
+  h2 { font-size: 18px; margin: 24px 0 12px }
+  .section { border:1px solid var(--line); border-radius:8px; padding:12px; margin:12px 0; }
+  .q { padding:10px 8px; border-top:1px dashed var(--line); }
+  .q:first-child { border-top:0 }
+  .qlab { font-weight:600; }
+  .help { color:var(--muted); font-size: 13px; margin-top:4px; }
+  .options { margin-top:8px; display:flex; flex-wrap:wrap; gap:12px 22px; }
+  .options.vertical { flex-direction:column; gap:6px; }
+  .req { color:#b40000; font-weight:600; margin-left:6px; }
+  .muted { color: var(--muted); }
+  .hidden { display:none !important; }
+  .controls { display:flex; gap:8px; flex-wrap:wrap; margin:16px 0; }
+  button, input[type="file"]::file-selector-button {
+    cursor:pointer; border:1px solid var(--line); background:#f7f7f7; padding:8px 12px; border-radius:6px;
+  }
+  button.primary { background:var(--hi); color:#fff; border-color:var(--hi); }
+  .pill { display:inline-block; border:1px solid var(--line); padding:2px 8px; border-radius:999px; font-size:12px; margin: 2px 4px 0 0; }
+  .domain-score { display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px dashed var(--line); }
+  .domain-score:last-child { border-bottom:0; }
+  progress { width: 120px; height: 12px; vertical-align: middle; }
+  .result { border:2px solid #222; border-radius:12px; padding:16px; margin:16px 0; }
+  .grid2 { display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
+  @media (max-width: 720px) { .grid2 { grid-template-columns: 1fr; } }
+  .badge { background:#eee; padding:2px 6px; border-radius:4px; font-size:12px; margin-right:6px; }
+  .warn { color:#8a0000; font-weight:600; }
+  .ok { color:#006400; font-weight:600; }
+  .card { border:1px solid var(--line); border-radius:8px; padding:12px; }
+  .small { font-size:13px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>SRS-ES v1.4.1 — Sovereign Readiness & Synthetic Exposure Survey</h1>
+  <p class="muted small">No dependencies. Works offline. Includes skip logic, attention checks, weighted scoring, reverse items, indices, and result card.</p>
+</header>
+
+<main>
+  <div class="controls">
+    <button id="btnCalc" class="primary">Calculate Results</button>
+    <button id="btnValidate">Validate Required</button>
+    <button id="btnExport">Export Responses (JSON)</button>
+    <label class="pill">Import <input id="fileImport" type="file" accept="application/json"></label>
+    <button id="btnClear">Clear All</button>
+  </div>
+
+  <div id="survey"></div>
+
+  <div id="results" class="hidden">
+    <h2>Results</h2>
+    <div class="result">
+      <div class="grid2">
+        <div>
+          <div><strong>Archetype:</strong> <span id="arch"></span></div>
+          <div><strong>SEI (0–100):</strong> <span id="sei"></span></div>
+          <div class="small muted">SEI = mean of eligible domain scores (excludes BASICS, CONSENT, HISTORY; includes WORK/EDUCATION only if shown).</div>
+        </div>
+        <div>
+          <div><strong>Top Risks:</strong> <span id="topRisks"></span></div>
+          <div><strong>Attention Checks:</strong> <span id="attStatus"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>Domain Scores</h3>
+        <div id="domainScores"></div>
+      </div>
+      <div class="card">
+        <h3>Sub-Indices</h3>
+        <div id="subIdx"></div>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>Quick Wins (7 days)</h3>
+        <ul id="quickWins"></ul>
+      </div>
+      <div class="card">
+        <h3>Stretch Moves (30–60 days)</h3>
+        <ul id="stretches"></ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Risk Badges (History)</h3>
+      <div id="badges"></div>
+    </div>
+  </div>
+</main>
+
+<footer class="small muted">
+  <p>Scoring: Likert left→right = 0..4; reverse-coded items inverted; domain = weighted percent; SEI = mean of domains shown.</p>
+</footer>
+
+<script>
+/*** -------------------------
+  DATA: SRS-ES v1.4.1 survey set
+-------------------------- ***/
+
+// Option presets
+const Likert5 = ["Strongly disagree","Disagree","Neutral","Agree","Strongly agree"];
+const YesNo = ["No","Yes"];
+
+// Sections by domain (for grouping in UI)
+const SECTION_BY_DOMAIN = {
+  CONSENT: "0. Welcome",
+  BASICS: "A. Basics",
+  MONEY: "B. Money & Financial Setup",
+  DEBT: "B2. Debt & Credit Dependence",
+  WORK: "C. Work & Income",
+  COMMS: "D. Communication & Social Graph",
+  OS: "E. Devices & Operating Systems",
+  DATA: "F. Data, Cloud & Authentication",
+  ID: "G. Identity, KYC & Legal",
+  CBDC: "G2. CBDC & Stablecoin Reliance",
+  DIGID: "G3. Digital ID & Access Control",
+  MEDIA: "H. Media, Feeds & Narratives",
+  ENERGY: "I. Energy & Housing",
+  FOODWATER: "J. Food & Water",
+  DOCS: "J2. Documents & Redundancy",
+  NETWORK: "J3. Network & SIM",
+  HEALTH: "K. Health & Body Autonomy",
+  MOBILITY: "L. Mobility & Borders",
+  COMMUNITY: "M. Community & Mutual Aid",
+  HOUSINGRISK: "M2. Housing & Safety",
+  EDUCATION: "M3. Education & Care",
+  SUPPLY: "M4. Work Tools & Supply Chain",
+  SKILLS: "M5. Practical Skills & Self-Reliance",
+  TIME: "P. Time & Schedule Control",
+  TRAJECTORY: "Q. Direction of Change",
+  ATTITUDE: "N. Attitudes & Thresholds",
+  HISTORY: "O. Experiences & Outages"
+};
+
+// Domains to exclude from SEI and domain table
+const EXCLUDE_FROM_SEI = new Set(["BASICS","CONSENT","HISTORY"]);
+const DOMAINS_FRIENDLY = {
+  MONEY:"Money & Financial Setup",
+  DEBT:"Debt & Credit Dependence",
+  WORK:"Work & Income",
+  COMMS:"Communication & Social Graph",
+  OS:"Devices & Operating Systems",
+  DATA:"Data, Cloud & Authentication",
+  ID:"Identity, KYC & Legal",
+  CBDC:"CBDC & Stablecoin Reliance",
+  DIGID:"Digital ID & Access Control",
+  MEDIA:"Media, Feeds & Narratives",
+  ENERGY:"Energy & Housing",
+  FOODWATER:"Food & Water",
+  DOCS:"Documents & Redundancy",
+  NETWORK:"Network & SIM",
+  HEALTH:"Health & Body Autonomy",
+  MOBILITY:"Mobility & Borders",
+  COMMUNITY:"Community & Mutual Aid",
+  HOUSINGRISK:"Housing & Safety",
+  EDUCATION:"Education & Care",
+  SUPPLY:"Work Tools & Supply Chain",
+  SKILLS:"Practical Skills & Self-Reliance",
+  TIME:"Time & Schedule Control",
+  TRAJECTORY:"Direction of Change",
+  ATTITUDE:"Attitudes & Thresholds",
+  HISTORY:"Experiences & Outages",
+  BASICS:"Basics",
+  CONSENT:"Consent"
+};
+
+const SURVEY = [
+  // CONSENT
+  {
+    id:"Q1",
+    section:"0. Welcome",
+    domain:"CONSENT",
+    type:"single_choice",
+    options:["Yes, continue","No, exit"],
+    required:true,
+    weight:0,
+    reverse:false,
+    question:"We will ask about daily tools and habits to estimate your reliance on centralized systems. Results are for your own reflection and must not be used to decide jobs, housing, insurance, or services. Continue?"
+  },
+
+  // BASICS
+  {
+    id:"Q2",
+    section:"A. Basics",
+    domain:"BASICS",
+    type:"short_text",
+    options:[],
+    required:true,
+    weight:0,
+    reverse:false,
+    question:"Country/Region you live in"
+  },
+  {
+    id:"Q3",
+    section:"A. Basics",
+    domain:"BASICS",
+    type:"single_choice",
+    options:["Under 18","18–24","25–34","35–44","45–54","55–64","65+","Prefer not to say"],
+    required:true,
+    weight:0,
+    reverse:false,
+    question:"Age range"
+  },
+  {
+    id:"Q4",
+    section:"A. Basics",
+    domain:"BASICS",
+    type:"single_choice",
+    options:["Student","Employee","Self-employed","Creator/Artist","Business owner","Homemaker","Retired","Unemployed","Other"],
+    required:true,
+    weight:0,
+    reverse:false,
+    question:"Primary occupation"
+  },
+  {
+    id:"Q5",
+    section:"A. Basics",
+    domain:"BASICS",
+    type:"single_choice",
+    options:["Urban","Suburban","Rural"],
+    required:true,
+    weight:0,
+    reverse:false,
+    question:"Setting"
+  },
+  {
+    id:"Q6",
+    section:"A. Basics",
+    domain:"BASICS",
+    type:"single_choice",
+    options:["1","2","3","4","5+"],
+    required:true,
+    weight:0,
+    reverse:false,
+    question:"Household size"
+  },
+  {
+    id:"Q7",
+    section:"A. Basics",
+    domain:"BASICS",
+    type:"single_choice",
+    options:YesNo,
+    required:false,
+    weight:0,
+    reverse:false,
+    question:"Children in household",
+    help_text:"Helps show school/childcare items only when relevant."
+  },
+  {
+    id:"Q8",
+    section:"A. Basics",
+    domain:"BASICS",
+    type:"single_choice",
+    options:["Very low","Low","Medium","High","Very high"],
+    required:true,
+    weight:0,
+    reverse:false,
+    question:"Comfort with technology"
+  },
+  {
+    id:"Q9",
+    section:"A. Basics",
+    domain:"BASICS",
+    type:"multiple_choice",
+    options:["Instagram","YouTube","WhatsApp","TikTok","Facebook","X/Twitter","Snapchat","Telegram","Discord","Reddit","Email","Other"],
+    required:false,
+    weight:0,
+    reverse:false,
+    question:"Top 3 platforms you use most (select up to 3)"
+  },
+  {
+    id:"Q10",
+    section:"A. Basics",
+    domain:"BASICS",
+    type:"single_choice",
+    options:["Save money","Protect privacy","Be more independent","Grow audience","Improve health","Prepare for emergencies","Other"],
+    required:true,
+    weight:0,
+    reverse:false,
+    question:"Primary personal goal right now"
+  },
+
+  // MONEY
+  {
+    id:"Q11",
+    section:"B. Money & Financial Setup",
+    domain:"MONEY",
+    type:"likert_5",
+    options:Likert5,
+    required:true,
+    weight:2,
+    reverse:false,
+    question:"100% of my savings are in banks or brokerages."
+  },
+  {
+    id:"Q12",
+    section:"B. Money & Financial Setup",
+    domain:"MONEY",
+    type:"likert_5",
+    options:Likert5,
+    required:true,
+    weight:3,
+    reverse:false,
+    question:"I could not pay bills if my bank card stopped working for 48 hours.",
+    help_text:"Think rent, food, transport."
+  },
+  {
+    id:"Q13",
+    section:"B. Money & Financial Setup",
+    domain:"MONEY",
+    type:"likert_5",
+    options:Likert5,
+    required:true,
+    weight:2,
+    reverse:false,
+    question:"I own zero self-custodied Bitcoin.",
+    help_text:"Includes any wallet where you control the keys."
+  },
+  {
+    id:"Q14",
+    section:"B. Money & Financial Setup",
+    domain:"MONEY",
+    type:"likert_5",
+    options:Likert5,
+    required:true,
+    weight:2,
+    reverse:false,
+    question:"Most of my income flows through one bank or payment processor."
+  },
+  {
+    id:"Q15",
+    section:"B. Money & Financial Setup",
+    domain:"MONEY",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:2,
+    reverse:false,
+    question:"I keep large deposits above the insured limit at a single institution.",
+    help_text:"Local deposit insurance limits vary by country."
+  },
+  {
+    id:"Q16",
+    section:"B. Money & Financial Setup",
+    domain:"MONEY",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    question:"I have no cash at home for small emergencies."
+  },
+  {
+    id:"Q17",
+    section:"B. Money & Financial Setup",
+    domain:"MONEY",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    question:"In the last 2 years, a payment was reversed or an account was frozen unexpectedly."
+  },
+
+  // DEBT
+  {
+    id:"Q18",
+    section:"B2. Debt & Credit Dependence",
+    domain:"DEBT",
+    type:"likert_5",
+    options:Likert5,
+    required:true,
+    weight:3,
+    reverse:false,
+    question:"If my access to credit (cards, overdraft, BNPL) stopped for one month, I would not be able to cover essentials."
+  },
+  {
+    id:"Q19",
+    section:"B2. Debt & Credit Dependence",
+    domain:"DEBT",
+    type:"likert_5",
+    options:Likert5,
+    required:true,
+    weight:2,
+    reverse:false,
+    question:"I carry high-interest consumer debt (cards, loans, BNPL) that I am not on track to clear in 3 years."
+  },
+  {
+    id:"Q20",
+    section:"B2. Debt & Credit Dependence",
+    domain:"DEBT",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    question:"My housing or car depends on loans that I could not refinance or replace easily."
+  },
+
+  // WORK (gated on Q4)
+  {
+    id:"Q21",
+    section:"C. Work & Income",
+    domain:"WORK",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:3,
+    reverse:false,
+    skip_logic:"Show if Q4 in {Self-employed, Creator/Artist, Business owner}",
+    question:"If my main platform (Stripe, Patreon, Etsy, App Store, etc.) banned me, my income would drop by over 50%."
+  },
+  {
+    id:"Q22",
+    section:"C. Work & Income",
+    domain:"WORK",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:2,
+    reverse:false,
+    skip_logic:"Show if Q4 in {Self-employed, Creator/Artist, Business owner}",
+    question:"I cannot accept direct customer payments without an intermediary."
+  },
+  {
+    id:"Q23",
+    section:"C. Work & Income",
+    domain:"WORK",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:2,
+    reverse:false,
+    skip_logic:"Show if Q4 in {Self-employed, Creator/Artist, Business owner}",
+    question:"I depend on one client or platform for most income."
+  },
+  {
+    id:"Q24",
+    section:"C. Work & Income",
+    domain:"WORK",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    skip_logic:"Show if Q4 in {Self-employed, Creator/Artist, Business owner}",
+    question:"I must use my legal identity to get paid."
+  },
+  {
+    id:"Q25",
+    section:"C. Work & Income",
+    domain:"WORK",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    skip_logic:"Show if Q4 in {Self-employed, Creator/Artist, Business owner}",
+    question:"I rely on a single AI tool for core work and could not replace it quickly.",
+    help_text:"Example: one AI assistant for all deliverables."
+  },
+  {
+    id:"Q26",
+    section:"C. Work & Income",
+    domain:"WORK",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:2,
+    reverse:false,
+    skip_logic:"Show if Q4 in {Self-employed, Creator/Artist, Business owner}",
+    question:"I do not own my domain or mailing list."
+  },
+
+  // COMMS
+  {
+    id:"Q27",
+    section:"D. Communication & Social Graph",
+    domain:"COMMS",
+    type:"likert_5",
+    options:Likert5,
+    required:true,
+    weight:3,
+    reverse:false,
+    question:"If I lost access to Instagram/X/WhatsApp, I would lose most of my contacts or audience."
+  },
+  {
+    id:"Q28",
+    section:"D. Communication & Social Graph",
+    domain:"COMMS",
+    type:"likert_5",
+    options:Likert5,
+    required:true,
+    weight:2,
+    reverse:false,
+    question:"I rely on one or two big apps for almost all messaging."
+  },
+  {
+    id:"Q29",
+    section:"D. Communication & Social Graph",
+    domain:"COMMS",
+    type:"likert_5",
+    options:Likert5,
+    required:true,
+    weight:2,
+    reverse:false,
+    question:"I have no offline export or printed copy of key contacts."
+  },
+  {
+    id:"Q30",
+    section:"D. Communication & Social Graph",
+    domain:"COMMS",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    question:"I have never used an end-to-end encrypted messenger outside big-tech apps."
+  },
+  {
+    id:"Q31",
+    section:"D. Communication & Social Graph",
+    domain:"COMMS",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    question:"Switching to a new platform would cost too much time or relationships."
+  },
+
+  // OS
+  {
+    id:"Q32",
+    section:"E. Devices & Operating Systems",
+    domain:"OS",
+    type:"likert_5",
+    options:Likert5,
+    required:true,
+    weight:2,
+    reverse:false,
+    question:"All my devices use default settings on iOS/Android/Windows/macOS."
+  },
+  {
+    id:"Q33",
+    section:"E. Devices & Operating Systems",
+    domain:"OS",
+    type:"likert_5",
+    options:Likert5,
+    required:true,
+    weight:2,
+    reverse:false,
+    question:"I do not make regular local backups of my devices."
+  },
+  {
+    id:"Q34",
+    section:"E. Devices & Operating Systems",
+    domain:"OS",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    question:"I cannot install apps from outside the official app store on my main device."
+  },
+  {
+    id:"Q35",
+    section:"E. Devices & Operating Systems",
+    domain:"OS",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    question:"I rarely update firmware on my router or modem."
+  },
+  {
+    id:"Q36",
+    section:"E. Devices & Operating Systems",
+    domain:"OS",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    question:"I use biometrics without a strong passcode fallback.",
+    help_text:"Strong passcode = not trivial to guess."
+  },
+
+  // DATA
+  {
+    id:"Q37",
+    section:"F. Data, Cloud & Authentication",
+    domain:"DATA",
+    type:"likert_5",
+    options:Likert5,
+    required:true,
+    weight:3,
+    reverse:false,
+    question:"I reuse the same passwords across accounts."
+  },
+  {
+    id:"Q38",
+    section:"F. Data, Cloud & Authentication",
+    domain:"DATA",
+    type:"likert_5",
+    options:Likert5,
+    required:true,
+    weight:2,
+    reverse:false,
+    question:"I do not use a password manager."
+  },
+  {
+    id:"Q39",
+    section:"F. Data, Cloud & Authentication",
+    domain:"DATA",
+    type:"likert_5",
+    options:Likert5,
+    required:true,
+    weight:3,
+    reverse:false,
+    question:"I use SMS (text) for 2-factor on important accounts."
+  },
+  {
+    id:"Q40",
+    section:"F. Data, Cloud & Authentication",
+    domain:"DATA",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:2,
+    reverse:false,
+    question:"My files and photos live only in big-tech clouds."
+  },
+  {
+    id:"Q41",
+    section:"F. Data, Cloud & Authentication",
+    domain:"DATA",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    question:"I use one email address/provider for everything."
+  },
+  {
+    id:"Q42",
+    section:"F. Data, Cloud & Authentication",
+    domain:"DATA",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    question:"I cannot access critical accounts without my phone."
+  },
+  {
+    id:"Q43",
+    section:"F. Data, Cloud & Authentication",
+    domain:"DATA",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    question:"I accept Terms of Service changes without review or export of my data."
+  },
+
+  // ID
+  {
+    id:"Q44",
+    section:"G. Identity, KYC & Legal",
+    domain:"ID",
+    type:"likert_5",
+    options:Likert5,
+    required:true,
+    weight:2,
+    reverse:false,
+    question:"Most of my finance or service accounts require real-name/KYC."
+  },
+  {
+    id:"Q45",
+    section:"G. Identity, KYC & Legal",
+    domain:"ID",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    question:"I have no separate legal entity to hold risk (e.g., company)."
+  },
+  {
+    id:"Q46",
+    section:"G. Identity, KYC & Legal",
+    domain:"ID",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    question:"I have never used a pseudonym for creative or business work."
+  },
+  {
+    id:"Q47",
+    section:"G. Identity, KYC & Legal",
+    domain:"ID",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:2,
+    reverse:false,
+    question:"I rely on one country for all documents and rights."
+  },
+  {
+    id:"Q48",
+    section:"G. Identity, KYC & Legal",
+    domain:"ID",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    question:"I do not know how to appeal a ban or error with a platform or bank."
+  },
+
+  // CBDC
+  {
+    id:"Q49",
+    section:"G2. CBDC & Stablecoin Reliance",
+    domain:"CBDC",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    question:"I hold or regularly use stablecoins.",
+    help_text:"For example: USDT, USDC, etc."
+  },
+  {
+    id:"Q50",
+    section:"G2. CBDC & Stablecoin Reliance",
+    domain:"CBDC",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:2,
+    reverse:false,
+    question:"I would switch to a CBDC if it offered extra convenience or rewards.",
+    help_text:"CBDC = central bank digital currency."
+  },
+  {
+    id:"Q51",
+    section:"G2. CBDC & Stablecoin Reliance",
+    domain:"CBDC",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:2,
+    reverse:false,
+    question:"I cannot receive cross-border payments without a bank or remittance app."
+  },
+
+  // DIGID
+  {
+    id:"Q52",
+    section:"G3. Digital ID & Access Control",
+    domain:"DIGID",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:3,
+    reverse:false,
+    question:"I must use a government digital ID or app to access important services (healthcare, taxes, benefits, banking, or transport)."
+  },
+  {
+    id:"Q53",
+    section:"G3. Digital ID & Access Control",
+    domain:"DIGID",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    question:"I have used a health pass or QR code app to enter venues or travel."
+  },
+  {
+    id:"Q54",
+    section:"G3. Digital ID & Access Control",
+    domain:"DIGID",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:2,
+    reverse:false,
+    question:"I expect more services in my life will require a government digital ID or app."
+  },
+
+  // MEDIA (expanded)
+  {
+    id:"Q55",
+    section:"H. Media, Feeds & Narratives",
+    domain:"MEDIA",
+    type:"likert_5",
+    options:Likert5,
+    required:true,
+    weight:2,
+    reverse:false,
+    question:"Algorithms on a few platforms decide most of what I watch or read."
+  },
+  {
+    id:"Q56",
+    section:"H. Media, Feeds & Narratives",
+    domain:"MEDIA",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    question:"I rarely go directly to sources (websites, newsletters, RSS).",
+    help_text:"RSS = a simple way to follow sites directly."
+  },
+  {
+    id:"Q57",
+    section:"H. Media, Feeds & Narratives",
+    domain:"MEDIA",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    question:"I spend more than 2 hours a day on scrolling feeds."
+  },
+  {
+    id:"Q58",
+    section:"H. Media, Feeds & Narratives",
+    domain:"MEDIA",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    question:"I feel anxious or left out if I disconnect for 24 hours."
+  },
+  {
+    id:"Q59",
+    section:"H. Media, Feeds & Narratives",
+    domain:"MEDIA",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:2,
+    reverse:false,
+    question:"I assume that if something important happens, it will show up in my feeds."
+  },
+  {
+    id:"Q60",
+    section:"H. Media, Feeds & Narratives",
+    domain:"MEDIA",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    question:"I rarely read or watch sources that strongly disagree with my views."
+  },
+  {
+    id:"Q61",
+    section:"H. Media, Feeds & Narratives",
+    domain:"MEDIA",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:2,
+    reverse:false,
+    question:"I often ask AI tools to summarize what matters in the news or online."
+  },
+  {
+    id:"Q62",
+    section:"H. Media, Feeds & Narratives",
+    domain:"MEDIA",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:2,
+    reverse:false,
+    question:"I use AI tools to help me decide what to do with my time, money, or relationships."
+  },
+
+  // ENERGY
+  {
+    id:"Q63",
+    section:"I. Energy & Housing",
+    domain:"ENERGY",
+    type:"likert_5",
+    options:Likert5,
+    required:true,
+    weight:3,
+    reverse:false,
+    question:"I have no backup power (power bank, battery, or generator)."
+  },
+  {
+    id:"Q64",
+    section:"I. Energy & Housing",
+    domain:"ENERGY",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    question:"I rely only on grid electricity and gas."
+  },
+  {
+    id:"Q65",
+    section:"I. Energy & Housing",
+    domain:"ENERGY",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    question:"I cannot manage humidity or ventilation without central systems."
+  },
+  {
+    id:"Q66",
+    section:"I. Energy & Housing",
+    domain:"ENERGY",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    question:"I do not track energy usage or costs."
+  },
+
+  // FOODWATER
+  {
+    id:"Q67",
+    section:"J. Food & Water",
+    domain:"FOODWATER",
+    type:"likert_5",
+    options:Likert5,
+    required:true,
+    weight:3,
+    reverse:false,
+    question:"I keep fewer than 7 days of shelf-stable food."
+  },
+  {
+    id:"Q68",
+    section:"J. Food & Water",
+    domain:"FOODWATER",
+    type:"likert_5",
+    options:Likert5,
+    required:true,
+    weight:2,
+    reverse:false,
+    question:"I do not have a water filter at home."
+  },
+  {
+    id:"Q69",
+    section:"J. Food & Water",
+    domain:"FOODWATER",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    question:"I cannot store at least 20 liters of drinking water."
+  },
+  {
+    id:"Q70",
+    section:"J. Food & Water",
+    domain:"FOODWATER",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    question:"I buy almost all food from supermarkets and have no local options."
+  },
+
+  // DOCS
+  {
+    id:"Q71",
+    section:"J2. Documents & Redundancy",
+    domain:"DOCS",
+    type:"likert_5",
+    options:Likert5,
+    required:true,
+    weight:2,
+    reverse:false,
+    question:"I have no offline copy of critical documents (ID, insurance, key contacts)."
+  },
+  {
+    id:"Q72",
+    section:"J2. Documents & Redundancy",
+    domain:"DOCS",
+    type:"likert_5",
+    options:Likert5,
+    required:true,
+    weight:2,
+    reverse:false,
+    question:"I have no printed emergency contacts outside my phone."
+  },
+  {
+    id:"Q73",
+    section:"J2. Documents & Redundancy",
+    domain:"DOCS",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    question:"I do not have a simple go-bag (meds, flashlight, cash, copies)."
+  },
+
+  // NETWORK
+  {
+    id:"Q74",
+    section:"J3. Network & SIM",
+    domain:"NETWORK",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:2,
+    reverse:false,
+    question:"My home Wi-Fi still uses the default router password or SSID."
+  },
+  {
+    id:"Q75",
+    section:"J3. Network & SIM",
+    domain:"NETWORK",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:2,
+    reverse:false,
+    question:"I have not set a SIM PIN or port-out protection.",
+    help_text:"Port-out protection stops someone from moving your number to a new SIM without you."
+  },
+  {
+    id:"Q76",
+    section:"J3. Network & SIM",
+    domain:"NETWORK",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    question:"I do not use a separate Wi-Fi network for smart devices (IoT)."
+  },
+  {
+    id:"Q77",
+    section:"J3. Network & SIM",
+    domain:"NETWORK",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    question:"I do not use any ad-blocking DNS or content filter on my network."
+  },
+
+  // HEALTH
+  {
+    id:"Q78",
+    section:"K. Health & Body Autonomy",
+    domain:"HEALTH",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    question:"I rely only on formal healthcare for all needs."
+  },
+  {
+    id:"Q79",
+    section:"K. Health & Body Autonomy",
+    domain:"HEALTH",
+    type:"likert_5",
+    options:Likert5,
+    required:true,
+    weight:2,
+    reverse:false,
+    question:"I do not keep a basic home medical kit."
+  },
+  {
+    id:"Q80",
+    section:"K. Health & Body Autonomy",
+    domain:"HEALTH",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    question:"I do not track sleep, movement, or nutrition in any simple way."
+  },
+  {
+    id:"Q81",
+    section:"K. Health & Body Autonomy",
+    domain:"HEALTH",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    question:"I do not practice any regular stress-management or exercise."
+  },
+  {
+    id:"Q82",
+    section:"K. Health & Body Autonomy",
+    domain:"HEALTH",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:2,
+    reverse:false,
+    question:"I depend on daily prescription meds and have fewer than 14 days of backup."
+  },
+
+  // MOBILITY
+  {
+    id:"Q83",
+    section:"L. Mobility & Borders",
+    domain:"MOBILITY",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    question:"I cannot travel or navigate without a smartphone."
+  },
+  {
+    id:"Q84",
+    section:"L. Mobility & Borders",
+    domain:"MOBILITY",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    question:"I have no transport option independent of apps (bike, car, walking routes)."
+  },
+  {
+    id:"Q85",
+    section:"L. Mobility & Borders",
+    domain:"MOBILITY",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:2,
+    reverse:false,
+    question:"I have no plan if flights are canceled or borders close for a week."
+  },
+  {
+    id:"Q86",
+    section:"L. Mobility & Borders",
+    domain:"MOBILITY",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    question:"I do not keep offline maps for my area."
+  },
+
+  // COMMUNITY
+  {
+    id:"Q87",
+    section:"M. Community & Mutual Aid",
+    domain:"COMMUNITY",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    question:"I do not know my neighbors' names or have local support."
+  },
+  {
+    id:"Q88",
+    section:"M. Community & Mutual Aid",
+    domain:"COMMUNITY",
+    type:"likert_5",
+    options:Likert5,
+    required:true,
+    weight:2,
+    reverse:false,
+    question:"I belong to no in-person group that would help in a crisis."
+  },
+  {
+    id:"Q89",
+    section:"M. Community & Mutual Aid",
+    domain:"COMMUNITY",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    question:"Most of my friendships are mediated by big platforms."
+  },
+
+  // HOUSINGRISK
+  {
+    id:"Q90",
+    section:"M2. Housing & Safety",
+    domain:"HOUSINGRISK",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    question:"I rent and cannot control basic maintenance (ventilation, heating, insulation)."
+  },
+  {
+    id:"Q91",
+    section:"M2. Housing & Safety",
+    domain:"HOUSINGRISK",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:2,
+    reverse:false,
+    question:"I do not have working smoke and CO alarms.",
+    help_text:"CO = carbon monoxide. These alarms warn about fire and gas."
+  },
+  {
+    id:"Q92",
+    section:"M2. Housing & Safety",
+    domain:"HOUSINGRISK",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:2,
+    reverse:false,
+    question:"I have no plan for damp, mold, or humidity control."
+  },
+
+  // EDUCATION (gated on Q7)
+  {
+    id:"Q93",
+    section:"M3. Education & Care",
+    domain:"EDUCATION",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    skip_logic:"Show if Q7 == Yes",
+    question:"My children’s school has no plan for remote learning or closures."
+  },
+  {
+    id:"Q94",
+    section:"M3. Education & Care",
+    domain:"EDUCATION",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    skip_logic:"Show if Q7 == Yes",
+    question:"I have no backup childcare arrangement."
+  },
+
+  // SUPPLY
+  {
+    id:"Q95",
+    section:"M4. Work Tools & Supply Chain",
+    domain:"SUPPLY",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:2,
+    reverse:false,
+    question:"I could not do my core work for 72 hours if deliveries stopped.",
+    help_text:"Think parts, paper, ink, components, internet."
+  },
+  {
+    id:"Q96",
+    section:"M4. Work Tools & Supply Chain",
+    domain:"SUPPLY",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:2,
+    reverse:false,
+    question:"I rely on a single vendor for critical tools or hosting."
+  },
+
+  // SKILLS
+  {
+    id:"Q97",
+    section:"M5. Practical Skills & Self-Reliance",
+    domain:"SKILLS",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    question:"I would struggle to cook simple meals from basic ingredients."
+  },
+  {
+    id:"Q98",
+    section:"M5. Practical Skills & Self-Reliance",
+    domain:"SKILLS",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    question:"I do not know how to do basic home repairs (e.g., fix small leaks, reset breakers)."
+  },
+  {
+    id:"Q99",
+    section:"M5. Practical Skills & Self-Reliance",
+    domain:"SKILLS",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    question:"I have not practiced any skills that could be traded or used locally (trades, teaching, first aid, repair, etc.)."
+  },
+
+  // TIME
+  {
+    id:"Q100",
+    section:"P. Time & Schedule Control",
+    domain:"TIME",
+    type:"likert_5",
+    options:Likert5,
+    required:true,
+    weight:3,
+    reverse:false,
+    question:"I have less than 5 hours per week of time I can control for my own projects or learning."
+  },
+  {
+    id:"Q101",
+    section:"P. Time & Schedule Control",
+    domain:"TIME",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:2,
+    reverse:false,
+    question:"My work or responsibilities often change schedule with little warning."
+  },
+  {
+    id:"Q102",
+    section:"P. Time & Schedule Control",
+    domain:"TIME",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:2,
+    reverse:false,
+    question:"Most days I feel I am reacting to demands rather than setting my own priorities."
+  },
+  {
+    id:"Q103",
+    section:"P. Time & Schedule Control",
+    domain:"TIME",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:2,
+    reverse:false,
+    question:"I feel too tired or stressed to start new habits or learn new tools."
+  },
+
+  // TRAJECTORY
+  {
+    id:"Q104",
+    section:"Q. Direction of Change",
+    domain:"TRAJECTORY",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:2,
+    reverse:false,
+    question:"In the last 12 months, I have not made any changes to reduce my dependence on a single platform, employer, or country."
+  },
+  {
+    id:"Q105",
+    section:"Q. Direction of Change",
+    domain:"TRAJECTORY",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:2,
+    reverse:false,
+    question:"I expect my dependence on big platforms to grow in the next 2 years."
+  },
+  {
+    id:"Q106",
+    section:"Q. Direction of Change",
+    domain:"TRAJECTORY",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:2,
+    reverse:true,
+    question:"In the last 12 months, I have moved at least one important part of my life to a tool or setup I control more.",
+    help_text:"Agreeing here reduces risk (reverse)."
+  },
+  {
+    id:"Q107",
+    section:"Q. Direction of Change",
+    domain:"TRAJECTORY",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:2,
+    reverse:true,
+    question:"I have tried at least one new tool that gives me more control over my data, money, or communication.",
+    help_text:"Agreeing here reduces risk (reverse)."
+  },
+
+  // ATTITUDE (incl. attention checks)
+  {
+    id:"Q108",
+    section:"N. Attitudes & Thresholds",
+    domain:"ATTITUDE",
+    type:"likert_5",
+    options:Likert5,
+    required:true,
+    weight:2,
+    reverse:false,
+    question:"Convenience matters more to me than control."
+  },
+  {
+    id:"Q109",
+    section:"N. Attitudes & Thresholds",
+    domain:"ATTITUDE",
+    type:"likert_5",
+    options:Likert5,
+    required:true,
+    weight:2,
+    reverse:false,
+    question:"I have nothing to hide, so privacy tools are unnecessary."
+  },
+  {
+    id:"Q110",
+    section:"N. Attitudes & Thresholds",
+    domain:"ATTITUDE",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    question:"I would only change tools or habits if a crisis directly affects me."
+  },
+  {
+    id:"Q111",
+    section:"N. Attitudes & Thresholds",
+    domain:"ATTITUDE",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:false,
+    question:"'Decentralization' and 'open-source' mostly sound like buzzwords to me."
+  },
+  {
+    id:"Q112",
+    section:"N. Attitudes & Thresholds",
+    domain:"ATTITUDE",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:true,
+    question:"I prefer to own critical parts of my life, even if it takes extra effort.",
+    help_text:"Agreeing here reduces risk (reverse)."
+  },
+  {
+    id:"Q113",
+    section:"N. Attitudes & Thresholds",
+    domain:"ATTITUDE",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:1,
+    reverse:true,
+    question:"I value being able to switch tools without losing my data or audience.",
+    help_text:"Agreeing here reduces risk (reverse)."
+  },
+  {
+    id:"Q114",
+    section:"N. Attitudes & Thresholds",
+    domain:"ATTITUDE",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:0,
+    reverse:false,
+    attention_check:true,
+    question:"Attention check: Please select 'Agree' for this sentence."
+  },
+  {
+    id:"Q115",
+    section:"N. Attitudes & Thresholds",
+    domain:"ATTITUDE",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:0,
+    reverse:false,
+    attention_check:true,
+    question:"Attention check: Please select 'Disagree' for this sentence."
+  },
+
+  // HISTORY badges
+  {
+    id:"Q116",
+    section:"O. Experiences & Outages",
+    domain:"HISTORY",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:0,
+    reverse:false,
+    question:"In the last 24 months, I lost access to an account or funds unexpectedly."
+  },
+  {
+    id:"Q117",
+    section:"O. Experiences & Outages",
+    domain:"HISTORY",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:0,
+    reverse:false,
+    question:"I experienced content removal, demonetization, or a ban."
+  },
+  {
+    id:"Q118",
+    section:"O. Experiences & Outages",
+    domain:"HISTORY",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:0,
+    reverse:false,
+    question:"Weather, power, or water outages disrupted my life for 24+ hours."
+  },
+  {
+    id:"Q119",
+    section:"O. Experiences & Outages",
+    domain:"HISTORY",
+    type:"likert_5",
+    options:Likert5,
+    required:false,
+    weight:0,
+    reverse:false,
+    question:"I was a victim of identity theft or a data breach affecting my accounts."
+  }
+];
+
+/*** -------------------------
+  RENDERING
+-------------------------- ***/
+
+const surveyEl = document.getElementById('survey');
+
+function groupBySection(items){
+  const map = new Map();
+  items.forEach(q=>{
+    const sec = q.section || SECTION_BY_DOMAIN[q.domain] || q.domain;
+    if(!map.has(sec)) map.set(sec, []);
+    map.get(sec).push(q);
+  });
+  return map;
+}
+
+function inputName(q){ return q.id; }
+
+function renderQuestion(q){
+  const wrap = document.createElement('div');
+  wrap.className = 'q';
+  wrap.dataset.qid = q.id;
+
+  const label = document.createElement('div');
+  label.className = 'qlab';
+  label.textContent = q.question;
+  wrap.appendChild(label);
+
+  if(q.help_text){
+    const help = document.createElement('div');
+    help.className = 'help';
+    help.textContent = q.help_text;
+    wrap.appendChild(help);
+  }
+
+  if(q.required){
+    const req = document.createElement('span');
+    req.className = 'req';
+    req.textContent = '(required)';
+    label.appendChild(req);
+  }
+
+  const opts = document.createElement('div');
+  opts.className = 'options';
+  wrap.appendChild(opts);
+
+  const name = inputName(q);
+  const choices = q.options || [];
+
+  if(q.type === 'likert_5' || q.type === 'single_choice'){
+    choices.forEach((opt, idx)=>{
+      const id = `${name}_${idx}`;
+      const lab = document.createElement('label');
+      const radio = document.createElement('input');
+      radio.type = 'radio';
+      radio.name = name;
+      radio.id = id;
+      radio.value = String(idx);
+      lab.appendChild(radio);
+      lab.append(` ${opt}`);
+      opts.appendChild(lab);
+    });
+  } else if(q.type === 'multiple_choice'){
+    opts.classList.add('vertical');
+    choices.forEach((opt, idx)=>{
+      const id = `${name}_${idx}`;
+      const lab = document.createElement('label');
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.name = name;
+      cb.id = id;
+      cb.value = opt;
+      lab.appendChild(cb);
+      lab.append(` ${opt}`);
+      opts.appendChild(lab);
+    });
+  } else if(q.type === 'short_text'){
+    const inp = document.createElement('input');
+    inp.type = 'text';
+    inp.name = name;
+    inp.style.width = '100%';
+    opts.appendChild(inp);
+  }
+
+  if(q.attention_check){
+    wrap.dataset.attn = '1';
+  }
+  if(q.skip_logic){
+    wrap.dataset.skip = q.skip_logic;
+  }
+
+  return wrap;
+}
+
+function renderSurvey(){
+  surveyEl.innerHTML = '';
+  const sections = groupBySection(SURVEY);
+  for (const [section, qs] of sections){
+    const sec = document.createElement('section');
+    sec.className = 'section';
+    const h = document.createElement('h2');
+    h.textContent = section;
+    sec.appendChild(h);
+    qs.forEach(q=>{
+      const el = renderQuestion(q);
+      sec.appendChild(el);
+    });
+    surveyEl.appendChild(sec);
+  }
+}
+
+/*** -------------------------
+  SKIP LOGIC
+-------------------------- ***/
+function getValue(qid){
+  const q = SURVEY.find(x=>x.id===qid);
+  if(!q) return null;
+  if(q.type==='short_text'){
+    const el = document.querySelector(`[name="${qid}"]`);
+    return el ? el.value.trim() : null;
+  }
+  if(q.type==='multiple_choice'){
+    const els = Array.from(document.querySelectorAll(`[name="${qid}"]`)).filter(e=>e.checked);
+    return els.map(e=>e.value);
+  }
+  const el = document.querySelector(`[name="${qid}"]:checked`);
+  if(!el) return null;
+  const idx = Number(el.value);
+  const label = (q.options || [])[idx];
+  return label ?? null;
+}
+
+function matchSkip(expr){
+  if(!expr) return true;
+  const mIn = expr.match(/Show if (Q\d+)\s+in\s+\{([^}]+)\}/i);
+  if(mIn){
+    const qid = mIn[1], setList = mIn[2].split(',').map(s=>s.trim());
+    const v = getValue(qid);
+    return setList.includes(v);
+  }
+  const mEq = expr.match(/Show if (Q\d+)\s*==\s*(.+)$/i);
+  if(mEq){
+    const qid = mEq[1], rhsRaw = mEq[2].trim();
+    const rhs = rhsRaw.replace(/^['"]|['"]$/g,'');
+    const v = getValue(qid);
+    return v === rhs;
+  }
+  return true;
+}
+
+function applyVisibility(){
+  document.querySelectorAll('.q').forEach(el=>{
+    const expr = el.dataset.skip || "";
+    const show = matchSkip(expr);
+    el.classList.toggle('hidden', !show);
+    if(!show){
+      const name = el.dataset.qid;
+      document.querySelectorAll(`[name="${name}"]`).forEach(inp=>{
+        if (inp.type==='radio' || inp.type==='checkbox') inp.checked = false;
+        else inp.value = '';
+      });
+    }
+  });
+}
+
+/*** -------------------------
+  VALIDATION
+-------------------------- ***/
+function isVisible(qid){
+  const el = document.querySelector(`.q[data-qid="${qid}"]`);
+  return el && !el.classList.contains('hidden');
+}
+
+function hasAnswer(q){
+  if(q.type==='short_text'){
+    const v = getValue(q.id);
+    return v && v.length>0;
+  } else if(q.type==='multiple_choice'){
+    const v = getValue(q.id);
+    return Array.isArray(v) && v.length>0;
+  } else {
+    const el = document.querySelector(`[name="${q.id}"]:checked`);
+    return !!el;
+  }
+}
+
+function getIndex(qid){
+  const el = document.querySelector(`[name="${qid}"]:checked`);
+  if(!el) return null;
+  return Number(el.value);
+}
+
+function validate(){
+  const errs = [];
+  const consentIdx = getIndex("Q1");
+  if (consentIdx === 1) {
+    errs.push("Consent not granted: selected 'No, exit'.");
+  }
+  for(const q of SURVEY){
+    if(!q.required) continue;
+    if(!isVisible(q.id)) continue;
+    if(!hasAnswer(q)) errs.push(`Missing required: ${q.id} — ${q.question}`);
+  }
+  return errs;
+}
+
+/*** -------------------------
+  SCORING
+-------------------------- ***/
+function scoreItem(q){
+  if(q.weight===0) return {ok:false};
+  if(!isVisible(q.id)) return {ok:false};
+  if(q.type!=='likert_5') return {ok:false};
+  const idx = getIndex(q.id);
+  if(idx==null) return {ok:false};
+  let s = idx; // 0..4
+  if(q.reverse) s = 4 - s;
+  return {ok:true, score:s, weight:q.weight, domain:q.domain};
+}
+
+function computeDomainScores(){
+  const map = {};
+  for(const q of SURVEY){
+    const r = scoreItem(q);
+    if(!r.ok) continue;
+    if(!map[r.domain]) map[r.domain] = {sum:0, wsum:0};
+    map[r.domain].sum += r.score * r.weight;
+    map[r.domain].wsum += r.weight * 4;
+  }
+  const out = {};
+  for(const d in map){
+    const v = map[d];
+    const pct = v.wsum>0 ? (100 * v.sum / v.wsum) : null;
+    if(pct!=null) out[d] = +pct.toFixed(1);
+  }
+  return out;
+}
+
+function shownDomains(domainScores){
+  const domains = new Set();
+  for(const q of SURVEY){
+    if(q.weight===0) continue;
+    if(!isVisible(q.id)) continue;
+    domains.add(q.domain);
+  }
+  return Array.from(domains).filter(d => domainScores[d]!=null);
+}
+
+function computeSEI(domainScores){
+  const doms = shownDomains(domainScores).filter(d=>!EXCLUDE_FROM_SEI.has(d));
+  if(doms.length===0) return null;
+  const mean = doms.reduce((a,d)=>a+domainScores[d],0)/doms.length;
+  return +mean.toFixed(1);
+}
+
+function subIndex(name, domainScores){
+  const present = d => domainScores[d]!=null;
+  const picks = {
+    LockIn: ["COMMS","DATA","OS","WORK","SUPPLY"].filter(present),
+    Custody: ["MONEY","DEBT","ID","CBDC","DIGID","DOCS"].filter(present),
+    Household: ["ENERGY","FOODWATER","HEALTH","COMMUNITY","HOUSINGRISK","MOBILITY","DOCS","NETWORK","SKILLS"].filter(present),
+    Attention: ["MEDIA"].filter(present),
+    Hygiene: ["NETWORK","OS","DATA"].filter(present),
+    TimeTraj: ["TIME","TRAJECTORY"].filter(present)
+  };
+  const sets = {
+    "Lock-In Risk": picks.LockIn,
+    "Custody/Freeze Risk": picks.Custody,
+    "Household Resilience": picks.Household,
+    "Attention Sovereignty": picks.Attention,
+    "Infrastructure Hygiene": picks.Hygiene,
+    "Time & Trajectory": picks.TimeTraj
+  };
+  const doms = sets[name] || [];
+  if(doms.length===0) return null;
+  const val = doms.reduce((a,d)=>a+domainScores[d],0)/doms.length;
+  return +val.toFixed(1);
+}
+
+function attentionChecks(){
+  // Q114 should be Agree (index 3), Q115 should be Disagree (index 1)
+  const a = getIndex("Q114");
+  const b = getIndex("Q115");
+  const okA = (a===3);
+  const okB = (b===1);
+  return {ok: okA && okB, detail: {Q114:a, Q115:b}};
+}
+
+function archetype(domainScores, sei){
+  if(sei==null) return "Insufficient data";
+  const lockIn = subIndex("Lock-In Risk", domainScores);
+  const household = subIndex("Household Resilience", domainScores);
+  const money = domainScores["MONEY"] ?? 0;
+  const id = domainScores["ID"] ?? 0;
+  const comms = domainScores["COMMS"] ?? 0;
+  const work = domainScores["WORK"] ?? 0;
+
+  if(lockIn!=null && sei>=70 && lockIn>=70) return "Comfortably Centralized";
+  if(comms>=70 && work>=60) return "Platform-Dependent Creator";
+  if(money>=70 && id>=60) return "Service-Integrated Professional";
+  if(household!=null && household>=70) return "Precarious Pragmatist";
+  if(sei<40 && (household!=null && household<40)) return "Sovereign-Oriented Builder";
+  if(sei>=40 && sei<60) return "Resilience-Seeking Optimizer";
+  return "Resilience-Seeking Optimizer";
+}
+
+function topRiskDomains(domainScores, n=3){
+  const entries = Object.entries(domainScores)
+    .filter(([d])=>!EXCLUDE_FROM_SEI.has(d))
+    .sort((a,b)=> b[1]-a[1]);
+  return entries.slice(0,n).map(([d,v])=> ({domain:d, name:DOMAINS_FRIENDLY[d]||d, score:v}));
+}
+
+/*** -------------------------
+  RESULTS RENDER
+-------------------------- ***/
+function renderDomainScores(domainScores){
+  const wrap = document.getElementById('domainScores');
+  wrap.innerHTML = '';
+  const entries = Object.entries(domainScores)
+     .filter(([d])=>!EXCLUDE_FROM_SEI.has(d))
+     .sort((a,b)=> a[0].localeCompare(b[0]));
+  entries.forEach(([d,v])=>{
+    const row = document.createElement('div');
+    row.className = 'domain-score';
+    const left = document.createElement('div');
+    left.textContent = DOMAINS_FRIENDLY[d] || d;
+    const right = document.createElement('div');
+    right.innerHTML = `<progress max="100" value="${v}"></progress> ${v}`;
+    row.appendChild(left); row.appendChild(right);
+    wrap.appendChild(row);
+  });
+}
+
+function renderSubIdx(domainScores){
+  const out = document.getElementById('subIdx');
+  const list = [
+    "Lock-In Risk",
+    "Custody/Freeze Risk",
+    "Household Resilience",
+    "Attention Sovereignty",
+    "Infrastructure Hygiene",
+    "Time & Trajectory"
+  ];
+  out.innerHTML = '';
+  list.forEach(name=>{
+    const val = subIndex(name, domainScores);
+    if(val==null) return;
+    const row = document.createElement('div');
+    row.className = 'domain-score';
+    const left = document.createElement('div');
+    left.textContent = name;
+    const right = document.createElement('div');
+    right.innerHTML = `<progress max="100" value="${val}"></progress> ${val}`;
+    row.appendChild(left); row.appendChild(right);
+    out.appendChild(row);
+  });
+}
+
+function renderBadges(){
+  const wrap = document.getElementById('badges');
+  wrap.innerHTML = '';
+  const h = [
+    {id:"Q116", label:"Account/funds lost access"},
+    {id:"Q117", label:"Content removal / demonetization / ban"},
+    {id:"Q118", label:"24h+ utilities outage"},
+    {id:"Q119", label:"Identity theft / data breach"}
+  ];
+  h.forEach(x=>{
+    const idx = getIndex(x.id);
+    if(idx!=null && idx>=3){
+      const b = document.createElement('span');
+      b.className = 'badge';
+      b.textContent = x.label;
+      wrap.appendChild(b);
+    }
+  });
+  if(!wrap.innerHTML) wrap.textContent = 'None flagged.';
+}
+
+function renderTopRisks(domainScores){
+  const t = topRiskDomains(domainScores);
+  const s = t.map(x=>`${x.name} (${x.score})`).join(', ');
+  document.getElementById('topRisks').textContent = s || '—';
+}
+
+function renderAttnStatus(){
+  const st = attentionChecks();
+  const el = document.getElementById('attStatus');
+  if(st.ok){
+    el.innerHTML = `<span class="ok">OK</span>`;
+  } else {
+    const q114 = st.detail.Q114==null ? 'N/A' : Likert5[st.detail.Q114];
+    const q115 = st.detail.Q115==null ? 'N/A' : Likert5[st.detail.Q115];
+    el.innerHTML = `<span class="warn">Failed</span> <span class="small muted">(Q114=${q114}, Q115=${q115})</span>`;
+  }
+}
+
+function suggestQuickWins(domainScores){
+  const out = document.getElementById('quickWins');
+  out.innerHTML = '';
+  const picks = [];
+  const add = s=>picks.push(s);
+
+  if((domainScores.DATA??0)>=60) add("Install a password manager; switch important 2FA from SMS to an authenticator app.");
+  if((domainScores.MONEY??0)>=60) add("Hold a small cash buffer; add a second payment rail you control.");
+  if((domainScores.DEBT??0)>=60) add("List your debts; automate minimum payments; pause new credit for a month.");
+  if((domainScores.DOCS??0)>=60) add("Print emergency contacts and a copy of IDs; store securely at home.");
+
+  if((domainScores.COMMS??0)>=60) add("Export contacts; keep an offline copy; add a secondary messenger.");
+  if((domainScores.OS??0)>=60) add("Make a full local device backup this week.");
+  if((domainScores.NETWORK??0)>=60) add("Change router default password/SSID; set a SIM PIN.");
+
+  if((domainScores.ENERGY??0)>=60) add("Buy a power bank; test it; keep charging cables handy.");
+  if((domainScores.FOODWATER??0)>=60) add("Build a 7-day pantry; add a simple water filter.");
+  if((domainScores.COMMUNITY??0)>=60) add("Learn a neighbor’s name; join one local in-person group.");
+
+  if((domainScores.MEDIA??0)>=60) add("Unfollow five low-value feeds; add one direct news source or newsletter.");
+  if((domainScores.TIME??0)>=60) add("Block a 1–2 hour slot this week for resilience setup and guard it.");
+
+  if(picks.length===0){
+    add("Export your contacts and files; keep a local copy.");
+    add("Set up a password manager and migrate 5 accounts.");
+    add("Buy a water filter and a small power bank.");
+  }
+  picks.slice(0,5).forEach(t=>{
+    const li = document.createElement('li'); li.textContent = t; out.appendChild(li);
+  });
+}
+
+function suggestStretches(domainScores){
+  const out = document.getElementById('stretches');
+  out.innerHTML = '';
+  const picks = [];
+  if((domainScores.MONEY??0)>=60 || (domainScores.CBDC??0)>=60) picks.push("Move 5–10% of savings into self-custody; add a second revenue/payment rail.");
+  if((domainScores.DEBT??0)>=60) picks.push("Design a 1–3 year plan to clear high-interest consumer debt and reduce reliance on credit.");
+  if((domainScores.COMMS??0)>=60) picks.push("Own your audience: custom domain + email list; regular exports.");
+  if((domainScores.DOCS??0)>=60 || (domainScores.HOUSINGRISK??0)>=60) picks.push("Assemble a simple home go-bag and a humidity/mold plan.");
+  if((domainScores.NETWORK??0)>=60 || (domainScores.OS??0)>=60) picks.push("Segment IoT on a guest Wi-Fi; enable DNS filtering; schedule router updates.");
+  if((domainScores.FOODWATER??0)>=60 || (domainScores.ENERGY??0)>=60) picks.push("7-day pantry + cook-without-grid option; basic energy usage log.");
+  if((domainScores.TIME??0)>=60 || (domainScores.TRAJECTORY??0)>=60) picks.push("Create a weekly 'sovereign hour' and commit to one 30–60 day change (e.g., self-custody, backups, or new local skill).");
+
+  if(picks.length===0){
+    picks.push("Establish monthly exports/backups and rotate a small emergency buffer.");
+  }
+  picks.slice(0,5).forEach(t=>{
+    const li = document.createElement('li'); li.textContent = t; out.appendChild(li);
+  });
+}
+
+/*** -------------------------
+  EVENTS & WIRING
+-------------------------- ***/
+function onChangeAny(){
+  applyVisibility();
+}
+
+function collectResponses(){
+  const out = {};
+  for(const q of SURVEY){
+    if(q.type==='multiple_choice'){
+      const els = Array.from(document.querySelectorAll(`[name="${q.id}"]`)).filter(e=>e.checked);
+      out[q.id] = els.map(e=>e.value);
+    } else if(q.type==='short_text'){
+      const el = document.querySelector(`[name="${q.id}"]`);
+      out[q.id] = el ? el.value : null;
+    } else {
+      const idx = getIndex(q.id);
+      out[q.id] = (idx==null) ? null : idx;
+    }
+  }
+  return out;
+}
+
+function loadResponses(data){
+  for(const q of SURVEY){
+    const v = data[q.id];
+    if(v==null) continue;
+    if(q.type==='multiple_choice'){
+      const arr = Array.isArray(v) ? v : [];
+      document.querySelectorAll(`[name="${q.id}"]`).forEach(cb=>{
+        cb.checked = arr.includes(cb.value);
+      });
+    } else if(q.type==='short_text'){
+      const el = document.querySelector(`[name="${q.id}"]`);
+      if(el) el.value = v;
+    } else {
+      const idx = Number(v);
+      const el = document.querySelector(`[name="${q.id}"][value="${idx}"]`);
+      if(el) el.checked = true;
+    }
+  }
+  applyVisibility();
+}
+
+document.addEventListener('change', onChangeAny);
+document.addEventListener('input', onChangeAny);
+
+document.getElementById('btnValidate').addEventListener('click',()=>{
+  const errs = validate();
+  if(errs.length){
+    alert("Please complete required items:\n\n" + errs.join("\n"));
+  } else {
+    alert("All visible required items complete.");
+  }
+});
+
+document.getElementById('btnCalc').addEventListener('click', ()=>{
+  const consent = getIndex("Q1");
+  if(consent===1){
+    alert("Consent not granted. Cannot compute results.");
+    return;
+  } else if(consent==null){
+    alert("Please answer the consent question.");
+    return;
+  }
+
+  const errs = validate();
+  if(errs.length){
+    if(!confirm("Some required items are missing. Calculate anyway?")) return;
+  }
+
+  const ds = computeDomainScores();
+  const sei = computeSEI(ds);
+
+  document.getElementById('sei').textContent = (sei==null? '—' : sei);
+  document.getElementById('arch').textContent = archetype(ds, sei);
+  renderTopRisks(ds);
+  renderAttnStatus();
+  renderDomainScores(ds);
+  renderSubIdx(ds);
+  renderBadges();
+  suggestQuickWins(ds);
+  suggestStretches(ds);
+
+  document.getElementById('results').classList.remove('hidden');
+  window.scrollTo({top: document.getElementById('results').offsetTop - 10, behavior:'smooth'});
+});
+
+document.getElementById('btnExport').addEventListener('click', ()=>{
+  const data = collectResponses();
+  const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'srs-es-responses.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+document.getElementById('fileImport').addEventListener('change', (e)=>{
+  const f = e.target.files[0];
+  if(!f) return;
+  const r = new FileReader();
+  r.onload = ()=>{
+    try {
+      const data = JSON.parse(r.result);
+      loadResponses(data);
+      alert("Responses imported.");
+    } catch(err){
+      alert("Invalid JSON.");
+    }
+  };
+  r.readAsText(f);
+});
+
+document.getElementById('btnClear').addEventListener('click', ()=>{
+  if(!confirm("Clear all responses?")) return;
+  document.querySelectorAll('input').forEach(inp=>{
+    if(inp.type==='radio' || inp.type==='checkbox') inp.checked = false;
+    else inp.value = '';
+  });
+  applyVisibility();
+  document.getElementById('results').classList.add('hidden');
+});
+
+// Initial render
+renderSurvey();
+applyVisibility();
+</script>
+</body>
+</html>
